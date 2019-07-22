@@ -277,9 +277,11 @@ void ofxColorsBrowser::populateScene()
         float yBtn = y + (i/perRow)*(size+pad);
 
         Color_BitmapTextButton *btn = new Color_BitmapTextButton();
+//        btn->loadFont("assets/fonts/PragmataProR_0822.ttf");
         btn->setup(colorNames[i].name);
         btn->setBackground(true);
         btn->setBGColor(colorNames[i].color);
+        btn->setBorderColor(ofColor::black);
         btn->setPosition(xBtn, yBtn);
         btn->setSize(size, size);
         btn->setLabelColor(ofColor::black);

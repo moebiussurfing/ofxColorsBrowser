@@ -13,6 +13,7 @@
 #include "ofMain.h"
 
 #include "ofxInterface.h"
+#include "ofxFontStash.h"
 
 namespace ofxInterface
 {
@@ -36,7 +37,7 @@ public:
     void onTouchMove(TouchEvent& event);
     void onTouchUp(TouchEvent& event);
 
-private:
+//private:
 
 	bool bDrawBackground;
 	bool bDrawBorder;
@@ -46,6 +47,18 @@ private:
 	ofColor labelColor;
 
 	string label;
+    bool bLabel = true;
+    void setLabelVisible(bool b);
+
+    void setInset(float x, float y);
+    float _x = 1;
+    float _y = 1;
+    void setFontSize(float s);
+    float fontSize = 10;
+    ofRectangle getTextBox();
+    bool loadFont(string file);
+    //TODO: Add pointer support to save font loads
+    ofxFontStash font;
 };
 
 }	// namespace

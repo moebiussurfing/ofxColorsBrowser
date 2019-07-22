@@ -17,6 +17,11 @@ namespace ofxInterface
         bgColor = ofColor(255);
         labelColor = ofColor(0);
 
+        setLabelVisible(false);
+        setFontSize(12);
+        setHeight(10);//hack to prevent mouse block on overlap over other components
+        setInset(1, -1);
+
         ofAddListener(eventTouchDown, this, &Color_BitmapTextButton::onTouchDown);
         ofAddListener(eventTouchUp, this, &Color_BitmapTextButton::onTouchUp);
         ofAddListener(eventTouchMove, this, &Color_BitmapTextButton::onTouchMove);
@@ -24,22 +29,54 @@ namespace ofxInterface
 
     void Color_BitmapTextButton::draw()
     {
+        ofPushStyle();
+
         if (bDrawBackground) {
             ofSetColor(bgColor * (isTouched()?0.5:1));
             ofFill();
             ofDrawRectangle(0, 0, getWidth(), getHeight());
         }
 
-        ofSetColor(labelColor);
-        ofDrawBitmapString(label, 5, getHeight()-5);
+        if (bLabel)
+        {
+            ofSetColor(labelColor);
 
-        if (bDrawBorder) {
-            ofSetColor(borderColor);
-            ofNoFill();
-            ofSetLineWidth(1);
-            ofDrawRectangle(0, 0, getWidth(), getHeight());
+            if(font.isLoaded()){
+                font.draw(label,fontSize,_x,_y);
+            }else{
+//                ofDrawBitmapString(label,_x,_y);
+                ofDrawBitmapString(label, _x, getHeight() + _y);
+            }
+
+            if (bDrawBorder) {
+                ofSetColor(borderColor);
+                ofNoFill();
+                ofSetLineWidth(1);
+                ofDrawRectangle(0, 0, getWidth(), getHeight());
+            }
+            ofPopStyle();
         }
     }
+
+    void Color_BitmapTextButton::setLabelVisible(bool b){
+        bLabel = b;
+    }
+
+    void Color_BitmapTextButton::setInset(float x, float y){
+        _x = x;
+        _y = y;
+    };
+
+    void Color_BitmapTextButton::setFontSize(float s){
+        fontSize = s;
+        font.setSize(fontSize);
+    };
+
+    bool Color_BitmapTextButton::loadFont(string file){
+        bool s = font.setup(file, 1.0, 1024, false, 8, 1.5);
+        font.setCharacterSpacing(0);
+        return s;
+    };
 
     void Color_BitmapTextButton::onTouchDown(ofxInterface::TouchEvent &event)
     {
