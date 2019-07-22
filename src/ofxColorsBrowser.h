@@ -63,6 +63,8 @@ public:
     float size = 50;//boxes
     float pad = 2;
 
+    //--
+
     // API
 
     void setPosition(glm::vec2 p);
@@ -76,7 +78,7 @@ public:
     void setBoxSize(float size);
     void setSize(glm::vec2 size);
 
-    //-
+    //--
 
     ofFloatColor color_BACK;
     ofFloatColor color_BACK_PRE;

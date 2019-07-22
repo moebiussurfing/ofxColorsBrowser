@@ -401,7 +401,7 @@ void ofxColorsBrowser::draw_native(){
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 {
     const int & key = eventArgs.key;
-    cout << "key: " << key << endl;
+    ofLogNotice("ofxColorsBrowser") << "key: " << key << endl;
 
     if (key == 'd'){
         bShowDebug = !bShowDebug;
@@ -453,9 +453,9 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 //--------------------------------------------------------------
 void ofxColorsBrowser::clearPopulate()
 {
-    cout << endl;
-    cout << "clearPopulate" << endl;
-    cout << "getNumChildren: " << scene->getNumChildren() << endl;
+    ofLogNotice("ofxColorsBrowser") << endl;
+    ofLogNotice("ofxColorsBrowser") << "clearPopulate" << endl;
+    ofLogNotice("ofxColorsBrowser") << "getNumChildren: " << scene->getNumChildren() << endl;
 
     for (int i=0; i< buttons_txt.size(); i++)
     {
@@ -463,10 +463,9 @@ void ofxColorsBrowser::clearPopulate()
         auto a = scene->getChildWithName(n, scene->getNumChildren());
         auto b = a->getName();
         scene->removeChild(a, false);
-//        cout << "removed children: " << b << endl;
+//        ofLogVerbose("ofxColorsBrowser")  << "removed children: " << b << endl;
     }
     buttons_txt.clear();
-    cout << endl;
 }
 
 //--------------------------------------------------------------
