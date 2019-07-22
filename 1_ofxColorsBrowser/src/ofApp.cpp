@@ -20,7 +20,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 //    ofBackground(color_BACK);
-//    ofClear(ofColor( color_BACK ));
+    ofClear(ofColor( color_BACK ));
 	ColorBrowser.draw();
 }
 

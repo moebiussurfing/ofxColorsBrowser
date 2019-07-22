@@ -58,7 +58,10 @@ public:
     void setPosition(glm::vec2 p);
 
     ofFloatColor color_BACK;
+    ofFloatColor color_BACK_PRE;
     void setup_colorBACK(ofFloatColor &c);
+    ofFloatColor *color_BACK_OFAPP;
+    void Changed_color_clicked(ofFloatColor &color);
 
 private:
 

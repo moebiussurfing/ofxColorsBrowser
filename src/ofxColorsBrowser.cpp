@@ -25,6 +25,8 @@ ofxColorsBrowser::ofxColorsBrowser()
 {
     addKeysListeners();
     addMouseListeners();
+
+//    color_BACK.addListener(this, &ofxColorsBrowser::Changed_color_clicked);
 }
 
 //--------------------------------------------------------------
@@ -287,6 +289,7 @@ void ofxColorsBrowser::populateScene()
         btn->setLabelColor(ofColor::black);
         btn->setName("col" + ofToString(i));
         btn->setup_colorBACK(color_BACK);
+//        btn->setup_colorBACK(color_BACK);
 
         scene->addChild(btn);
 
@@ -300,6 +303,14 @@ void ofxColorsBrowser::populateScene()
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::update(){
+
+    if (color_BACK != color_BACK_PRE)
+    {
+        color_BACK_OFAPP->set(color_BACK);
+        color_BACK_PRE = color_BACK;
+    }
+
+    //-
 
     // smoothing the mouse a bit over time
     mouseSmoothed = 0.95 * mouseSmoothed + 0.05 * ofPoint(mouseX, mouseY);
@@ -316,7 +327,7 @@ void ofxColorsBrowser::update(){
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw(){
-    ofClear(ofColor( color_BACK ));
+//    ofClear(ofColor( color_BACK ));//TODO: moving to ofApp
 
     scene->render();
     if (bShowDebug) {
@@ -451,7 +462,7 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
     const int & x = eventArgs.x;
     const int & y = eventArgs.y;
     const int & button = eventArgs.button;
-    ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
+//    ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
 
     TouchManager::one().touchMove(button, ofVec2f(x, y));
 }
@@ -461,7 +472,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     const int & x = eventArgs.x;
     const int & y = eventArgs.y;
     const int & button = eventArgs.button;
-    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
+//    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
     mouseX = x;
     mouseY = y;
@@ -474,7 +485,7 @@ void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
     const int & x = eventArgs.x;
     const int & y = eventArgs.y;
     const int & button = eventArgs.button;
-    ofLogNotice("ofxColorsBrowser") << "mouseReleased " <<  x << ", " << y << ", " << button;
+//    ofLogNotice("ofxColorsBrowser") << "mouseReleased " <<  x << ", " << y << ", " << button;
 
     TouchManager::one().touchUp(button, ofVec2f(x, y));
 }
@@ -506,8 +517,17 @@ ofxColorsBrowser::~ofxColorsBrowser()
     removeMouseListeners();
 }
 
+//--------------------------------------------------------------
 void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
 {
 //    colorBack_DEFINED = true;
-    color_BACK = c;
+//    color_BACK = c;
+    color_BACK_OFAPP = &c;
 }
+
+////--------------------------------------------------------------
+//void ofxColorsBrowser::Changed_color_clicked(ofFloatColor &color)
+//{
+////    ofLogNotice("ofxColorManager") << "Changed_color_clicked " << ofToString(color);
+////    color_picked.set(color);
+//}
