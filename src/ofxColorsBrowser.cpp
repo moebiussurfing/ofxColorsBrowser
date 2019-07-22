@@ -287,7 +287,6 @@ void ofxColorsBrowser::populateScene()
         btn->setLabelColor(ofColor::black);
         btn->setName("col" + ofToString(i));
 
-
 ////        Label *btn = new Label();
 //        btn->setup();
 //        btn->setPosition(xBtn, yBtn);
@@ -302,9 +301,9 @@ void ofxColorsBrowser::populateScene()
         // add it to the scene
         scene->addChild(btn);
 
-        if (i%perRow>0) {
-            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
-        }
+//        if (i%perRow>0) {
+//            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
+//        }
 
         buttons_txt.push_back(btn);
     }
