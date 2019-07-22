@@ -19,7 +19,7 @@ typedef struct
 } colorNameMapping;
 
 enum {
-    OFX_COLOR_NATIVE = 0,
+    OFX_COLOR_NATIVE,
     OFX_OPEN_COLOR
 };
 
@@ -38,11 +38,13 @@ public:
 
     map < string, ofColor > colorNameMap;
     vector < colorNameMapping > colorNames;
+    
     ofPoint mouseSmoothed;
     int sortedType;             // keep track of which sort we've done
     float mouseX, mouseY;
 
     int MODE_COLOR;
+    void generateColors();
 
     ofxInterface::Node* scene;
     vector<BitmapTextButton*> buttons_txt;

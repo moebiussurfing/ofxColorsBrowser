@@ -28,10 +28,9 @@ ofxColorsBrowser::ofxColorsBrowser()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setup(){
-
-//    MODE_COLOR = OFX_COLOR_NATIVE;
-    MODE_COLOR = OFX_OPEN_COLOR;
+void ofxColorsBrowser::generateColors(){
+    colorNames.clear();
+    colorNameMap.clear();
 
     if (MODE_COLOR == OFX_OPEN_COLOR)
     {
@@ -240,6 +239,16 @@ void ofxColorsBrowser::setup(){
     sortedType = 1; // by name, at the start
 
     //-
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setup(){
+    //    MODE_COLOR = OFX_COLOR_NATIVE;
+    MODE_COLOR = OFX_OPEN_COLOR;
+
+    generateColors();
+
+    //-
 
     scene = new Node();
     scene->setSize(ofGetWidth(), ofGetHeight());
@@ -371,10 +380,17 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         bShowDebug = !bShowDebug;
     }
 
-//    if(key == ' ')
-//    {
-//        cout << "key: " << key << endl;
-//    }
+    if(key == ' ')
+    {
+        if (MODE_COLOR == OFX_COLOR_NATIVE)
+            MODE_COLOR = OFX_OPEN_COLOR;
+        else if (MODE_COLOR = OFX_OPEN_COLOR)
+            MODE_COLOR = OFX_COLOR_NATIVE;
+
+        clearPopulate();
+        generateColors();
+        populateScene();
+    }
 
     if (key == '1'){
         if (sortedType != 1){
