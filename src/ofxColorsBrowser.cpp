@@ -325,6 +325,11 @@ void ofxColorsBrowser::draw(){
     if (bShowDebug) {
         scene->renderDebug();
     }
+
+    ofSetColor(0);
+    ofDrawRectangle(0, ofGetHeight()-60, ofGetWidth(), 60);
+    ofDrawBitmapStringHighlight("press '1' to sort by name, '2' to sort by hue,\n'3' to sort by brightness, '4' to sort by saturation", 20, ofGetHeight()-60 + 30, ofColor::black, ofColor::white);
+
 }
 
 //--------------------------------------------------------------
@@ -365,10 +370,7 @@ void ofxColorsBrowser::draw_native(){
 //        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
     }
 
-    ofSetColor(0);
-    ofDrawRectangle(0, ofGetHeight()-60, ofGetWidth(), 60);
-    ofDrawBitmapStringHighlight("press '1' to sort by name, '2' to sort by hue,\n'3' to sort by brightness, '4' to sort by saturation", 20, ofGetHeight()-60 + 30, ofColor::black, ofColor::white);
-}
+  }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )

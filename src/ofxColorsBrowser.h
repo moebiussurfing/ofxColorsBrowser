@@ -38,7 +38,7 @@ public:
 
     map < string, ofColor > colorNameMap;
     vector < colorNameMapping > colorNames;
-    
+
     ofPoint mouseSmoothed;
     int sortedType;             // keep track of which sort we've done
     float mouseX, mouseY;
