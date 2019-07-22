@@ -242,6 +242,11 @@ void ofxColorsBrowser::generateColors(){
 }
 
 //--------------------------------------------------------------
+void ofxColorsBrowser::setPosition(glm::vec2 p){
+    position = p;
+}
+
+//--------------------------------------------------------------
 void ofxColorsBrowser::setup(){
     //    MODE_COLOR = OFX_COLOR_NATIVE;
     MODE_COLOR = OFX_OPEN_COLOR;
@@ -260,18 +265,18 @@ void ofxColorsBrowser::setup(){
 //--------------------------------------------------------------
 void ofxColorsBrowser::populateScene()
 {
+    float x = position.x;
+    float y = position.y;
     float size = 50;
     float pad = 2;
     int perRow = 10;
-    float x = 100;
-    float y = 20;
 
     for (int i = 0; i < colorNames.size(); i++) {
 
         float xBtn = x + (i%perRow)*(size+pad);
         float yBtn = y + (i/perRow)*(size+pad);
 
-        BitmapTextButton *btn = new BitmapTextButton();
+        Color_BitmapTextButton *btn = new Color_BitmapTextButton();
         btn->setup(colorNames[i].name);
         btn->setBackground(true);
         btn->setBGColor(colorNames[i].color);
@@ -346,9 +351,6 @@ void ofxColorsBrowser::draw_native(){
     // draw all the colors
     // note this could be optimized, since we're drawing plenty that's offscreen here.
 
-
-//    const int NUM_COLUMNS = 5;
-
     for (unsigned int i = 0; i < colorNames.size(); i++){
 
         int x = (i % 3) * ofGetWidth()/3.0;
@@ -358,16 +360,6 @@ void ofxColorsBrowser::draw_native(){
         ofDrawRectangle(0 + x, y - offset, (i%3 == 2) ? ofGetWidth() - x : ofGetWidth()/3.0, 50);
 
         ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
-
-        //-
-
-//        int x = (i % NUM_COLUMNS) * ofGetWidth()/NUM_COLUMNS;
-//        int y = (floor(i / NUM_COLUMNS)) * 50;
-//
-//        ofSetColor( colorNames[i].color );
-//        ofDrawRectangle(0 + x, y - offset, (i%NUM_COLUMNS == 2) ? ofGetWidth() - x : ofGetWidth()/3.0, 50);
-//
-//        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
     }
 
   }

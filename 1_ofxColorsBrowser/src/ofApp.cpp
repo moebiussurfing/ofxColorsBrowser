@@ -7,6 +7,7 @@ void ofApp::setup(){
     ofSetVerticalSync(true);
     ofEnableAlphaBlending();
 
+    ColorBrowser.setPosition(glm::vec2(300, 10));
 	ColorBrowser.setup();
 }
 

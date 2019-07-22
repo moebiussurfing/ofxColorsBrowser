@@ -6,6 +6,8 @@
 #include "ofxOpenColor.h"
 #include "ofxInterface.h"
 #include "ofxInterfaceWidgets.h"
+#include "Color_BitmapTextButton.h"
+
 using namespace ofxInterface;
 
 #if (_MSC_VER)
@@ -47,10 +49,13 @@ public:
     void generateColors();
 
     ofxInterface::Node* scene;
-    vector<BitmapTextButton*> buttons_txt;
+    vector<Color_BitmapTextButton*> buttons_txt;
     void populateScene();
     void clearPopulate();
     bool bShowDebug = false;
+
+    glm::vec2 position;
+    void setPosition(glm::vec2 p);
 
 private:
 
