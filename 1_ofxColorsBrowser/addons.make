@@ -1,2 +1,3 @@
 ofxColorsBrowser
+ofxInterface
 ofxOpenColor

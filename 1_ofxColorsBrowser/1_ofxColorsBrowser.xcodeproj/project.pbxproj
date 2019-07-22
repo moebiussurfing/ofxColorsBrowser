@@ -50,6 +50,372 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>51BFD4ACF6836282F18FEB2F</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxInterface.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/ofxInterface.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>A4809B9FD1BE714FE3B91BC0</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>TextureButton.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/TextureButton.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>C9AA4E39732FC73FED43B1C7</key>
+			<dict>
+				<key>fileRef</key>
+				<string>3B810C1514598D9F4B35005B</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>3B810C1514598D9F4B35005B</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>TextureButton.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/TextureButton.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>C507DCCE5E6B6EEB1B355F66</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>SolidColorPanel.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/SolidColorPanel.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>6DBAFCAC912E054401C28548</key>
+			<dict>
+				<key>fileRef</key>
+				<string>80D435D30E24E15D1640DB7A</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>80D435D30E24E15D1640DB7A</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>SolidColorPanel.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/SolidColorPanel.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>0B88AE404E6222061E48366F</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>LambdaView.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/LambdaView.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>8ED7BFA2A5E75B287D7F938C</key>
+			<dict>
+				<key>fileRef</key>
+				<string>DB5D6903F387281B760E690F</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>DB5D6903F387281B760E690F</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>LambdaView.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/LambdaView.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>60026E925B6E93DBB0FD60FB</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>BitmapTextButton.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/BitmapTextButton.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>7BD7682F42051D24F35D6E7F</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>4477DBAA93F60F5B7CD1FEB6</string>
+					<string>60026E925B6E93DBB0FD60FB</string>
+					<string>DB5D6903F387281B760E690F</string>
+					<string>0B88AE404E6222061E48366F</string>
+					<string>80D435D30E24E15D1640DB7A</string>
+					<string>C507DCCE5E6B6EEB1B355F66</string>
+					<string>3B810C1514598D9F4B35005B</string>
+					<string>A4809B9FD1BE714FE3B91BC0</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>components</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>FFB8AFD9D7C34751C9BBF3EA</key>
+			<dict>
+				<key>fileRef</key>
+				<string>4477DBAA93F60F5B7CD1FEB6</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>4477DBAA93F60F5B7CD1FEB6</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>BitmapTextButton.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/components/BitmapTextButton.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>EE0739E04309FA9CB7F67AA0</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>VirtualTouch.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/VirtualTouch.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>07C8FC76B9E66571EC2746A4</key>
+			<dict>
+				<key>fileRef</key>
+				<string>ADA6345AFC607A69E48A046E</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>ADA6345AFC607A69E48A046E</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>VirtualTouch.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/VirtualTouch.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>1A7C78EDA7B4E66F987F0F94</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>TouchManager.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/TouchManager.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>459D314A3D46EEC989376177</key>
+			<dict>
+				<key>fileRef</key>
+				<string>FE7695BAAA9EEB2589E66054</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>FE7695BAAA9EEB2589E66054</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>TouchManager.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/TouchManager.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>E4700621A93C75CCF986152E</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>TouchEvent.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/TouchEvent.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>89151379E3C6356E612985DE</key>
+			<dict>
+				<key>fileRef</key>
+				<string>CF3B36149F98B5353E4D5F4C</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>CF3B36149F98B5353E4D5F4C</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>TouchEvent.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/TouchEvent.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>3030D35398869B9F4568353E</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>Node.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/Node.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>0951ADAD017157D4ED6C2713</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>854A51D15CA4A38E3787553C</string>
+					<string>3030D35398869B9F4568353E</string>
+					<string>CF3B36149F98B5353E4D5F4C</string>
+					<string>E4700621A93C75CCF986152E</string>
+					<string>FE7695BAAA9EEB2589E66054</string>
+					<string>1A7C78EDA7B4E66F987F0F94</string>
+					<string>ADA6345AFC607A69E48A046E</string>
+					<string>EE0739E04309FA9CB7F67AA0</string>
+					<string>7BD7682F42051D24F35D6E7F</string>
+					<string>51BFD4ACF6836282F18FEB2F</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>src</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>2CCFAD75F0D6A81E947E5D26</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>0951ADAD017157D4ED6C2713</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>ofxInterface</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>B0AAF8F9DF3AA834C843F3F9</key>
+			<dict>
+				<key>fileRef</key>
+				<string>854A51D15CA4A38E3787553C</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>854A51D15CA4A38E3787553C</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>Node.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxInterface/src/Node.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>596F4E053159B15CFF257089</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -281,6 +647,8 @@ fi
 						<string>src</string>
 						<string>src</string>
 						<string>../../../addons/ofxColorsBrowser/src</string>
+						<string>../../../addons/ofxInterface/src</string>
+						<string>../../../addons/ofxInterface/src/components</string>
 						<string>../../../addons/ofxOpenColor/src</string>
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
@@ -324,6 +692,8 @@ fi
 						<string>src</string>
 						<string>src</string>
 						<string>../../../addons/ofxColorsBrowser/src</string>
+						<string>../../../addons/ofxInterface/src</string>
+						<string>../../../addons/ofxInterface/src/components</string>
 						<string>../../../addons/ofxOpenColor/src</string>
 					</array>
 					<key>ICON</key>
@@ -361,6 +731,7 @@ fi
 				<key>children</key>
 				<array>
 					<string>675E8D80B434F885A8567372</string>
+					<string>2CCFAD75F0D6A81E947E5D26</string>
 					<string>8B3A069D4C26DD08C7152F5C</string>
 				</array>
 				<key>isa</key>
@@ -3129,6 +3500,8 @@ fi
 						<string>src</string>
 						<string>src</string>
 						<string>../../../addons/ofxColorsBrowser/src</string>
+						<string>../../../addons/ofxInterface/src</string>
+						<string>../../../addons/ofxInterface/src/components</string>
 						<string>../../../addons/ofxOpenColor/src</string>
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
@@ -3192,6 +3565,8 @@ fi
 						<string>src</string>
 						<string>src</string>
 						<string>../../../addons/ofxColorsBrowser/src</string>
+						<string>../../../addons/ofxInterface/src</string>
+						<string>../../../addons/ofxInterface/src/components</string>
 						<string>../../../addons/ofxOpenColor/src</string>
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
@@ -3218,6 +3593,14 @@ fi
 					<string>E4B69E200A3A1BDC003C02F2</string>
 					<string>E4B69E210A3A1BDC003C02F2</string>
 					<string>670A9295C1AE54CB57256710</string>
+					<string>B0AAF8F9DF3AA834C843F3F9</string>
+					<string>89151379E3C6356E612985DE</string>
+					<string>459D314A3D46EEC989376177</string>
+					<string>07C8FC76B9E66571EC2746A4</string>
+					<string>FFB8AFD9D7C34751C9BBF3EA</string>
+					<string>8ED7BFA2A5E75B287D7F938C</string>
+					<string>6DBAFCAC912E054401C28548</string>
+					<string>C9AA4E39732FC73FED43B1C7</string>
 				</array>
 				<key>isa</key>
 				<string>PBXSourcesBuildPhase</string>
@@ -3319,6 +3702,8 @@ fi
 						<string>src</string>
 						<string>src</string>
 						<string>../../../addons/ofxColorsBrowser/src</string>
+						<string>../../../addons/ofxInterface/src</string>
+						<string>../../../addons/ofxInterface/src/components</string>
 						<string>../../../addons/ofxOpenColor/src</string>
 					</array>
 					<key>ICON</key>
@@ -3373,6 +3758,8 @@ fi
 						<string>src</string>
 						<string>src</string>
 						<string>../../../addons/ofxColorsBrowser/src</string>
+						<string>../../../addons/ofxInterface/src</string>
+						<string>../../../addons/ofxInterface/src/components</string>
 						<string>../../../addons/ofxOpenColor/src</string>
 					</array>
 					<key>ICON</key>

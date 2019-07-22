@@ -1,5 +1,7 @@
 #include "ofxColorsBrowser.h"
 
+
+
 //--------------------------------------------------------------
 
 bool compareName( const colorNameMapping& s1, const colorNameMapping& s2 ) {
@@ -237,19 +239,72 @@ void ofxColorsBrowser::setup(){
 
     sortedType = 1; // by name, at the start
 
+    //-
+
+    scene = new Node();
+    scene->setSize(ofGetWidth(), ofGetHeight());
+    scene->setName("Scene");
+    TouchManager::one().setup(scene);
+    populateScene();
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::populateScene()
+{
+    float size = 40;
+    float pad = 2;
+    int perRow = 10;
+    float x = 100;
+    float y = 5;
+
+    for (int i = 0; i < colorNames.size(); i++) {
+
+        float xBtn = x + (i%perRow)*(size+pad);
+        float yBtn = y + (i/perRow)*(size+pad);
+
+        BitmapTextButton *btn = new BitmapTextButton();
+        btn->setup(colorNames[i].name);
+        btn->setBGColor(colorNames[i].color);
+        btn->setBorderColor(ofColor::black);
+        btn->setPosition(xBtn, yBtn);
+
+        // add it to the scene
+        scene->addChild(btn);
+
+        if (i%perRow>0) {
+            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
+        }
+
+        buttons_txt.push_back(btn);
+    }
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::update(){
 
     // smoothing the mouse a bit over time
-
     mouseSmoothed = 0.95 * mouseSmoothed + 0.05 * ofPoint(mouseX, mouseY);
 
+    //-
+
+    TouchManager::one().update();
+    float dt = 1. / ofGetFrameRate();
+    for (int i = 0; i < buttons_txt.size(); i++)
+    {
+        buttons_txt[i]->update(dt);
+    }
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw(){
+    scene->render();
+    if (bShowDebug) {
+        scene->renderDebug();
+    }
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::draw_native(){
 
     // calculate the total size needed to display all the colors
 
@@ -286,13 +341,9 @@ void ofxColorsBrowser::draw(){
 //        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
     }
 
-
-
     ofSetColor(0);
     ofDrawRectangle(0, ofGetHeight()-60, ofGetWidth(), 60);
     ofDrawBitmapStringHighlight("press '1' to sort by name, '2' to sort by hue,\n'3' to sort by brightness, '4' to sort by saturation", 20, ofGetHeight()-60 + 30, ofColor::black, ofColor::white);
-
-
 }
 
 //--------------------------------------------------------------
@@ -300,6 +351,10 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 {
     const int & key = eventArgs.key;
     cout << "key: " << key << endl;
+
+    if (key == 'd'){
+        bShowDebug = !bShowDebug;
+    }
 
 //    if(key == ' ')
 //    {
@@ -356,6 +411,7 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
     ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
 
+    TouchManager::one().touchMove(button, ofVec2f(x, y));
 }
 
 //--------------------------------------------------------------
@@ -368,6 +424,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     mouseX = x;
     mouseY = y;
 
+    TouchManager::one().touchDown(button, ofVec2f(x, y));
 }
 
 //--------------------------------------------------------------
@@ -377,6 +434,7 @@ void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
     ofLogNotice("ofxColorsBrowser") << "mouseReleased " <<  x << ", " << y << ", " << button;
 
+    TouchManager::one().touchUp(button, ofVec2f(x, y));
 }
 
 //--------------------------------------------------------------
