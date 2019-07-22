@@ -286,19 +286,8 @@ void ofxColorsBrowser::populateScene()
         btn->setSize(size, size);
         btn->setLabelColor(ofColor::black);
         btn->setName("col" + ofToString(i));
+        btn->setup_colorBACK(color_BACK);
 
-////        Label *btn = new Label();
-//        btn->setup();
-//        btn->setPosition(xBtn, yBtn);
-//        btn->setSize(size, size);
-//        btn->setText(colorNames[i].name);
-//        btn->setBackgroundColor(colorNames[i].color);
-//        btn->setDrawBackground(true);
-////        btn->setTint(colorNames[i].color);
-////        btn->setDrawStroke(true);
-////        btn->setStrokeColor(ofColor::black);
-
-        // add it to the scene
         scene->addChild(btn);
 
 //        if (i%perRow>0) {
@@ -327,6 +316,8 @@ void ofxColorsBrowser::update(){
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw(){
+    ofClear(ofColor( color_BACK ));
+
     scene->render();
     if (bShowDebug) {
         scene->renderDebug();
@@ -513,4 +504,10 @@ ofxColorsBrowser::~ofxColorsBrowser()
 {
     removeKeysListeners();
     removeMouseListeners();
+}
+
+void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
+{
+//    colorBack_DEFINED = true;
+    color_BACK = c;
 }

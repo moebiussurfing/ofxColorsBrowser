@@ -57,6 +57,9 @@ public:
     glm::vec2 position;
     void setPosition(glm::vec2 p);
 
+    ofFloatColor color_BACK;
+    void setup_colorBACK(ofFloatColor &c);
+
 private:
 
     void keyPressed( ofKeyEventArgs& eventArgs);

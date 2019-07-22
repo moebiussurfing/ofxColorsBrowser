@@ -54,8 +54,9 @@ namespace ofxInterface
                 ofSetLineWidth(1);
                 ofDrawRectangle(0, 0, getWidth(), getHeight());
             }
-            ofPopStyle();
         }
+
+        ofPopStyle();
     }
 
     void Color_BitmapTextButton::setLabelVisible(bool b){
@@ -80,8 +81,9 @@ namespace ofxInterface
 
     void Color_BitmapTextButton::onTouchDown(ofxInterface::TouchEvent &event)
     {
-//        ofVec2f local = toLocal(event.position);
-//
+        ofVec2f local = toLocal(event.position);
+        colorBACK->set(ofFloatColor(bgColor));
+
 //        color = ofColor(255);
 //        bTouched = true;
 //
@@ -103,4 +105,12 @@ namespace ofxInterface
 //        setPosition(parentPos - touchAnchor);
     }
 
+    void Color_BitmapTextButton::setup_colorBACK(ofFloatColor &c)
+    {
+        colorBack_DEFINED = true;
+        colorBACK = &c;
+    }
+
 } 	// namespace
+
+
