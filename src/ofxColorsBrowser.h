@@ -14,6 +14,8 @@ using namespace ofxInterface;
 #define strcasecmp _stricmp
 #endif
 
+//#define KEY_SHORTCUTS_ENABLE;//internal shorcuts
+
 typedef struct
 {
     string name;
@@ -42,10 +44,8 @@ public:
     vector < colorNameMapping > colorNames;
 
     ofPoint mouseSmoothed;
-    int sortedType;             // keep track of which sort we've done
     float mouseX, mouseY;
 
-    int MODE_COLOR;
     void generateColors();
 
     ofxInterface::Node* scene;
@@ -54,14 +54,35 @@ public:
     void clearPopulate();
     bool bShowDebug = false;
 
+    //-
+
     glm::vec2 position;
+    int MODE_COLOR; // 0: OFX_COLOR_NATIVE, 1: OFX_OPEN_COLOR
+    int MODE_SORTING;
+    int perRow = 10;
+    float size = 50;//boxes
+    float pad = 2;
+
+    // API
+
     void setPosition(glm::vec2 p);
+    void switch_palette_Type();
+    void switch_sorted_Type();
+    void set_palette_Type(int p);
+    void set_sorted_Type(int p);
+
+    // TODO:
+    void setRowsSize(int rows);
+    void setBoxSize(float size);
+    void setSize(glm::vec2 size);
+
+    //-
 
     ofFloatColor color_BACK;
     ofFloatColor color_BACK_PRE;
     void setup_colorBACK(ofFloatColor &c);
     ofFloatColor *color_BACK_OFAPP;
-    void Changed_color_clicked(ofFloatColor &color);
+//    void Changed_color_clicked(ofFloatColor &color);
 
 private:
 

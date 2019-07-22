@@ -4,11 +4,11 @@
 void ofApp::setup(){
 
     ofBackground(64);
-    ofSetVerticalSync(true);
-    ofEnableAlphaBlending();
 
+    ColorBrowser.setBoxSize(25);
+    ColorBrowser.setRowsSize(5);
     ColorBrowser.setup_colorBACK(color_BACK);
-    ColorBrowser.setPosition(glm::vec2(300, 10));
+    ColorBrowser.setPosition(glm::vec2(200, 10));
 	ColorBrowser.setup();
 }
 
@@ -19,8 +19,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-//    ofBackground(color_BACK);
-    ofClear(ofColor( color_BACK ));
+    ofBackground( ofColor( color_BACK ));
 	ColorBrowser.draw();
 }
 
@@ -32,7 +31,13 @@ void ofApp::exit(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
+    if (key == ' ')
+        ColorBrowser.switch_palette_Type();
+
+    if (key == OF_KEY_RETURN)
+        ColorBrowser.switch_sorted_Type();
 }
+
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){

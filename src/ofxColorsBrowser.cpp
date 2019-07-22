@@ -1,8 +1,8 @@
 #include "ofxColorsBrowser.h"
 
-
-
 //--------------------------------------------------------------
+
+// comparing colors to sorting methods
 
 bool compareName( const colorNameMapping& s1, const colorNameMapping& s2 ) {
     return s1.name < s2.name;
@@ -23,9 +23,14 @@ bool compareSaturation( const colorNameMapping& s1, const colorNameMapping& s2 )
 //--------------------------------------------------------------
 ofxColorsBrowser::ofxColorsBrowser()
 {
-    addKeysListeners();
     addMouseListeners();
 
+    // comment to disable shortcuts
+#ifdef KEY_SHORTCUTS_ENABLE
+    addKeysListeners();
+#endif
+
+    // TODO: test pointer back color
 //    color_BACK.addListener(this, &ofxColorsBrowser::Changed_color_clicked);
 }
 
@@ -238,21 +243,14 @@ void ofxColorsBrowser::generateColors(){
 
     }
 
-    sortedType = 1; // by name, at the start
+    MODE_SORTING = 1; // by name, at the start
 
     //-
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setPosition(glm::vec2 p){
-    position = p;
-}
-
-//--------------------------------------------------------------
 void ofxColorsBrowser::setup(){
-    //    MODE_COLOR = OFX_COLOR_NATIVE;
-    MODE_COLOR = OFX_OPEN_COLOR;
-
+    MODE_COLOR = OFX_OPEN_COLOR;//default mode
     generateColors();
 
     //-
@@ -269,12 +267,9 @@ void ofxColorsBrowser::populateScene()
 {
     float x = position.x;
     float y = position.y;
-    float size = 50;
-    float pad = 2;
-    int perRow = 10;
 
-    for (int i = 0; i < colorNames.size(); i++) {
-
+    for (int i = 0; i < colorNames.size(); i++)
+    {
         float xBtn = x + (i%perRow)*(size+pad);
         float yBtn = y + (i/perRow)*(size+pad);
 
@@ -289,14 +284,11 @@ void ofxColorsBrowser::populateScene()
         btn->setLabelColor(ofColor::black);
         btn->setName("col" + ofToString(i));
         btn->setup_colorBACK(color_BACK);
-//        btn->setup_colorBACK(color_BACK);
-
         scene->addChild(btn);
 
 //        if (i%perRow>0) {
 //            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
 //        }
-
         buttons_txt.push_back(btn);
     }
 }
@@ -327,17 +319,55 @@ void ofxColorsBrowser::update(){
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw(){
-//    ofClear(ofColor( color_BACK ));//TODO: moving to ofApp
+//    ofClear(ofColor( color_BACK ));//TODO: moved to ofApp. pointer back color
 
     scene->render();
     if (bShowDebug) {
         scene->renderDebug();
     }
 
-    ofSetColor(0);
-    ofDrawRectangle(0, ofGetHeight()-60, ofGetWidth(), 60);
-    ofDrawBitmapStringHighlight("press '1' to sort by name, '2' to sort by hue,\n'3' to sort by brightness, '4' to sort by saturation", 20, ofGetHeight()-60 + 30, ofColor::black, ofColor::white);
+    ofPushStyle();
 
+//    ofSetColor(0);
+//    ofDrawRectangle(position.x, ofGetHeight()-60, 500, 60);
+    string str;
+
+#ifdef KEY_SHORTCUTS_ENABLE
+    str = "press '1' to sort by name, '2' to sort by hue,\n'3' to sort by brightness, '4' to sort by saturation";
+    ofDrawBitmapStringHighlight(str, position.x+20, ofGetHeight()-60 + 40, ofColor::black, ofColor::white);
+#else
+    str = "SORTING: ";
+    switch (MODE_SORTING)
+    {
+        case 1:
+            str += "NAME";
+            break;
+        case 2:
+            str += "HUE";
+            break;
+        case 3:
+            str += "BRIGHTNESS";
+            break;
+        case 4:
+            str += "SATURATION";
+            break;
+    }
+    ofDrawBitmapStringHighlight(str, position.x+20, ofGetHeight()-60 + 30, ofColor::black, ofColor::white);
+
+    str = "PALETTE: ";
+    switch (MODE_COLOR)
+    {
+        case 0:
+            str += "OF NATIVE NAMES";
+            break;
+        case 1:
+            str += "OPEN COLOR";
+            break;
+    }
+    ofDrawBitmapStringHighlight(str, position.x+20, ofGetHeight()-60 + 50, ofColor::black, ofColor::white);
+#endif
+
+    ofPopStyle();
 }
 
 //--------------------------------------------------------------
@@ -365,7 +395,7 @@ void ofxColorsBrowser::draw_native(){
         ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
     }
 
-  }
+}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
@@ -377,7 +407,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         bShowDebug = !bShowDebug;
     }
 
-    if(key == ' ')
+    if(key == OF_KEY_BACKSPACE)
     {
         if (MODE_COLOR == OFX_COLOR_NATIVE)
             MODE_COLOR = OFX_OPEN_COLOR;
@@ -390,35 +420,36 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     }
 
     if (key == '1'){
-        if (sortedType != 1){
-            sortedType = 1;
+        if (MODE_SORTING != 1){
+            MODE_SORTING = 1;
             ofSort(colorNames, compareName);
             clearPopulate();
             populateScene();
         }
     } else if (key == '2'){
-        if (sortedType != 2){
-            sortedType = 2;
+        if (MODE_SORTING != 2){
+            MODE_SORTING = 2;
             ofSort(colorNames, compareHue);
             clearPopulate();
             populateScene();
         }
     } else if (key == '3'){
-        if (sortedType != 3){
-            sortedType = 3;
+        if (MODE_SORTING != 3){
+            MODE_SORTING = 3;
             ofSort(colorNames, compareBrightness);
             clearPopulate();
             populateScene();
         }
     } else if (key == '4'){
-        if (sortedType != 4){
-            sortedType = 4;
+        if (MODE_SORTING != 4){
+            MODE_SORTING = 4;
             ofSort(colorNames, compareSaturation);
             clearPopulate();
             populateScene();
         }
     }
 }
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::clearPopulate()
 {
@@ -432,11 +463,12 @@ void ofxColorsBrowser::clearPopulate()
         auto a = scene->getChildWithName(n, scene->getNumChildren());
         auto b = a->getName();
         scene->removeChild(a, false);
-        cout << "removed children: " << b << endl;
+//        cout << "removed children: " << b << endl;
     }
     buttons_txt.clear();
     cout << endl;
 }
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyReleased( ofKeyEventArgs& eventArgs )
 {
@@ -531,3 +563,98 @@ void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
 ////    ofLogNotice("ofxColorManager") << "Changed_color_clicked " << ofToString(color);
 ////    color_picked.set(color);
 //}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setPosition(glm::vec2 p){
+    position = p;
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setBoxSize(float _size)
+{
+    size = _size;
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setRowsSize(int rows){
+    perRow = rows;
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::switch_palette_Type(){
+    MODE_COLOR = (MODE_COLOR+1) % 2;
+    ofLogNotice("ofxColorsBrowser") << "switch_palette_Type: " << MODE_COLOR;
+
+    clearPopulate();
+    generateColors();
+    populateScene();
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::switch_sorted_Type(){
+    MODE_SORTING++;
+    if (MODE_SORTING == 5)
+        MODE_SORTING = 1;
+
+    ofLogNotice("ofxColorsBrowser") << "switch_sorted_Type: " << MODE_SORTING;
+
+    switch (MODE_SORTING)
+    {
+        case 1:
+            ofSort(colorNames, compareName);
+            break;
+        case 2:
+            ofSort(colorNames, compareHue);
+            break;
+        case 3:
+            ofSort(colorNames, compareBrightness);
+            break;
+        case 4:
+            ofSort(colorNames, compareSaturation);
+            break;
+    }
+
+    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
+    {
+        clearPopulate();
+        populateScene();
+    }
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::set_palette_Type(int p)
+{
+    MODE_COLOR = p;
+
+    clearPopulate();
+    generateColors();
+    populateScene();
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::set_sorted_Type(int p)
+{
+    MODE_SORTING = p;
+
+    switch (MODE_SORTING)
+    {
+        case 1:
+            ofSort(colorNames, compareName);
+            break;
+        case 2:
+            ofSort(colorNames, compareHue);
+            break;
+        case 3:
+            ofSort(colorNames, compareBrightness);
+            break;
+        case 4:
+            ofSort(colorNames, compareSaturation);
+            break;
+    }
+
+    if (p >= 1 && p<=4)
+    {
+        clearPopulate();
+        populateScene();
+    }
+}
