@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    ofBackground(255);
+    ofBackground(64);
     ofSetVerticalSync(true);
     ofEnableAlphaBlending();
 

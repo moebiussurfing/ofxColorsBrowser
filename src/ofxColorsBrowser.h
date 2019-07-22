@@ -5,6 +5,7 @@
 
 #include "ofxOpenColor.h"
 #include "ofxInterface.h"
+#include "ofxInterfaceWidgets.h"
 using namespace ofxInterface;
 
 #if (_MSC_VER)
@@ -46,6 +47,7 @@ public:
     ofxInterface::Node* scene;
     vector<BitmapTextButton*> buttons_txt;
     void populateScene();
+    void clearPopulate();
     bool bShowDebug = false;
 
 private:

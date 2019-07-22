@@ -251,11 +251,11 @@ void ofxColorsBrowser::setup(){
 //--------------------------------------------------------------
 void ofxColorsBrowser::populateScene()
 {
-    float size = 40;
+    float size = 50;
     float pad = 2;
     int perRow = 10;
     float x = 100;
-    float y = 5;
+    float y = 20;
 
     for (int i = 0; i < colorNames.size(); i++) {
 
@@ -264,9 +264,24 @@ void ofxColorsBrowser::populateScene()
 
         BitmapTextButton *btn = new BitmapTextButton();
         btn->setup(colorNames[i].name);
+        btn->setBackground(true);
         btn->setBGColor(colorNames[i].color);
-        btn->setBorderColor(ofColor::black);
         btn->setPosition(xBtn, yBtn);
+        btn->setSize(size, size);
+        btn->setLabelColor(ofColor::black);
+        btn->setName("col" + ofToString(i));
+
+
+////        Label *btn = new Label();
+//        btn->setup();
+//        btn->setPosition(xBtn, yBtn);
+//        btn->setSize(size, size);
+//        btn->setText(colorNames[i].name);
+//        btn->setBackgroundColor(colorNames[i].color);
+//        btn->setDrawBackground(true);
+////        btn->setTint(colorNames[i].color);
+////        btn->setDrawStroke(true);
+////        btn->setStrokeColor(ofColor::black);
 
         // add it to the scene
         scene->addChild(btn);
@@ -365,25 +380,50 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         if (sortedType != 1){
             sortedType = 1;
             ofSort(colorNames, compareName);
+            clearPopulate();
+            populateScene();
         }
     } else if (key == '2'){
         if (sortedType != 2){
             sortedType = 2;
             ofSort(colorNames, compareHue);
+            clearPopulate();
+            populateScene();
         }
     } else if (key == '3'){
         if (sortedType != 3){
             sortedType = 3;
             ofSort(colorNames, compareBrightness);
+            clearPopulate();
+            populateScene();
         }
     } else if (key == '4'){
         if (sortedType != 4){
             sortedType = 4;
             ofSort(colorNames, compareSaturation);
+            clearPopulate();
+            populateScene();
         }
     }
 }
+//--------------------------------------------------------------
+void ofxColorsBrowser::clearPopulate()
+{
+    cout << endl;
+    cout << "clearPopulate" << endl;
+    cout << "getNumChildren: " << scene->getNumChildren() << endl;
 
+    for (int i=0; i< buttons_txt.size(); i++)
+    {
+        std::string n = ("col" + ofToString(i));
+        auto a = scene->getChildWithName(n, scene->getNumChildren());
+        auto b = a->getName();
+        scene->removeChild(a, false);
+        cout << "removed children: " << b << endl;
+    }
+    buttons_txt.clear();
+    cout << endl;
+}
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyReleased( ofKeyEventArgs& eventArgs )
 {
