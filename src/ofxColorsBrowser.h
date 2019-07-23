@@ -14,7 +14,7 @@ using namespace ofxInterface;
 #define strcasecmp _stricmp
 #endif
 
-//#define KEY_SHORTCUTS_ENABLE;//internal shorcuts
+//#define KEY_SHORTCUTS_ENABLE;// shorcuts
 
 typedef struct
 {
@@ -37,12 +37,12 @@ public:
     void setup();
     void update();
     void draw();
-//    void draw_native();
     void exit();
 
     map < string, ofColor > colorNameMap;
     vector < colorNameMapping > colorNames;
 
+//    void draw_native();
 //    ofPoint mouseSmoothed;
 //    float mouseX, mouseY;
 
@@ -86,7 +86,7 @@ public:
     ofFloatColor *color_BACK_OFAPP;
 //    void Changed_color_clicked(ofFloatColor &color);
 
-private:
+//private:
 
     void keyPressed( ofKeyEventArgs& eventArgs);
     void keyReleased( ofKeyEventArgs& eventArgs );
