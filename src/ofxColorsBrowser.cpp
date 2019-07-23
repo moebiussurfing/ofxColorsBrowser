@@ -285,11 +285,10 @@ void ofxColorsBrowser::populateScene()
         btn->setName("col" + ofToString(i));
         btn->setup_colorBACK(color_BACK);
         scene->addChild(btn);
-
 //        if (i%perRow>0) {
 //            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
 //        }
-        buttons_txt.push_back(btn);
+        buttons_txt.push_back(btn);//Color_BitmapTextButton
     }
 }
 
@@ -327,14 +326,15 @@ void ofxColorsBrowser::draw(){
     }
 
     ofPushStyle();
-
+// black rectangle
 //    ofSetColor(0);
 //    ofDrawRectangle(position.x, ofGetHeight()-60, 500, 60);
     string str;
 
 #ifdef KEY_SHORTCUTS_ENABLE
-    str = "press '1' to sort by name, '2' to sort by hue,\n'3' to sort by brightness, '4' to sort by saturation";
-    ofDrawBitmapStringHighlight(str, position.x+20, ofGetHeight()-60 + 40, ofColor::black, ofColor::white);
+    str =  "SORT: 1-NAME       2-HUE\n";
+    str += "      3-BRIGHTNESS 4-SATURATION";
+    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
 #else
     str = "SORTING: ";
     switch (MODE_SORTING)
@@ -352,7 +352,7 @@ void ofxColorsBrowser::draw(){
             str += "SATURATION";
             break;
     }
-    ofDrawBitmapStringHighlight(str, position.x+20, ofGetHeight()-60 + 30, ofColor::black, ofColor::white);
+    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 30, ofColor::black, ofColor::white);
 
     str = "PALETTE: ";
     switch (MODE_COLOR)
@@ -364,7 +364,7 @@ void ofxColorsBrowser::draw(){
             str += "OPEN COLOR";
             break;
     }
-    ofDrawBitmapStringHighlight(str, position.x+20, ofGetHeight()-60 + 50, ofColor::black, ofColor::white);
+    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
 #endif
 
     ofPopStyle();
@@ -376,10 +376,12 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     const int & key = eventArgs.key;
     ofLogNotice("ofxColorsBrowser") << "key: " << key << endl;
 
+    // show debug
     if (key == 'd'){
         bShowDebug = !bShowDebug;
     }
 
+    // change palette
     if(key == OF_KEY_BACKSPACE)
     {
         if (MODE_COLOR == OFX_COLOR_NATIVE)
@@ -392,6 +394,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         populateScene();
     }
 
+    // select sorting
     if (key == '1'){
         if (MODE_SORTING != 1){
             MODE_SORTING = 1;

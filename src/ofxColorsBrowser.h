@@ -73,9 +73,9 @@ public:
     void set_palette_Type(int p);
     void set_sorted_Type(int p);
 
-    // TODO:
     void setRowsSize(int rows);
     void setBoxSize(float size);
+    // TODO:
     void setSize(glm::vec2 size);
 
     //--
