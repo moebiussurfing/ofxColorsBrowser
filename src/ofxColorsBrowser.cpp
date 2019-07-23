@@ -304,8 +304,8 @@ void ofxColorsBrowser::update(){
 
     //-
 
-    // smoothing the mouse a bit over time
-    mouseSmoothed = 0.95 * mouseSmoothed + 0.05 * ofPoint(mouseX, mouseY);
+//    // smoothing the mouse a bit over time
+//    mouseSmoothed = 0.95 * mouseSmoothed + 0.05 * ofPoint(mouseX, mouseY);
 
     //-
 
@@ -370,32 +370,31 @@ void ofxColorsBrowser::draw(){
     ofPopStyle();
 }
 
-//--------------------------------------------------------------
-void ofxColorsBrowser::draw_native(){
-
-    // calculate the total size needed to display all the colors
-
-    float totalSize = (ceil(colorNameMap.size()/3.0)) * 50 - ofGetHeight() + 60;
-
-    // map the smoothed mouse to this: 
-
-    float offset = ofMap(mouseSmoothed.y, 0, ofGetHeight(), 0, totalSize, true);
-
-    // draw all the colors
-    // note this could be optimized, since we're drawing plenty that's offscreen here.
-
-    for (unsigned int i = 0; i < colorNames.size(); i++){
-
-        int x = (i % 3) * ofGetWidth()/3.0;
-        int y = (floor(i / 3)) * 50;
-
-        ofSetColor( colorNames[i].color );
-        ofDrawRectangle(0 + x, y - offset, (i%3 == 2) ? ofGetWidth() - x : ofGetWidth()/3.0, 50);
-
-        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
-    }
-
-}
+////--------------------------------------------------------------
+//void ofxColorsBrowser::draw_native(){
+//
+//    // calculate the total size needed to display all the colors
+//
+//    float totalSize = (ceil(colorNameMap.size()/3.0)) * 50 - ofGetHeight() + 60;
+//
+//    // map the smoothed mouse to this:
+//
+//    float offset = ofMap(mouseSmoothed.y, 0, ofGetHeight(), 0, totalSize, true);
+//
+//    // draw all the colors
+//    // note this could be optimized, since we're drawing plenty that's offscreen here.
+//
+//    for (unsigned int i = 0; i < colorNames.size(); i++){
+//
+//        int x = (i % 3) * ofGetWidth()/3.0;
+//        int y = (floor(i / 3)) * 50;
+//
+//        ofSetColor( colorNames[i].color );
+//        ofDrawRectangle(0 + x, y - offset, (i%3 == 2) ? ofGetWidth() - x : ofGetWidth()/3.0, 50);
+//
+//        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
+//    }
+//}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
@@ -505,8 +504,8 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
 //    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
-    mouseX = x;
-    mouseY = y;
+//    mouseX = x;
+//    mouseY = y;
 
     TouchManager::one().touchDown(button, ofVec2f(x, y));
 }

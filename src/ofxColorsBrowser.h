@@ -37,14 +37,14 @@ public:
     void setup();
     void update();
     void draw();
-    void draw_native();
+//    void draw_native();
     void exit();
 
     map < string, ofColor > colorNameMap;
     vector < colorNameMapping > colorNames;
 
-    ofPoint mouseSmoothed;
-    float mouseX, mouseY;
+//    ofPoint mouseSmoothed;
+//    float mouseX, mouseY;
 
     void generateColors();
 
