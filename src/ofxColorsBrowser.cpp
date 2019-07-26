@@ -255,11 +255,16 @@ void ofxColorsBrowser::setup(){
 
     //-
 
-    scene = new Node();
-    scene->setSize(ofGetWidth(), ofGetHeight());
-    scene->setName("Scene");
-    TouchManager::one().setup(scene);
+//    scene = new Node();
+//    scene->setSize(ofGetWidth(), ofGetHeight());
+//    scene->setName("Scene");
+//    TouchManager::one().setup(scene);
+
+    //--
+
     populateScene();
+
+    //-
 }
 
 //--------------------------------------------------------------
@@ -268,28 +273,78 @@ void ofxColorsBrowser::populateScene()
     float x = position.x;
     float y = position.y;
 
+    //--
+
+    // 1. OFXRECTANGLE MODE
+
+    isSelecting     = false;
+    draggingRectPtr = NULL;
+
+    // create a random set of rectangles to play with
     for (int i = 0; i < colorNames.size(); i++)
     {
         float xBtn = x + (i%perRow)*(size+pad);
         float yBtn = y + (i/perRow)*(size+pad);
 
-        Color_BitmapTextButton *btn = new Color_BitmapTextButton();
-//        btn->loadFont("assets/fonts/PragmataProR_0822.ttf");
-        btn->setup(colorNames[i].name);
-        btn->setBackground(true);
-        btn->setBGColor(colorNames[i].color);
-        btn->setBorderColor(ofColor::black);
-        btn->setPosition(xBtn, yBtn);
-        btn->setSize(size, size);
-        btn->setLabelColor(ofColor::black);
-        btn->setName("col" + ofToString(i));
-        btn->setup_colorBACK(color_BACK);
-        scene->addChild(btn);
-//        if (i%perRow>0) {
-//            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
-//        }
-        buttons_txt.push_back(btn);//Color_BitmapTextButton
+        ofxRectangle rect(ofRectangle(xBtn,yBtn,size,size), colorNames[i].color);
+
+        // add the random rectangle
+        rectangles.push_back(rect);
     }
+
+    selectedRectsBoundingBox = ofxRectangle(ofRectangle(),
+            ofColor(127,80));
+
+    hAlign = OF_ALIGN_HORZ_LEFT;
+    vAlign = OF_ALIGN_VERT_TOP;
+
+    anchorRect = NULL;
+
+    stringstream ss;
+
+    ss << "Keyboard [(Spacebar) to hide]" << endl;
+    ss << "W: sort by absolute width" << endl;
+    ss << "A: sort by area" << endl;
+    ss << "H: sort by absolute height" << endl;
+    ss << "c: cascade" << endl;
+    ss << "v: align vertical with current vAlign" << endl;
+    ss << "h: align horizontal with current hAlign" << endl;
+    ss << "x: distribute horizontal with current hAlign" << endl;
+    ss << "h: distribute vertical with current vAlign" << endl;
+    ss << "p: pack rectangles" << endl;
+
+    keyboardCommands = ss.str();
+
+    showKeyboardCommands = false;
+
+    //--
+
+    // 2. OFXINTERFACE MODE
+
+//    for (int i = 0; i < colorNames.size(); i++)
+//    {
+//        float xBtn = x + (i%perRow)*(size+pad);
+//        float yBtn = y + (i/perRow)*(size+pad);
+//
+//        Color_BitmapTextButton *btn = new Color_BitmapTextButton();
+////        btn->loadFont("assets/fonts/PragmataProR_0822.ttf");
+//        btn->setup(colorNames[i].name);
+//        btn->setBackground(true);
+//        btn->setBGColor(colorNames[i].color);
+//        btn->setBorderColor(ofColor::black);
+//        btn->setPosition(xBtn, yBtn);
+//        btn->setSize(size, size);
+//        btn->setLabelColor(ofColor::black);
+//        btn->setName("col" + ofToString(i));
+//        btn->setup_colorBACK(color_BACK);
+//        scene->addChild(btn);
+////        if (i%perRow>0) {
+////            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
+////        }
+//        buttons_txt.push_back(btn);//Color_BitmapTextButton
+//    }
+
+    //--
 }
 
 //--------------------------------------------------------------
@@ -308,22 +363,35 @@ void ofxColorsBrowser::update(){
 
     //-
 
-    TouchManager::one().update();
-    float dt = 1. / ofGetFrameRate();
-    for (int i = 0; i < buttons_txt.size(); i++)
-    {
-        buttons_txt[i]->update(dt);
-    }
+//    TouchManager::one().update();
+//    float dt = 1. / ofGetFrameRate();
+//    for (int i = 0; i < buttons_txt.size(); i++)
+//    {
+//        buttons_txt[i]->update(dt);
+//    }
+
+    //--
+
+    rectangles_update();
+
+    //--
+
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw(){
 //    ofClear(ofColor( color_BACK ));//TODO: moved to ofApp. pointer back color
 
-    scene->render();
-    if (bShowDebug) {
-        scene->renderDebug();
-    }
+    //--
+
+    // OFXINTERFACE
+
+//    scene->render();
+//    if (bShowDebug) {
+//        scene->renderDebug();
+//    }
+
+    //--
 
     ofPushStyle();
 // black rectangle
@@ -332,11 +400,14 @@ void ofxColorsBrowser::draw(){
     string str;
 
 #ifdef KEY_SHORTCUTS_ENABLE
-    str =  "SORT: 1-NAME       2-HUE\n";
-    str += "      3-BRIGHTNESS 4-SATURATION";
+    str =  "SORT   : [1]NAME       [2]HUE\n";
+    str += "         [3]BRIGHTNESS [4]SATURATION\n";
+    str += "PALETTE: [BACKSPACE]";
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
-    ofDrawBitmapStringHighlight(str, position.x, position.y - 2*20, ofColor::black, ofColor::white);
-#else
+    ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2*20, ofColor::black, ofColor::white);
+//#else
+#endif
+
     str = "SORTING: ";
     switch (MODE_SORTING)
     {
@@ -368,20 +439,32 @@ void ofxColorsBrowser::draw(){
     }
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
     ofDrawBitmapStringHighlight(str, position.x, position.y - 1*20, ofColor::black, ofColor::white);
-#endif
+//#endif
 
     ofPopStyle();
+
+    //--
+
+    rectangles_draw();
+
+    //--
+
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 {
     const int & key = eventArgs.key;
-    ofLogNotice("ofxColorsBrowser") << "key: " << key << endl;
+    ofLogNotice("ofxColorsBrowser") << "key: " << key;
 
     // show debug
     if (key == 'd'){
         bShowDebug = !bShowDebug;
+
+        for (int i = 0; i < rectangles.size(); i++)
+        {
+            rectangles[i].setDebug(bShowDebug);
+        }
     }
 
     // change palette
@@ -427,24 +510,120 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
             populateScene();
         }
     }
+
+    //---
+
+    if (bShowDebug) {
+
+//    if (key == OF_KEY_UP) {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->vAlign = OF_ALIGN_VERT_TOP;
+//        }
+//    } else if (key == OF_KEY_DOWN) {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->vAlign = OF_ALIGN_VERT_BOTTOM;
+//        }
+//    } else if (key == OF_KEY_LEFT) {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->hAlign = OF_ALIGN_HORZ_LEFT;
+//        }
+//    } else if (key == OF_KEY_RIGHT) {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->hAlign = OF_ALIGN_HORZ_RIGHT;
+//        }
+//    } else if (key == 'c') {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->hAlign = OF_ALIGN_HORZ_CENTER;
+//        }
+//    } else if (key == 'C') {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->vAlign = OF_ALIGN_VERT_CENTER;
+//        }
+//    } else if (key == 'i') {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->hAlign = OF_ALIGN_HORZ_IGNORE;
+//        }
+//    } else if (key == 'I') {
+//        for(size_t i = 0; i < selectedRects.size(); i++) {
+//            selectedRects[i]->vAlign = OF_ALIGN_VERT_IGNORE;
+//        }
+//
+        /*} else */ if (key == 'a') {
+            if (hAlign == OF_ALIGN_HORZ_LEFT) {
+                hAlign = OF_ALIGN_HORZ_CENTER;
+            } else if (hAlign == OF_ALIGN_HORZ_CENTER) {
+                hAlign = OF_ALIGN_HORZ_RIGHT;
+            } else if (hAlign == OF_ALIGN_HORZ_RIGHT) {
+                hAlign = OF_ALIGN_HORZ_IGNORE;
+            } else if (hAlign == OF_ALIGN_HORZ_IGNORE) {
+                hAlign = OF_ALIGN_HORZ_LEFT;
+            }
+        } else if (key == 'A') {
+            if (vAlign == OF_ALIGN_VERT_TOP) {
+                vAlign = OF_ALIGN_VERT_CENTER;
+            } else if (vAlign == OF_ALIGN_VERT_CENTER) {
+                vAlign = OF_ALIGN_VERT_BOTTOM;
+            } else if (vAlign == OF_ALIGN_VERT_BOTTOM) {
+                vAlign = OF_ALIGN_VERT_IGNORE;
+            } else if (vAlign == OF_ALIGN_VERT_IGNORE) {
+                vAlign = OF_ALIGN_VERT_TOP;
+            }
+        } else if (key == 'W') {
+            RectangleUtils::sortByAbsWidth(selectedRects);
+        } else if (key == 'A') {
+            RectangleUtils::sortByArea(selectedRects);
+        } else if (key == 'H') {
+            RectangleUtils::sortByAbsHeight(selectedRects);
+        } else if (key == 'c') {
+            RectangleUtils::cascade(selectedRects, ofRectangle(0, 0, ofGetWidth(), ofGetHeight()), glm::vec2(30, 30));
+        } else if (key == 'v') {
+            RectangleUtils::alignVert(selectedRects, vAlign);
+        } else if (key == 'h') {
+            // horizontal align selection
+            RectangleUtils::alignHorz(selectedRects, hAlign);
+        } else if (key == 'x') {
+            // distribute in x
+            RectangleUtils::distributeHorz(selectedRects, hAlign);
+        } else if (key == 'y') {
+            RectangleUtils::distributeVert(selectedRects, vAlign);
+        } else if (key == 'p') {
+
+            RectangleUtils::pack(selectedRects, ofRectangle(0,
+                    0,
+                    ofGetWidth(),
+                    ofGetHeight()));
+
+
+        } else if (key == ' ') {
+            showKeyboardCommands = !showKeyboardCommands;
+        }
+    }
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::clearPopulate()
 {
-    ofLogNotice("ofxColorsBrowser") << endl;
-    ofLogNotice("ofxColorsBrowser") << "clearPopulate" << endl;
-    ofLogNotice("ofxColorsBrowser") << "getNumChildren: " << scene->getNumChildren() << endl;
+    ofLogNotice("ofxColorsBrowser") << "clearPopulate";
+//    ofLogNotice("ofxColorsBrowser") << "getNumChildren: " << scene->getNumChildren();
+//
+//    for (int i=0; i< buttons_txt.size(); i++)
+//    {
+//        std::string n = ("col" + ofToString(i));
+//        auto a = scene->getChildWithName(n, scene->getNumChildren());
+//        auto b = a->getName();
+//        scene->removeChild(a, false);
+////        ofLogVerbose("ofxColorsBrowser")  << "removed children: " << b << endl;
+//    }
+//    buttons_txt.clear();
 
-    for (int i=0; i< buttons_txt.size(); i++)
-    {
-        std::string n = ("col" + ofToString(i));
-        auto a = scene->getChildWithName(n, scene->getNumChildren());
-        auto b = a->getName();
-        scene->removeChild(a, false);
-//        ofLogVerbose("ofxColorsBrowser")  << "removed children: " << b << endl;
-    }
-    buttons_txt.clear();
+    //-
+
+//    colorNames.clear();
+
+    //-
+
+    rectangles.clear();
+
 }
 
 //--------------------------------------------------------------
@@ -467,6 +646,40 @@ void ofxColorsBrowser::removeKeysListeners()
     ofRemoveListener( ofEvents().keyPressed, this, &ofxColorsBrowser::keyPressed );
 }
 
+////--------------------------------------------------------------
+//void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
+//    const int & x = eventArgs.x;
+//    const int & y = eventArgs.y;
+//    const int & button = eventArgs.button;
+//    ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
+//
+//    TouchManager::one().touchMove(button, ofVec2f(x, y));
+//}
+//
+////--------------------------------------------------------------
+//void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
+//    const int & x = eventArgs.x;
+//    const int & y = eventArgs.y;
+//    const int & button = eventArgs.button;
+//    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
+//
+////    mouseX = x;
+////    mouseY = y;
+//
+//    TouchManager::one().touchDown(button, ofVec2f(x, y));
+//}
+//
+////--------------------------------------------------------------
+//void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
+//    const int & x = eventArgs.x;
+//    const int & y = eventArgs.y;
+//    const int & button = eventArgs.button;
+////    ofLogNotice("ofxColorsBrowser") << "mouseReleased " <<  x << ", " << y << ", " << button;
+//
+//    TouchManager::one().touchUp(button, ofVec2f(x, y));
+//}
+
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
     const int & x = eventArgs.x;
@@ -474,7 +687,21 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
     ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
 
-    TouchManager::one().touchMove(button, ofVec2f(x, y));
+    if (bShowDebug)
+    {
+        if (draggingRectPtr != NULL) {
+            draggingRectPtr->setPosition(ofPoint(x,y) - draggingRectPtr->dragOffset);
+
+            if (draggingRectPtr == &selectedRectsBoundingBox) {
+                for(size_t i = 0; i < rectangles.size(); i++) {
+                    if (rectangles[i].isSelected) {
+                        rectangles[i].setPosition(ofPoint(x,y) - rectangles[i].dragOffset);
+                    }
+                }
+            }
+
+        }
+    }
 }
 
 //--------------------------------------------------------------
@@ -484,11 +711,62 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
     ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
-//    mouseX = x;
-//    mouseY = y;
+    dragStart = glm::vec2(x, y);  // set a new drag start point
 
-    TouchManager::one().touchDown(button, ofVec2f(x, y));
+
+    if (!ofGetKeyPressed('A')) {
+
+        bool foundAClickTarget = false;
+
+        // first check to see if we are in the bounding box
+        if (!selectedRects.empty() &&
+                selectedRectsBoundingBox.inside(dragStart)) {
+            draggingRectPtr = &selectedRectsBoundingBox;
+//            selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
+            selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
+            selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
+
+
+            for (std::size_t i = 0; i < rectangles.size(); i++) {
+                if (rectangles[i].isSelected) {
+//                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition().xy;
+                    rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
+                    rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
+
+
+                }
+            }
+            foundAClickTarget = true;
+
+        } else {
+            selectedRects.clear();
+            // otherwise, go through all of the rects and see if we can drag one
+            for (size_t i = 0; i < rectangles.size(); i++) {
+                rectangles[i].isSelected = false; // assume none
+                if (!foundAClickTarget && rectangles[i].isOver) {
+                    draggingRectPtr = &rectangles[i];
+                    rectangles[i].isSelected = true;
+                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
+                    foundAClickTarget = true;
+
+                    ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
+                    color_BACK = ofColor( rectangles[i].color );
+                }
+            }
+        }
+
+        isSelecting = !foundAClickTarget; // means our click did not land on an existing rect
+    } else {
+        if (anchorRect != nullptr) {
+            delete anchorRect;
+            anchorRect = nullptr;
+        }
+
+        anchorRect = new ofRectangle(dragStart,0,0);
+    }
+
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
@@ -497,7 +775,8 @@ void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
 //    ofLogNotice("ofxColorsBrowser") << "mouseReleased " <<  x << ", " << y << ", " << button;
 
-    TouchManager::one().touchUp(button, ofVec2f(x, y));
+    draggingRectPtr = nullptr;
+    isSelecting     = false;
 }
 
 //--------------------------------------------------------------
@@ -665,3 +944,172 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 //        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
 //    }
 //}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::rectangles_update()
+{
+    ofPoint mouse(ofGetMouseX(),ofGetMouseY());
+
+
+    bool foundIsOver = false;
+    bool hasFirstSelection = false;
+
+    if (draggingRectPtr == NULL) {
+        selectedRects.clear();
+    }
+
+    for (size_t i = 0; i < rectangles.size(); ++i)
+    {
+        // if we are selecting, re-evaluate this each time
+        if (isSelecting)
+        {
+            rectangles[i].isSelected = rectangles[i].intersects(selectionRect);
+        }
+
+        // grow the slection box
+        if (rectangles[i].isSelected)
+        {
+
+            if (draggingRectPtr == NULL)
+            {
+
+                if (!hasFirstSelection)
+                {
+                    selectedRectsBoundingBox = rectangles[i];
+                    hasFirstSelection = true;
+                }
+                else
+                {
+                    selectedRectsBoundingBox.growToInclude(rectangles[i]);
+                }
+
+                selectedRects.push_back(&rectangles[i]);
+                hasFirstSelection = true;
+            }
+        }
+
+        // check is over -- only set isOver if other things aren't happening
+        if (!foundIsOver &&
+                /*selectedRects.empty() &&
+                !rectangles[i].isSelected && */
+                        (draggingRectPtr == NULL ||
+                                draggingRectPtr == &rectangles[i] ||
+                                draggingRectPtr == &selectedRectsBoundingBox) &&
+                rectangles[i].inside(mouse))
+        {
+            rectangles[i].isOver = true;
+            foundIsOver = true;
+        }
+        else
+        {
+            rectangles[i].isOver = false;
+        }
+    }
+
+
+    if (isSelecting)
+    {
+        selectionRect.set(glm::vec3(dragStart.x, dragStart.y, 0), mouse);
+    }
+
+}
+
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::rectangles_draw(){
+
+//    ofBackground(0);
+
+    ofPoint mouse(ofGetMouseX(),ofGetMouseY());
+
+    if (bShowDebug)
+    {
+        ofFill();
+        ofSetColor(255,showKeyboardCommands ? 255 : 127);
+        ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12,16);
+    }
+
+    // draw all of our rectangles
+    for (size_t i = 0; i < rectangles.size(); ++i)
+    {
+        ofRectangle* rect = (ofRectangle*)&rectangles[i];
+
+        unsigned int selectionIndex = ofFind(selectedRects, rect);
+
+        rectangles[i].draw(i,selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+    }
+
+    // draw our bounding box rectangle
+    if (!isSelecting && !selectedRects.empty())
+    {
+        ofFill();
+        ofSetColor(255,20);
+        ofDrawRectangle(selectedRectsBoundingBox);
+        ofNoFill();
+        ofSetColor(255,80);
+        ofDrawRectangle(selectedRectsBoundingBox);
+    }
+
+    // draw our selection raectangle
+    if (isSelecting)
+    {
+        ofNoFill();
+        ofSetColor(255,255,0,200);
+        ofDrawRectangle(selectionRect);
+    }
+
+    if (bShowDebug)
+    {
+        string hAlignString = "";
+        switch (hAlign) {
+            case OF_ALIGN_HORZ_LEFT:
+                hAlignString = "OF_ALIGN_HORZ_LEFT";
+                break;
+            case OF_ALIGN_HORZ_CENTER:
+                hAlignString = "OF_ALIGN_HORZ_CENTER";
+                break;
+            case OF_ALIGN_HORZ_RIGHT:
+                hAlignString = "OF_ALIGN_HORZ_RIGHT";
+                break;
+            case OF_ALIGN_HORZ_IGNORE:
+                hAlignString = "OF_ALIGN_HORZ_IGNORE";
+                break;
+            default:
+                hAlignString = "??";
+                break;
+        }
+
+        string vAlignString = "";
+        switch (vAlign) {
+            case OF_ALIGN_VERT_TOP:
+                vAlignString = "OF_ALIGN_VERT_TOP";
+                break;
+            case OF_ALIGN_VERT_CENTER:
+                vAlignString = "OF_ALIGN_VERT_CENTER";
+                break;
+            case OF_ALIGN_VERT_BOTTOM:
+                vAlignString = "OF_ALIGN_VERT_BOTTOM";
+                break;
+            case OF_ALIGN_VERT_IGNORE:
+                vAlignString = "OF_ALIGN_VERT_IGNORE";
+                break;
+            default:
+                vAlignString = "??";
+                break;
+        }
+
+        ofFill();
+        ofSetColor(255);
+        ofDrawBitmapString("Press (a) to toggle selection hAlign : " + hAlignString, 10, ofGetHeight() - 24);
+        ofDrawBitmapString("Press (A) to toggle selection vAlign : " + vAlignString, 10, ofGetHeight() - 10);
+    }
+
+    ofNoFill();
+    ofSetColor(255,255,0);
+
+    for(int i = 0; i < packedRects.size(); i++)
+    {
+        ofDrawRectangle(packedRects[i]);
+    }
+}
+

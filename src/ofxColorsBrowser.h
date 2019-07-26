@@ -4,17 +4,20 @@
 #include "ofMain.h"
 
 #include "ofxOpenColor.h"
-#include "ofxInterface.h"
 #include "ofxInterfaceWidgets.h"
 #include "Color_BitmapTextButton.h"
 
-using namespace ofxInterface;
+#include "ofxRectangleUtils.h"
+#include "ofxRectangle.h"
+using namespace ofx;
 
+#include "ofxInterface.h"
+using namespace ofxInterface;
 #if (_MSC_VER)
 #define strcasecmp _stricmp
 #endif
 
-//#define KEY_SHORTCUTS_ENABLE;// shorcuts
+#define KEY_SHORTCUTS_ENABLE;// shorcuts
 
 typedef struct
 {
@@ -30,6 +33,40 @@ enum {
 class ofxColorsBrowser {
 
 public:
+
+    //--
+
+    // OFXRECTANGLE MODE
+
+    std::vector<ofxRectangle>  rectangles;
+    std::vector<ofRectangle*>  selectedRects;
+    ofxRectangle selectedRectsBoundingBox;
+
+    ofxRectangle* draggingRectPtr;
+
+    glm::vec2 dragStart;
+
+    bool isSelecting;
+    ofRectangle selectionRect;
+
+    ofAlignHorz hAlign;
+    ofAlignVert vAlign;
+
+    ofRectangle* anchorRect;
+
+    string keyboardCommands;
+    bool showKeyboardCommands;
+
+
+//    ofRotatedRectangle rotatedRect;
+    std::vector<ofRectangle>  packedRects;
+
+//    ofRectanglePacker packer;
+
+
+    void rectangles_update();
+    void rectangles_draw();
+//--
 
     ofxColorsBrowser();
     ~ofxColorsBrowser();
