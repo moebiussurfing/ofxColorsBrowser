@@ -334,7 +334,8 @@ void ofxColorsBrowser::draw(){
 #ifdef KEY_SHORTCUTS_ENABLE
     str =  "SORT: 1-NAME       2-HUE\n";
     str += "      3-BRIGHTNESS 4-SATURATION";
-    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
+//    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
+    ofDrawBitmapStringHighlight(str, position.x, position.y - 2*20, ofColor::black, ofColor::white);
 #else
     str = "SORTING: ";
     switch (MODE_SORTING)
@@ -352,7 +353,8 @@ void ofxColorsBrowser::draw(){
             str += "SATURATION";
             break;
     }
-    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 30, ofColor::black, ofColor::white);
+//    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 30, ofColor::black, ofColor::white);
+    ofDrawBitmapStringHighlight(str, position.x, position.y - 2*20, ofColor::black, ofColor::white);
 
     str = "PALETTE: ";
     switch (MODE_COLOR)
@@ -364,7 +366,8 @@ void ofxColorsBrowser::draw(){
             str += "OPEN COLOR";
             break;
     }
-    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
+//    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
+    ofDrawBitmapStringHighlight(str, position.x, position.y - 1*20, ofColor::black, ofColor::white);
 #endif
 
     ofPopStyle();
