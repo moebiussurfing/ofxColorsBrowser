@@ -54,7 +54,6 @@ public:
 
     void draw(std::size_t index, std::size_t selectionIndex)
     {
-
         if (bShowdebug) {
 
             int bmLineHeight = 12;
@@ -74,6 +73,7 @@ public:
 
         ofPoint rectCenter = getCenter();
 
+        // big rectangle ?
         ofFill();
 //        ofSetColor(color,isSelected ? 110 : 80);
         ofSetColor(color,isSelected ? 255 : 255);
@@ -106,8 +106,9 @@ public:
             }
         }
 
-        if (bShowdebug) {
-            // border rectangle
+        // borders debugger
+        if (bShowdebug)
+        {
             ofNoFill();
 //        ofSetColor(color,isOver ? 255 : 100);
             ofSetColor(ofColor::black, isOver ? 255 : 200);

@@ -511,6 +511,13 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         }
     }
 
+    else if (key == 'p'){
+        RectangleUtils::pack(selectedRects, ofRectangle(0,
+                0,
+                ofRandom(500),
+                ofRandom(500)));
+    }
+
     //---
 
     if (bShowDebug) {
@@ -679,7 +686,6 @@ void ofxColorsBrowser::removeKeysListeners()
 //    TouchManager::one().touchUp(button, ofVec2f(x, y));
 //}
 
-
 //--------------------------------------------------------------
 void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
     const int & x = eventArgs.x;
@@ -711,62 +717,69 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
     ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
-    dragStart = glm::vec2(x, y);  // set a new drag start point
+//    if (bShowDebug) {
+        dragStart = glm::vec2(x, y);  // set a new drag start point
 
 
-    if (!ofGetKeyPressed('A')) {
+        if (!ofGetKeyPressed('A')) {
 
-        bool foundAClickTarget = false;
+            bool foundAClickTarget = false;
 
-        // first check to see if we are in the bounding box
-        if (!selectedRects.empty() &&
-                selectedRectsBoundingBox.inside(dragStart)) {
-            draggingRectPtr = &selectedRectsBoundingBox;
+            // first check to see if we are in the bounding box
+            if (!selectedRects.empty() &&
+                    selectedRectsBoundingBox.inside(dragStart))
+            {
+
+                if (bShowDebug)
+                {
+                    draggingRectPtr = &selectedRectsBoundingBox;
 //            selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
-            selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
-            selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
+                    selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
+                    selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
 
 
-            for (std::size_t i = 0; i < rectangles.size(); i++) {
-                if (rectangles[i].isSelected) {
+                    for (std::size_t i = 0; i < rectangles.size(); i++) {
+                        if (rectangles[i].isSelected) {
 //                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition().xy;
-                    rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
-                    rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
-
-
-                }
-            }
-            foundAClickTarget = true;
-
-        } else {
-            selectedRects.clear();
-            // otherwise, go through all of the rects and see if we can drag one
-            for (size_t i = 0; i < rectangles.size(); i++) {
-                rectangles[i].isSelected = false; // assume none
-                if (!foundAClickTarget && rectangles[i].isOver) {
-                    draggingRectPtr = &rectangles[i];
-                    rectangles[i].isSelected = true;
-                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
+                            rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
+                            rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
+                        }
+                    }
                     foundAClickTarget = true;
-
-                    ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
-                    color_BACK = ofColor( rectangles[i].color );
                 }
             }
+
+            else
+            {
+                selectedRects.clear();
+                // otherwise, go through all of the rects and see if we can drag one
+                for (size_t i = 0; i < rectangles.size(); i++) {
+                    rectangles[i].isSelected = false; // assume none
+                    if (!foundAClickTarget && rectangles[i].isOver) {
+                        draggingRectPtr = &rectangles[i];
+                        rectangles[i].isSelected = true;
+                        rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
+                        foundAClickTarget = true;
+
+                        ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
+                        color_BACK = ofColor(rectangles[i].color);
+                    }
+                }
+            }
+
+            isSelecting = !foundAClickTarget; // means our click did not land on an existing rect
+        } else {
+            if (anchorRect != nullptr) {
+                delete anchorRect;
+                anchorRect = nullptr;
+            }
+
+            if (bShowDebug) {
+                anchorRect = new ofRectangle(dragStart, 0, 0);
+            }
         }
-
-        isSelecting = !foundAClickTarget; // means our click did not land on an existing rect
-    } else {
-        if (anchorRect != nullptr) {
-            delete anchorRect;
-            anchorRect = nullptr;
-        }
-
-        anchorRect = new ofRectangle(dragStart,0,0);
-    }
-
+//    }
 }
-
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
@@ -1039,22 +1052,27 @@ void ofxColorsBrowser::rectangles_draw(){
         rectangles[i].draw(i,selectionIndex == selectedRects.size() ? -1 : selectionIndex);
     }
 
+    // clicked color
     // draw our bounding box rectangle
     if (!isSelecting && !selectedRects.empty())
     {
-        ofFill();
-        ofSetColor(255,20);
-        ofDrawRectangle(selectedRectsBoundingBox);
+//        ofFill();
+////        ofSetColor(255,20);
+//        ofSetColor(0,200);
+//        ofDrawRectangle(selectedRectsBoundingBox);
+
         ofNoFill();
-        ofSetColor(255,80);
+//        ofSetColor(255,80);
+        ofSetColor(0,128);
         ofDrawRectangle(selectedRectsBoundingBox);
     }
 
-    // draw our selection raectangle
-    if (isSelecting)
+    // draw our selection rectangle
+    if (isSelecting && bShowDebug)
     {
         ofNoFill();
-        ofSetColor(255,255,0,200);
+//        ofSetColor(255,255,0,200);
+        ofSetColor(ofColor(ofColor::black, 200));
         ofDrawRectangle(selectionRect);
     }
 
