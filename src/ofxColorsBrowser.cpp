@@ -1,5 +1,75 @@
 #include "ofxColorsBrowser.h"
 
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::ColourLover_setup(){
+//    ofSetFrameRate(30);
+//    ofBackground(16);
+
+    // set positions and panel sizes
+    glm::vec2 sizeGui(200, 240);
+    glm::vec2 sizeGrid(120, ofGetHeight());
+    glm::vec2 posGui(ofGetWidth()-sizeGui.x-sizeGrid.x, 0);
+    glm::vec2 posGrid(posGui.x+sizeGui.x+2, 0);
+
+    //must be called before setup() to overwrite default settings
+    ColourLoversHelper.setGrid(posGrid, sizeGrid);
+    ColourLoversHelper.setup(posGui, sizeGui);
+
+    // receivers pointers
+    ColourLoversHelper.setColor_BACK(myColor);
+    ColourLoversHelper.setPalette_BACK(myPalette);
+    ColourLoversHelper.setPalette_Name_BACK(myPalette_Name);
+
+    // initiation values
+    myColor = ofColor::white;
+    myPalette.resize(2);//pointer setter whill clear/resize. nevermind the vector size here
+    myPalette[0] = ofColor::white;
+    myPalette[0] = ofColor::white;
+    myPalette_Name = "NOT LOADED";
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::ColourLover_draw(){
+    // ColourLoversHelper.draw();//not required as drawing goes to ofxUI
+
+    // preview receivers
+    int x, y, w, h, pad, lineH;
+    x = 10;
+    y = 30;
+    w = h = 40;
+    pad = 3;
+    lineH = 20;
+
+    ofPushStyle();
+    ofFill();
+
+    ofDrawBitmapStringHighlight("myColor:", x, y, ofColor::black, ofColor::white);
+    y += pad;
+
+    ofSetColor(myColor);
+    ofDrawRectangle(ofRectangle(x,y,w,h));
+    y += (h+pad);
+
+    y += (lineH);
+    ofDrawBitmapStringHighlight("myPalette:", x, y, ofColor::black, ofColor::white);
+    y += pad;
+
+    for (int i=0; i<myPalette.size(); i++)
+    {
+        ofSetColor(myPalette[i]);
+        ofDrawRectangle(ofRectangle(x+i*(w+pad),y,w,h));
+    }
+    y += (h+pad);
+
+    y += (lineH);
+    ofDrawBitmapStringHighlight("myPalette_Name:", x, y, ofColor::black, ofColor::white);
+    y += (lineH);
+    ofDrawBitmapStringHighlight(myPalette_Name, x, y, ofColor::black, ofColor::white);
+
+    ofPopStyle();
+}
+
 //--------------------------------------------------------------
 
 // comparing colors to sorting methods
@@ -250,7 +320,8 @@ void ofxColorsBrowser::generateColors(){
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup(){
-    MODE_COLOR = OFX_OPEN_COLOR;//default mode
+
+    MODE_COLOR = OFX_OPEN_COLOR;//default palette mode
     generateColors();
 
     //-
@@ -263,6 +334,16 @@ void ofxColorsBrowser::setup(){
     //--
 
     populateScene();
+
+    //-
+
+    setVisible_debugText(false);
+
+    //--
+
+    // COLOUR LOVERS
+
+    ColourLover_setup();
 
     //-
 }
@@ -299,21 +380,6 @@ void ofxColorsBrowser::populateScene()
     vAlign = OF_ALIGN_VERT_TOP;
 
     anchorRect = NULL;
-
-    stringstream ss;
-
-    ss << "Keyboard [(Spacebar) to hide]" << endl;
-    ss << "W: sort by absolute width" << endl;
-    ss << "A: sort by area" << endl;
-    ss << "H: sort by absolute height" << endl;
-    ss << "c: cascade" << endl;
-    ss << "v: align vertical with current vAlign" << endl;
-    ss << "h: align horizontal with current hAlign" << endl;
-    ss << "x: distribute horizontal with current hAlign" << endl;
-    ss << "h: distribute vertical with current vAlign" << endl;
-    ss << "p: pack rectangles" << endl;
-
-    keyboardCommands = ss.str();
 
     showKeyboardCommands = false;
 
@@ -376,11 +442,17 @@ void ofxColorsBrowser::update(){
 
     //--
 
+    // COLOUR LOVERS
+
+    ColourLoversHelper.update();
+
+    //--
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::draw(){
-//    ofClear(ofColor( color_BACK ));//TODO: moved to ofApp. pointer back color
+void ofxColorsBrowser::draw()
+{
+//        ofClear(ofColor( color_backGround ));//TODO: moved to ofApp. pointer back color
 
     //--
 
@@ -393,62 +465,71 @@ void ofxColorsBrowser::draw(){
 
     //--
 
-    ofPushStyle();
+    if (SHOW_debugText)
+    {
+
+        ofPushStyle();
 // black rectangle
 //    ofSetColor(0);
 //    ofDrawRectangle(position.x, ofGetHeight()-60, 500, 60);
-    string str;
+        string str;
 
 #ifdef KEY_SHORTCUTS_ENABLE
-    str =  "SORT   : [1]NAME       [2]HUE\n";
-    str += "         [3]BRIGHTNESS [4]SATURATION\n";
-    str += "PALETTE: [BACKSPACE]";
-//    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
-    ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2*20, ofColor::black, ofColor::white);
-//#else
+        str =  "SORT   : [1]NAME       [2]HUE\n";
+        str += "         [3]BRIGHTNESS [4]SATURATION\n";
+        str += "PALETTE: [BACKSPACE]";
+    //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2*20, ofColor::black, ofColor::white);
+    //#else
 #endif
 
-    str = "SORTING: ";
-    switch (MODE_SORTING)
-    {
-        case 1:
-            str += "NAME";
-            break;
-        case 2:
-            str += "HUE";
-            break;
-        case 3:
-            str += "BRIGHTNESS";
-            break;
-        case 4:
-            str += "SATURATION";
-            break;
-    }
+        str = "SORTING: ";
+        switch (MODE_SORTING) {
+            case 1:
+                str += "NAME";
+                break;
+            case 2:
+                str += "HUE";
+                break;
+            case 3:
+                str += "BRIGHTNESS";
+                break;
+            case 4:
+                str += "SATURATION";
+                break;
+        }
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 30, ofColor::black, ofColor::white);
-    ofDrawBitmapStringHighlight(str, position.x, position.y - 2*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight(str, position.x, position.y - 2 * 20, ofColor::black, ofColor::white);
 
-    str = "PALETTE: ";
-    switch (MODE_COLOR)
-    {
-        case 0:
-            str += "OF NATIVE NAMES";
-            break;
-        case 1:
-            str += "OPEN COLOR";
-            break;
-    }
+        str = "PALETTE: ";
+        switch (MODE_COLOR) {
+            case 0:
+                str += "OF NATIVE NAMES";
+                break;
+            case 1:
+                str += "OPEN COLOR";
+                break;
+        }
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
-    ofDrawBitmapStringHighlight(str, position.x, position.y - 1*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight(str, position.x, position.y - 1 * 20, ofColor::black, ofColor::white);
 //#endif
 
-    ofPopStyle();
+        ofPopStyle();
+    }
 
     //--
+
+    // COLOR BOXES
 
     rectangles_draw();
 
     //--
 
+    // COLOUR LOVERS
+
+    ColourLover_draw();
+
+    //--
 }
 
 //--------------------------------------------------------------
@@ -811,6 +892,8 @@ void ofxColorsBrowser::removeMouseListeners()
 //--------------------------------------------------------------
 void ofxColorsBrowser::exit()
 {
+    ColourLoversHelper.exit();
+
     removeKeysListeners();
     removeMouseListeners();
 }
@@ -1052,7 +1135,7 @@ void ofxColorsBrowser::rectangles_draw(){
         rectangles[i].draw(i,selectionIndex == selectedRects.size() ? -1 : selectionIndex);
     }
 
-    // clicked color
+    // clicked color border
     // draw our bounding box rectangle
     if (!isSelecting && !selectedRects.empty())
     {
@@ -1063,7 +1146,8 @@ void ofxColorsBrowser::rectangles_draw(){
 
         ofNoFill();
 //        ofSetColor(255,80);
-        ofSetColor(0,128);
+//        ofSetColor(0,64);
+        ofSetColor(0,255);//full black
         ofDrawRectangle(selectedRectsBoundingBox);
     }
 
@@ -1078,6 +1162,19 @@ void ofxColorsBrowser::rectangles_draw(){
 
     if (bShowDebug)
     {
+        stringstream ss;
+        ss << "Keyboard [(Spacebar) to hide]" << endl;
+        ss << "W: sort by absolute width" << endl;
+        ss << "A: sort by area" << endl;
+        ss << "H: sort by absolute height" << endl;
+        ss << "c: cascade" << endl;
+        ss << "v: align vertical with current vAlign" << endl;
+        ss << "h: align horizontal with current hAlign" << endl;
+        ss << "x: distribute horizontal with current hAlign" << endl;
+        ss << "h: distribute vertical with current vAlign" << endl;
+        ss << "p: pack rectangles" << endl;
+        keyboardCommands = ss.str();
+
         string hAlignString = "";
         switch (hAlign) {
             case OF_ALIGN_HORZ_LEFT:
@@ -1131,3 +1228,8 @@ void ofxColorsBrowser::rectangles_draw(){
     }
 }
 
+//--------------------------------------------------------------
+void ofxColorsBrowser::setVisible_debugText(bool b)
+{
+    SHOW_debugText = b;
+}

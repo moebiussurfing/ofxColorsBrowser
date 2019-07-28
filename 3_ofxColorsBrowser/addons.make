@@ -1,0 +1,13 @@
+ofxColorsBrowser
+ofxColourLovers
+ofxColourLoversHelper
+ofxColourTheory
+ofxFontStash
+ofxHttpUtils
+ofxInterface
+ofxInterfaceWidgets
+ofxOpenColor
+ofxPoco
+ofxRectangleUtils
+ofxUI
+ofxXmlSettings

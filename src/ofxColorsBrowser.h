@@ -3,6 +3,8 @@
 
 #include "ofMain.h"
 
+#include "ofxColourLoversHelper.h"
+
 #include "ofxOpenColor.h"
 #include "ofxInterfaceWidgets.h"
 #include "Color_BitmapTextButton.h"
@@ -17,7 +19,7 @@ using namespace ofxInterface;
 #define strcasecmp _stricmp
 #endif
 
-#define KEY_SHORTCUTS_ENABLE;// shorcuts
+//#define KEY_SHORTCUTS_ENABLE;// shorcuts
 
 typedef struct
 {
@@ -36,10 +38,21 @@ public:
 
     //--
 
+    // COLOUR LOVERS
+
+    ofxColourLoversHelper ColourLoversHelper;
+    string myPalette_Name = "";
+    ofColor myColor;
+    vector<ofColor> myPalette;
+    void ColourLover_setup();
+    void ColourLover_draw();
+
+    //--
+
     // OFXRECTANGLE MODE
 
-    std::vector<ofxRectangle>  rectangles;
-    std::vector<ofRectangle*>  selectedRects;
+    std::vector<ofxRectangle> rectangles;
+    std::vector<ofRectangle*> selectedRects;
     ofxRectangle selectedRectsBoundingBox;
 
     ofxRectangle* draggingRectPtr;
@@ -136,4 +149,7 @@ public:
     void addMouseListeners();
     void removeMouseListeners();
 
+
+    bool SHOW_debugText = false;
+    void setVisible_debugText(bool b);
 };
