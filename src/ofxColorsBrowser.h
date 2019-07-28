@@ -41,6 +41,9 @@ public:
     ofxColorsBrowser();
     ~ofxColorsBrowser();
 
+    vector<ofColor> palete;
+    vector<ofColor> getPalette();
+
     void setup();
     void update();
     void draw();
@@ -153,4 +156,7 @@ public:
 
     bool SHOW_debugText = false;
     void setVisible_debugText(bool b);
+
+    bool SHOW_ColorsBrowse = true;
+    void setVisible(bool b);
 };

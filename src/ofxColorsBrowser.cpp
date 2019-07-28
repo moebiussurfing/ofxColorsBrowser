@@ -1,5 +1,10 @@
 #include "ofxColorsBrowser.h"
 
+//--------------------------------------------------------------
+void ofxColorsBrowser::setVisible(bool b){
+    SHOW_ColorsBrowse = b;
+    ColourLoversHelper.setVisible(SHOW_ColorsBrowse);
+}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::ColourLover_setup(){
@@ -33,8 +38,8 @@ void ofxColorsBrowser::ColourLover_draw(){
 
     // preview receivers
     int x, y, w, h, pad, lineH;
-    x = 10;
-    y = 30;
+    x = 20;
+    y = 700;
     w = h = 40;
     pad = 3;
     lineH = 20;
@@ -347,6 +352,26 @@ void ofxColorsBrowser::setup(){
 }
 
 //--------------------------------------------------------------
+vector<ofColor> ofxColorsBrowser::getPalette()
+{
+    ofLogNotice("ofxColorsBrowser") << "getPalette:";
+
+    int numColors = colorNames.size();
+    ofLogNotice("ofxColorsBrowser") << "numColors:" << numColors;
+
+    vector<ofColor> _palette;
+    _palette.resize(numColors);
+
+    for (int i = 0; i < colorNames.size(); i++)
+    {
+        ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
+        _palette[i] = colorNames[i].color;
+    }
+
+    return _palette;
+}
+
+//--------------------------------------------------------------
 void ofxColorsBrowser::populateScene()
 {
     float x = position.x;
@@ -450,91 +475,100 @@ void ofxColorsBrowser::update(){
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
+
+    if (SHOW_ColorsBrowse)
+    {
 //        ofClear(ofColor( color_backGround ));//TODO: moved to ofApp. pointer back color
 
-    //--
+        //--
 
-    // OFXINTERFACE
+        // OFXINTERFACE
 
 //    scene->render();
 //    if (bShowDebug) {
 //        scene->renderDebug();
 //    }
 
-    //--
+        //--
 
-    if (SHOW_debugText)
-    {
+        if (SHOW_debugText) {
 
-        ofPushStyle();
+            ofPushStyle();
 // black rectangle
 //    ofSetColor(0);
 //    ofDrawRectangle(position.x, ofGetHeight()-60, 500, 60);
-        string str;
+            string str;
 
 #ifdef KEY_SHORTCUTS_ENABLE
-        str =  "SORT   : [1]NAME       [2]HUE\n";
-        str += "         [3]BRIGHTNESS [4]SATURATION\n";
-        str += "PALETTE: [BACKSPACE]";
-    //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2*20, ofColor::black, ofColor::white);
-    //#else
+            str =  "SORT   : [1]NAME       [2]HUE\n";
+            str += "         [3]BRIGHTNESS [4]SATURATION\n";
+            str += "PALETTE: [BACKSPACE]";
+        //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2*20, ofColor::black, ofColor::white);
+        //#else
 #endif
 
-        str = "SORTING: ";
-        switch (MODE_SORTING) {
-            case 1:
-                str += "NAME";
-                break;
-            case 2:
-                str += "HUE";
-                break;
-            case 3:
-                str += "BRIGHTNESS";
-                break;
-            case 4:
-                str += "SATURATION";
-                break;
-        }
+            str = "SORTING: ";
+            switch (MODE_SORTING) {
+                case 1:
+                    str += "NAME";
+                    break;
+                case 2:
+                    str += "HUE";
+                    break;
+                case 3:
+                    str += "BRIGHTNESS";
+                    break;
+                case 4:
+                    str += "SATURATION";
+                    break;
+            }
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 30, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight(str, position.x, position.y - 2 * 20, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, position.x, position.y - 2 * 20, ofColor::black, ofColor::white);
 
-        str = "PALETTE: ";
-        switch (MODE_COLOR) {
-            case 0:
-                str += "OF NATIVE NAMES";
-                break;
-            case 1:
-                str += "OPEN COLOR";
-                break;
-        }
+            str = "PALETTE: ";
+            switch (MODE_COLOR) {
+                case 0:
+                    str += "OF NATIVE NAMES";
+                    break;
+                case 1:
+                    str += "OPEN COLOR";
+                    break;
+            }
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight(str, position.x, position.y - 1 * 20, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, position.x, position.y - 1 * 20, ofColor::black, ofColor::white);
 //#endif
 
-        ofPopStyle();
+            ofPopStyle();
+        }
+
+        //--
+
+        // COLOR BOXES
+
+        rectangles_draw();
+
+        //--
+
+        // COLOUR LOVERS DEBUG POINTER BACK
+
+        ColourLover_draw();
+
+        //TODO: should trig on callbacks!
+        ColourLoversHelper.setVisible(true);
+        //--
     }
-
-    //--
-
-    // COLOR BOXES
-
-    rectangles_draw();
-
-    //--
-
-    // COLOUR LOVERS
-
-    ColourLover_draw();
-
-    //--
+    else
+    {
+        ColourLoversHelper.setVisible(false);
+    }
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 {
     const int & key = eventArgs.key;
-    ofLogNotice("ofxColorsBrowser") << "key: " << key;
+//    ofLogNotice("ofxColorsBrowser") << "key: " << key;
 
     // show debug
     if (key == 'd'){
@@ -689,6 +723,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 //--------------------------------------------------------------
 void ofxColorsBrowser::clearPopulate()
 {
+    // TODO: this is not require since swap from ofXInterface to ofxrectangleUtils
     ofLogNotice("ofxColorsBrowser") << "clearPopulate";
 //    ofLogNotice("ofxColorsBrowser") << "getNumChildren: " << scene->getNumChildren();
 //
@@ -770,7 +805,7 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
     const int & x = eventArgs.x;
     const int & y = eventArgs.y;
     const int & button = eventArgs.button;
-    ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
+//    ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
 
     if (bShowDebug)
     {
@@ -1127,9 +1162,7 @@ void ofxColorsBrowser::rectangles_draw(){
     for (size_t i = 0; i < rectangles.size(); ++i)
     {
         ofRectangle* rect = (ofRectangle*)&rectangles[i];
-
         unsigned int selectionIndex = ofFind(selectedRects, rect);
-
         rectangles[i].draw(i,selectionIndex == selectedRects.size() ? -1 : selectionIndex);
     }
 
