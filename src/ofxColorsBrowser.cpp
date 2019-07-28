@@ -3,8 +3,6 @@
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::ColourLover_setup(){
-//    ofSetFrameRate(30);
-//    ofBackground(16);
 
     // set positions and panel sizes
     glm::vec2 sizeGui(200, 240);
@@ -65,7 +63,7 @@ void ofxColorsBrowser::ColourLover_draw(){
     y += (lineH);
     ofDrawBitmapStringHighlight("myPalette_Name:", x, y, ofColor::black, ofColor::white);
     y += (lineH);
-    ofDrawBitmapStringHighlight(myPalette_Name, x, y, ofColor::black, ofColor::white);
+    ofDrawBitmapStringHighlight("'"+myPalette_Name+"'", x, y, ofColor::black, ofColor::white);
 
     ofPopStyle();
 }
@@ -796,69 +794,69 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     const int & x = eventArgs.x;
     const int & y = eventArgs.y;
     const int & button = eventArgs.button;
-    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
+//    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
 //    if (bShowDebug) {
-        dragStart = glm::vec2(x, y);  // set a new drag start point
+    dragStart = glm::vec2(x, y);  // set a new drag start point
 
 
-        if (!ofGetKeyPressed('A')) {
+    if (!ofGetKeyPressed('A')) {
 
-            bool foundAClickTarget = false;
+        bool foundAClickTarget = false;
 
-            // first check to see if we are in the bounding box
-            if (!selectedRects.empty() &&
-                    selectedRectsBoundingBox.inside(dragStart))
+        // first check to see if we are in the bounding box
+        if (!selectedRects.empty() &&
+                selectedRectsBoundingBox.inside(dragStart))
+        {
+
+            if (bShowDebug)
             {
-
-                if (bShowDebug)
-                {
-                    draggingRectPtr = &selectedRectsBoundingBox;
+                draggingRectPtr = &selectedRectsBoundingBox;
 //            selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
-                    selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
-                    selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
+                selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
+                selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
 
 
-                    for (std::size_t i = 0; i < rectangles.size(); i++) {
-                        if (rectangles[i].isSelected) {
+                for (std::size_t i = 0; i < rectangles.size(); i++) {
+                    if (rectangles[i].isSelected) {
 //                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition().xy;
-                            rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
-                            rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
-                        }
-                    }
-                    foundAClickTarget = true;
-                }
-            }
-
-            else
-            {
-                selectedRects.clear();
-                // otherwise, go through all of the rects and see if we can drag one
-                for (size_t i = 0; i < rectangles.size(); i++) {
-                    rectangles[i].isSelected = false; // assume none
-                    if (!foundAClickTarget && rectangles[i].isOver) {
-                        draggingRectPtr = &rectangles[i];
-                        rectangles[i].isSelected = true;
-                        rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
-                        foundAClickTarget = true;
-
-                        ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
-                        color_BACK = ofColor(rectangles[i].color);
+                        rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
+                        rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
                     }
                 }
-            }
-
-            isSelecting = !foundAClickTarget; // means our click did not land on an existing rect
-        } else {
-            if (anchorRect != nullptr) {
-                delete anchorRect;
-                anchorRect = nullptr;
-            }
-
-            if (bShowDebug) {
-                anchorRect = new ofRectangle(dragStart, 0, 0);
+                foundAClickTarget = true;
             }
         }
+
+        else
+        {
+            selectedRects.clear();
+            // otherwise, go through all of the rects and see if we can drag one
+            for (size_t i = 0; i < rectangles.size(); i++) {
+                rectangles[i].isSelected = false; // assume none
+                if (!foundAClickTarget && rectangles[i].isOver) {
+                    draggingRectPtr = &rectangles[i];
+                    rectangles[i].isSelected = true;
+                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
+                    foundAClickTarget = true;
+
+                    ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
+                    color_BACK = ofColor(rectangles[i].color);
+                }
+            }
+        }
+
+        isSelecting = !foundAClickTarget; // means our click did not land on an existing rect
+    } else {
+        if (anchorRect != nullptr) {
+            delete anchorRect;
+            anchorRect = nullptr;
+        }
+
+        if (bShowDebug) {
+            anchorRect = new ofRectangle(dragStart, 0, 0);
+        }
+    }
 //    }
 }
 

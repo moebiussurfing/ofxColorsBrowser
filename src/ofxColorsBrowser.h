@@ -36,49 +36,6 @@ class ofxColorsBrowser {
 
 public:
 
-    //--
-
-    // COLOUR LOVERS
-
-    ofxColourLoversHelper ColourLoversHelper;
-    string myPalette_Name = "";
-    ofColor myColor;
-    vector<ofColor> myPalette;
-    void ColourLover_setup();
-    void ColourLover_draw();
-
-    //--
-
-    // OFXRECTANGLE MODE
-
-    std::vector<ofxRectangle> rectangles;
-    std::vector<ofRectangle*> selectedRects;
-    ofxRectangle selectedRectsBoundingBox;
-
-    ofxRectangle* draggingRectPtr;
-
-    glm::vec2 dragStart;
-
-    bool isSelecting;
-    ofRectangle selectionRect;
-
-    ofAlignHorz hAlign;
-    ofAlignVert vAlign;
-
-    ofRectangle* anchorRect;
-
-    string keyboardCommands;
-    bool showKeyboardCommands;
-
-
-//    ofRotatedRectangle rotatedRect;
-    std::vector<ofRectangle>  packedRects;
-
-//    ofRectanglePacker packer;
-
-
-    void rectangles_update();
-    void rectangles_draw();
 //--
 
     ofxColorsBrowser();
@@ -135,6 +92,50 @@ public:
     void setup_colorBACK(ofFloatColor &c);
     ofFloatColor *color_BACK_OFAPP;
 //    void Changed_color_clicked(ofFloatColor &color);
+
+    //--
+
+    // COLOUR LOVERS
+
+    ofxColourLoversHelper ColourLoversHelper;
+    void ColourLover_setup();
+    void ColourLover_draw();
+    ofColor myColor;
+    vector<ofColor> myPalette;
+    string myPalette_Name = "";
+
+    //--
+
+    // OFXRECTANGLE MODE
+
+    std::vector<ofxRectangle> rectangles;
+    std::vector<ofRectangle*> selectedRects;
+    ofxRectangle selectedRectsBoundingBox;
+
+    ofxRectangle* draggingRectPtr;
+
+    glm::vec2 dragStart;
+
+    bool isSelecting;
+    ofRectangle selectionRect;
+
+    ofAlignHorz hAlign;
+    ofAlignVert vAlign;
+
+    ofRectangle* anchorRect;
+
+    string keyboardCommands;
+    bool showKeyboardCommands;
+
+//    ofRotatedRectangle rotatedRect;
+    std::vector<ofRectangle>  packedRects;
+
+//    ofRectanglePacker packer;
+
+    void rectangles_update();
+    void rectangles_draw();
+
+    //--
 
 //private:
 

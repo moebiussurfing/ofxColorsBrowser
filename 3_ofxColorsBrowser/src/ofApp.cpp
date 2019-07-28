@@ -4,7 +4,8 @@
 void ofApp::setup(){
 
     ofBackground(64);
-
+    ofSetFrameRate(30);
+    
     ColorBrowser.setBoxSize(25);
     ColorBrowser.setRowsSize(5);
     ColorBrowser.setup_colorBACK(color_BACK);
@@ -36,6 +37,7 @@ void ofApp::keyPressed(int key){
 //
 //    if (key == OF_KEY_RETURN)
 //        ColorBrowser.switch_sorted_Type();
+
 }
 
 
