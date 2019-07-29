@@ -4,17 +4,6 @@
 #include "ofMain.h"
 
 #include "ofxOpenColor.h"
-
-//#include "ofxInterface.h"
-//using namespace ofxInterface;
-//#if (_MSC_VER)
-//#define strcasecmp _stricmp
-//#endif
-//#include "ofxInterfaceWidgets.h"
-//#include "Color_BitmapTextButton.h"
-
-//#include "ofxColourLoversHelper.h"
-
 #include "ofxRectangleUtils.h"
 #include "ofxRectangle.h"
 using namespace ofx;
@@ -83,17 +72,6 @@ public:
 
     //----
 
-    // COLOUR LOVERS
-//
-//    ofxColourLoversHelper ColourLoversHelper;
-//    void ColourLover_setup();
-//    void ColourLover_draw();
-//    ofColor myColor;
-//    vector<ofColor> myPalette;
-//    string myPalette_Name = "";
-
-    //--
-
     // OFXRECTANGLE MODE
 
     std::vector<ofxRectangle> rectangles;
@@ -130,7 +108,7 @@ private:
     void removeMouseListeners();
 
     //-
-    
+
     bool SHOW_debugText = false;
     bool SHOW_ColorsBrowse = true;
     bool ENABLE_clicks = true;
@@ -142,19 +120,11 @@ private:
     ofFloatColor color_BACK;
     ofFloatColor color_BACK_PRE;
     ofFloatColor *color_BACK_OFAPP;
-//    void Changed_color_clicked(ofFloatColor &color);
 
     void generateColors();
-
     map < string, ofColor > colorNameMap;
     vector < colorNameMapping > colorNames;
 
-//    void draw_native();
-//    ofPoint mouseSmoothed;
-//    float mouseX, mouseY;
-
-//    ofxInterface::Node* scene;
-//    vector<Color_BitmapTextButton*> buttons_txt;
     void populateScene();
     void clearPopulate();
     bool bShowDebug = false;

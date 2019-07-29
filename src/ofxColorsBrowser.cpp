@@ -1,92 +1,11 @@
 #include "ofxColorsBrowser.h"
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setVisible(bool b){
+void ofxColorsBrowser::setVisible(bool b)
+{
     SHOW_ColorsBrowse = b;
-//    ColourLoversHelper.setVisible(SHOW_ColorsBrowse);
-
-//    if(SHOW_ColorsBrowse)
-//        addKeysListeners();
-//    else
-//        removeKeysListeners();
-
-    //-
-
     set_ENABLE_clicks(b);
 }
-
-////--------------------------------------------------------------
-//void ofxColorsBrowser::ColourLover_setup(){
-//
-//    //-
-//
-//    // COLOUR LOVERS
-//
-//    // set positions and panel sizes
-//    glm::vec2 sizeGui(200, 240);
-//    glm::vec2 sizeGrid(120, ofGetHeight());
-//    glm::vec2 posGui(ofGetWidth()-sizeGui.x-sizeGrid.x, 0);
-//    glm::vec2 posGrid(posGui.x+sizeGui.x+2, 0);
-//
-//    //must be called before setup() to overwrite default settings
-//    ColourLoversHelper.setGrid(posGrid, sizeGrid);
-//    ColourLoversHelper.setup(posGui, sizeGui);
-//
-//    // receivers pointers
-//    ColourLoversHelper.setColor_BACK(myColor);
-//    ColourLoversHelper.setPalette_BACK(myPalette);
-//    ColourLoversHelper.setPalette_Name_BACK(myPalette_Name);
-//
-//    // initiation values
-//    myColor = ofColor::white;
-//    myPalette.resize(2);//pointer setter whill clear/resize. nevermind the vector size here
-//    myPalette[0] = ofColor::white;
-//    myPalette[0] = ofColor::white;
-//    myPalette_Name = "NOT LOADED";
-
-//-
-//}
-
-////--------------------------------------------------------------
-//void ofxColorsBrowser::ColourLover_draw(){
-//    // ColourLoversHelper.draw();//not required as drawing goes to ofxUI
-//
-//    // preview receivers
-//    int x, y, w, h, pad, lineH;
-//    x = 20;
-//    y = 700;
-//    w = h = 40;
-//    pad = 3;
-//    lineH = 20;
-//
-//    ofPushStyle();
-//    ofFill();
-//
-//    ofDrawBitmapStringHighlight("myColor:", x, y, ofColor::black, ofColor::white);
-//    y += pad;
-//
-//    ofSetColor(myColor);
-//    ofDrawRectangle(ofRectangle(x,y,w,h));
-//    y += (h+pad);
-//
-//    y += (lineH);
-//    ofDrawBitmapStringHighlight("myPalette:", x, y, ofColor::black, ofColor::white);
-//    y += pad;
-//
-//    for (int i=0; i<myPalette.size(); i++)
-//    {
-//        ofSetColor(myPalette[i]);
-//        ofDrawRectangle(ofRectangle(x+i*(w+pad),y,w,h));
-//    }
-//    y += (h+pad);
-//
-//    y += (lineH);
-//    ofDrawBitmapStringHighlight("myPalette_Name:", x, y, ofColor::black, ofColor::white);
-//    y += (lineH);
-//    ofDrawBitmapStringHighlight("'"+myPalette_Name+"'", x, y, ofColor::black, ofColor::white);
-//
-//    ofPopStyle();
-//}
 
 //--------------------------------------------------------------
 
@@ -118,10 +37,6 @@ ofxColorsBrowser::ofxColorsBrowser()
 #else
     set_ENABLE_keys(false);
 #endif
-
-    // TODO: test pointer back color
-//    color_BACK.addListener(this, &ofxColorsBrowser::Changed_color_clicked);
-
 }
 
 //--------------------------------------------------------------
@@ -338,19 +253,12 @@ void ofxColorsBrowser::generateColors(){
     //-
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup(){
 
     MODE_COLOR = OFX_OPEN_COLOR;//default palette mode
     generateColors();
-
-    //-
-
-    // OFXINTERFACE
-//    scene = new Node();
-//    scene->setSize(ofGetWidth(), ofGetHeight());
-//    scene->setName("Scene");
-//    TouchManager::one().setup(scene);
 
     //--
 
@@ -363,13 +271,8 @@ void ofxColorsBrowser::setup(){
     setVisible_debugText(false);
 
     //--
-
-    // COLOUR LOVERS
-
-//    ColourLover_setup();
-
-    //-
 }
+
 
 //--------------------------------------------------------------
 vector<ofColor> ofxColorsBrowser::getPalette()
@@ -390,6 +293,7 @@ vector<ofColor> ofxColorsBrowser::getPalette()
 
     return _palette;
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::populateScene()
@@ -427,34 +331,8 @@ void ofxColorsBrowser::populateScene()
     showKeyboardCommands = false;
 
     //--
-
-    // 2. OFXINTERFACE MODE
-
-//    for (int i = 0; i < colorNames.size(); i++)
-//    {
-//        float xBtn = x + (i%perRow)*(size+pad);
-//        float yBtn = y + (i/perRow)*(size+pad);
-//
-//        Color_BitmapTextButton *btn = new Color_BitmapTextButton();
-////        btn->loadFont("assets/fonts/PragmataProR_0822.ttf");
-//        btn->setup(colorNames[i].name);
-//        btn->setBackground(true);
-//        btn->setBGColor(colorNames[i].color);
-//        btn->setBorderColor(ofColor::black);
-//        btn->setPosition(xBtn, yBtn);
-//        btn->setSize(size, size);
-//        btn->setLabelColor(ofColor::black);
-//        btn->setName("col" + ofToString(i));
-//        btn->setup_colorBACK(color_BACK);
-//        scene->addChild(btn);
-////        if (i%perRow>0) {
-////            btn->placeNextTo(*buttons_txt[i-1], Node::RIGHT);
-////        }
-//        buttons_txt.push_back(btn);//Color_BitmapTextButton
-//    }
-
-    //--
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::update(){
@@ -467,27 +345,7 @@ void ofxColorsBrowser::update(){
 
     //-
 
-//    // smoothing the mouse a bit over time
-//    mouseSmoothed = 0.95 * mouseSmoothed + 0.05 * ofPoint(mouseX, mouseY);
-
-    //-
-
-//    TouchManager::one().update();
-//    float dt = 1. / ofGetFrameRate();
-//    for (int i = 0; i < buttons_txt.size(); i++)
-//    {
-//        buttons_txt[i]->update(dt);
-//    }
-
-    //--
-
     rectangles_update();
-
-    //--
-
-    // COLOUR LOVERS
-
-//    ColourLoversHelper.update();
 
     //--
 }
@@ -498,25 +356,11 @@ void ofxColorsBrowser::draw()
 
     if (SHOW_ColorsBrowse)
     {
-//        ofClear(ofColor( color_backGround ));//TODO: moved to ofApp. pointer back color
-
         //--
 
-        // OFXINTERFACE
-
-//    scene->render();
-//    if (bShowDebug) {
-//        scene->renderDebug();
-//    }
-
-        //--
-
-        if (SHOW_debugText) {
-
+        if (SHOW_debugText)
+        {
             ofPushStyle();
-// black rectangle
-//    ofSetColor(0);
-//    ofDrawRectangle(position.x, ofGetHeight()-60, 500, 60);
             string str;
 
             if (ENABLE_keys)
@@ -524,7 +368,6 @@ void ofxColorsBrowser::draw()
 #ifdef KEY_SHORTCUTS_ENABLE
                 str = "SORT   : [1]NAME    [2]HUE    [3]BRIGHTNESS    [4]SATURATION    [5]NEXT    \n";
                 str += "PALETTE: [BACKSPACE]    [d]DEBUG RECTANGLES ";
-                //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
                 ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2 * 20, ofColor::black, ofColor::white);
 #endif
             }
@@ -546,7 +389,6 @@ void ofxColorsBrowser::draw()
                     str += "SATURATION";
                     break;
             }
-//    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 30, ofColor::black, ofColor::white);
             ofDrawBitmapStringHighlight(str, position.x, position.y - 2 * 20, ofColor::black, ofColor::white);
 
             //-
@@ -560,7 +402,6 @@ void ofxColorsBrowser::draw()
                     str += "OPEN COLOR";
                     break;
             }
-//    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
             ofDrawBitmapStringHighlight(str, position.x, position.y - 1 * 20, ofColor::black, ofColor::white);
 
             ofPopStyle();
@@ -573,18 +414,6 @@ void ofxColorsBrowser::draw()
         rectangles_draw();
 
         //--
-
-        // COLOUR LOVERS DEBUG POINTER BACK
-//
-//        ColourLover_draw();
-//
-//        //TODO: should trig on callbacks!
-//        ColourLoversHelper.setVisible(true);
-        //--
-    }
-    else
-    {
-//        ColourLoversHelper.setVisible(false);
     }
 }
 
@@ -592,7 +421,7 @@ void ofxColorsBrowser::draw()
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 {
     const int & key = eventArgs.key;
-//    ofLogNotice("ofxColorsBrowser") << "key: " << key;
+    ofLogNotice("ofxColorsBrowser") << "key: " << key;
 
     // show debug
     if (key == 'd'){
@@ -664,7 +493,10 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 
     //---
 
-    if (bShowDebug) {
+    // debug ofxRectangle handling
+
+    if (bShowDebug)
+    {
 
 //    if (key == OF_KEY_UP) {
 //        for(size_t i = 0; i < selectedRects.size(); i++) {
@@ -756,26 +588,12 @@ void ofxColorsBrowser::clearPopulate()
 {
     // TODO: this is not require since swap from ofXInterface to ofxrectangleUtils
     ofLogNotice("ofxColorsBrowser") << "clearPopulate";
-//    ofLogNotice("ofxColorsBrowser") << "getNumChildren: " << scene->getNumChildren();
-//
-//    for (int i=0; i< buttons_txt.size(); i++)
-//    {
-//        std::string n = ("col" + ofToString(i));
-//        auto a = scene->getChildWithName(n, scene->getNumChildren());
-//        auto b = a->getName();
-//        scene->removeChild(a, false);
-////        ofLogVerbose("ofxColorsBrowser")  << "removed children: " << b << endl;
-//    }
-//    buttons_txt.clear();
-
-    //-
 
 //    colorNames.clear();
 
     //-
 
     rectangles.clear();
-
 }
 
 //--------------------------------------------------------------
@@ -786,11 +604,13 @@ void ofxColorsBrowser::keyReleased( ofKeyEventArgs& eventArgs )
     }
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::addKeysListeners()
 {
     ofAddListener( ofEvents().keyPressed, this, &ofxColorsBrowser::keyPressed );
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::removeKeysListeners()
@@ -798,38 +618,6 @@ void ofxColorsBrowser::removeKeysListeners()
     ofRemoveListener( ofEvents().keyPressed, this, &ofxColorsBrowser::keyPressed );
 }
 
-////--------------------------------------------------------------
-//void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
-//    const int & x = eventArgs.x;
-//    const int & y = eventArgs.y;
-//    const int & button = eventArgs.button;
-//    ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
-//
-//    TouchManager::one().touchMove(button, ofVec2f(x, y));
-//}
-//
-////--------------------------------------------------------------
-//void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
-//    const int & x = eventArgs.x;
-//    const int & y = eventArgs.y;
-//    const int & button = eventArgs.button;
-//    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
-//
-////    mouseX = x;
-////    mouseY = y;
-//
-//    TouchManager::one().touchDown(button, ofVec2f(x, y));
-//}
-//
-////--------------------------------------------------------------
-//void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
-//    const int & x = eventArgs.x;
-//    const int & y = eventArgs.y;
-//    const int & button = eventArgs.button;
-////    ofLogNotice("ofxColorsBrowser") << "mouseReleased " <<  x << ", " << y << ", " << button;
-//
-//    TouchManager::one().touchUp(button, ofVec2f(x, y));
-//}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
@@ -854,6 +642,7 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
         }
     }
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
@@ -926,6 +715,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     }
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs) {
     const int &x = eventArgs.x;
@@ -939,6 +729,7 @@ void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs) {
     }
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::addMouseListeners()
 {
@@ -947,6 +738,7 @@ void ofxColorsBrowser::addMouseListeners()
     ofAddListener( ofEvents().mouseReleased, this, &ofxColorsBrowser::mouseReleased );
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::removeMouseListeners()
 {
@@ -954,6 +746,7 @@ void ofxColorsBrowser::removeMouseListeners()
     ofRemoveListener( ofEvents().mousePressed, this, &ofxColorsBrowser::mousePressed );
     ofRemoveListener( ofEvents().mouseReleased, this, &ofxColorsBrowser::mouseReleased );
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::exit()
@@ -964,12 +757,14 @@ void ofxColorsBrowser::exit()
     removeMouseListeners();
 }
 
+
 //--------------------------------------------------------------
 ofxColorsBrowser::~ofxColorsBrowser()
 {
 //    removeKeysListeners();
 //    removeMouseListeners();
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
@@ -979,17 +774,12 @@ void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
     color_BACK_OFAPP = &c;
 }
 
-////--------------------------------------------------------------
-//void ofxColorsBrowser::Changed_color_clicked(ofFloatColor &color)
-//{
-////    ofLogNotice("ofxColorManager") << "Changed_color_clicked " << ofToString(color);
-////    color_picked.set(color);
-//}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setPosition(glm::vec2 p){
     position = p;
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setBoxSize(float _size)
@@ -997,10 +787,12 @@ void ofxColorsBrowser::setBoxSize(float _size)
     size = _size;
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::setRowsSize(int rows){
     perRow = rows;
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::switch_palette_Type(){
@@ -1011,6 +803,7 @@ void ofxColorsBrowser::switch_palette_Type(){
     generateColors();
     populateScene();
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::switch_sorted_Type(){
@@ -1043,6 +836,7 @@ void ofxColorsBrowser::switch_sorted_Type(){
     }
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::set_palette_Type(int p)
 {
@@ -1052,6 +846,7 @@ void ofxColorsBrowser::set_palette_Type(int p)
     generateColors();
     populateScene();
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::set_sorted_Type(int p)
@@ -1081,6 +876,7 @@ void ofxColorsBrowser::set_sorted_Type(int p)
     }
 }
 
+
 ////--------------------------------------------------------------
 //void ofxColorsBrowser::draw_native(){
 //
@@ -1106,6 +902,7 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 //        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
 //    }
 //}
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::rectangles_update()
@@ -1170,8 +967,6 @@ void ofxColorsBrowser::rectangles_update()
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::rectangles_draw(){
-
-//    ofBackground(0);
 
     ofPoint mouse(ofGetMouseX(),ofGetMouseY());
 
@@ -1282,6 +1077,7 @@ void ofxColorsBrowser::rectangles_draw(){
         ofDrawRectangle(packedRects[i]);
     }
 }
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setVisible_debugText(bool b)
