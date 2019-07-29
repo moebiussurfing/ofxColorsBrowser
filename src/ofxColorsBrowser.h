@@ -3,23 +3,23 @@
 
 #include "ofMain.h"
 
-//#include "ofxColourLoversHelper.h"
-
 #include "ofxOpenColor.h"
-#include "ofxInterfaceWidgets.h"
-#include "Color_BitmapTextButton.h"
+
+//#include "ofxInterface.h"
+//using namespace ofxInterface;
+//#if (_MSC_VER)
+//#define strcasecmp _stricmp
+//#endif
+//#include "ofxInterfaceWidgets.h"
+//#include "Color_BitmapTextButton.h"
+
+//#include "ofxColourLoversHelper.h"
 
 #include "ofxRectangleUtils.h"
 #include "ofxRectangle.h"
 using namespace ofx;
 
-#include "ofxInterface.h"
-using namespace ofxInterface;
-#if (_MSC_VER)
-#define strcasecmp _stricmp
-#endif
-
-//#define KEY_SHORTCUTS_ENABLE;// shorcuts
+#define KEY_SHORTCUTS_ENABLE;// internal shorcuts no add listeners or remove
 
 typedef struct
 {
@@ -41,39 +41,12 @@ public:
     ofxColorsBrowser();
     ~ofxColorsBrowser();
 
-    vector<ofColor> palete;
-    vector<ofColor> getPalette();
-
     void setup();
     void update();
     void draw();
     void exit();
 
-    map < string, ofColor > colorNameMap;
-    vector < colorNameMapping > colorNames;
-
-//    void draw_native();
-//    ofPoint mouseSmoothed;
-//    float mouseX, mouseY;
-
-    void generateColors();
-
-    ofxInterface::Node* scene;
-    vector<Color_BitmapTextButton*> buttons_txt;
-    void populateScene();
-    void clearPopulate();
-    bool bShowDebug = false;
-
-    //-
-
-    glm::vec2 position;
-    int MODE_COLOR; // 0: OFX_COLOR_NATIVE, 1: OFX_OPEN_COLOR
-    int MODE_SORTING;
-    int perRow = 10;
-    float size = 50;//boxes
-    float pad = 2;
-
-    //--
+    //----
 
     // API
 
@@ -85,18 +58,30 @@ public:
 
     void setRowsSize(int rows);
     void setBoxSize(float size);
+
+    void setVisible(bool b);
+    void setVisible_debugText(bool b);
+
+    void set_ENABLE_clicks(bool b)
+    {
+        ENABLE_clicks = b;
+    }
+
+    void set_ENABLE_keys(bool b)
+    {
+        ENABLE_keys = b;
+        if(ENABLE_keys)
+            addKeysListeners();
+        else
+            removeKeysListeners();
+    }
+
+    void setup_colorBACK(ofFloatColor &c);
+
     // TODO:
     void setSize(glm::vec2 size);
 
-    //--
-
-    ofFloatColor color_BACK;
-    ofFloatColor color_BACK_PRE;
-    void setup_colorBACK(ofFloatColor &c);
-    ofFloatColor *color_BACK_OFAPP;
-//    void Changed_color_clicked(ofFloatColor &color);
-
-    //--
+    //----
 
     // COLOUR LOVERS
 //
@@ -114,25 +99,17 @@ public:
     std::vector<ofxRectangle> rectangles;
     std::vector<ofRectangle*> selectedRects;
     ofxRectangle selectedRectsBoundingBox;
-
     ofxRectangle* draggingRectPtr;
-
     glm::vec2 dragStart;
-
     bool isSelecting;
     ofRectangle selectionRect;
-
     ofAlignHorz hAlign;
     ofAlignVert vAlign;
-
     ofRectangle* anchorRect;
-
     string keyboardCommands;
     bool showKeyboardCommands;
-
-//    ofRotatedRectangle rotatedRect;
     std::vector<ofRectangle>  packedRects;
-
+//    ofRotatedRectangle rotatedRect;
 //    ofRectanglePacker packer;
 
     void rectangles_update();
@@ -140,7 +117,7 @@ public:
 
     //--
 
-//private:
+private:
 
     void keyPressed( ofKeyEventArgs& eventArgs);
     void keyReleased( ofKeyEventArgs& eventArgs );
@@ -153,10 +130,40 @@ public:
     void addMouseListeners();
     void removeMouseListeners();
 
-
     bool SHOW_debugText = false;
-    void setVisible_debugText(bool b);
-
     bool SHOW_ColorsBrowse = true;
-    void setVisible(bool b);
+    bool ENABLE_clicks = true;
+    bool ENABLE_keys = false;
+
+    vector<ofColor> palete;
+    vector<ofColor> getPalette();
+
+    ofFloatColor color_BACK;
+    ofFloatColor color_BACK_PRE;
+    ofFloatColor *color_BACK_OFAPP;
+//    void Changed_color_clicked(ofFloatColor &color);
+
+    void generateColors();
+
+    map < string, ofColor > colorNameMap;
+    vector < colorNameMapping > colorNames;
+
+//    void draw_native();
+//    ofPoint mouseSmoothed;
+//    float mouseX, mouseY;
+
+//    ofxInterface::Node* scene;
+//    vector<Color_BitmapTextButton*> buttons_txt;
+    void populateScene();
+    void clearPopulate();
+    bool bShowDebug = false;
+
+    //-
+
+    glm::vec2 position;
+    int MODE_COLOR; // 0: OFX_COLOR_NATIVE, 1: OFX_OPEN_COLOR
+    int MODE_SORTING;
+    int perRow = 10;
+    float size = 50;//boxes
+    float pad = 2;
 };

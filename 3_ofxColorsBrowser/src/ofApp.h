@@ -23,4 +23,6 @@ public:
     ofxColorsBrowser ColorBrowser;
     ofFloatColor color_BACK;
 
+    bool SHOW_ColorBrowser = true;
+
 };

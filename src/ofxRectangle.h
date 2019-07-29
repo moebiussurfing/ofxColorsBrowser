@@ -14,6 +14,13 @@
 class ofxRectangle: public ofRectangle
 {
 public:
+
+//    bool isClickable;
+//    setClickable(bool b)
+//    {
+//        isClickable = b;
+//    }
+
     ofxRectangle()
     {
         ofRectangle rect;
@@ -42,6 +49,7 @@ public:
         hAlign = OF_ALIGN_HORZ_LEFT;
         vAlign = OF_ALIGN_VERT_CENTER;
 
+//        isClickable = true;
     }
 
 //    void updateScaleHandles() {

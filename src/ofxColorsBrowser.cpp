@@ -4,6 +4,15 @@
 void ofxColorsBrowser::setVisible(bool b){
     SHOW_ColorsBrowse = b;
 //    ColourLoversHelper.setVisible(SHOW_ColorsBrowse);
+
+//    if(SHOW_ColorsBrowse)
+//        addKeysListeners();
+//    else
+//        removeKeysListeners();
+
+    //-
+
+    set_ENABLE_clicks(b);
 }
 
 ////--------------------------------------------------------------
@@ -35,7 +44,7 @@ void ofxColorsBrowser::setVisible(bool b){
 //    myPalette[0] = ofColor::white;
 //    myPalette_Name = "NOT LOADED";
 
-    //-
+//-
 //}
 
 ////--------------------------------------------------------------
@@ -104,13 +113,15 @@ ofxColorsBrowser::ofxColorsBrowser()
 {
     addMouseListeners();
 
-    // comment to disable normal shortcuts
 #ifdef KEY_SHORTCUTS_ENABLE
-    addKeysListeners();
+    set_ENABLE_keys(true);
+#else
+    set_ENABLE_keys(false);
 #endif
 
     // TODO: test pointer back color
 //    color_BACK.addListener(this, &ofxColorsBrowser::Changed_color_clicked);
+
 }
 
 //--------------------------------------------------------------
@@ -335,6 +346,7 @@ void ofxColorsBrowser::setup(){
 
     //-
 
+    // OFXINTERFACE
 //    scene = new Node();
 //    scene->setSize(ofGetWidth(), ofGetHeight());
 //    scene->setName("Scene");
@@ -345,6 +357,8 @@ void ofxColorsBrowser::setup(){
     populateScene();
 
     //-
+
+    set_ENABLE_clicks(true);
 
     setVisible_debugText(false);
 
@@ -505,14 +519,17 @@ void ofxColorsBrowser::draw()
 //    ofDrawRectangle(position.x, ofGetHeight()-60, 500, 60);
             string str;
 
+            if (ENABLE_keys)
+            {
 #ifdef KEY_SHORTCUTS_ENABLE
-            str =  "SORT   : [1]NAME       [2]HUE\n";
-            str += "         [3]BRIGHTNESS [4]SATURATION\n";
-            str += "PALETTE: [BACKSPACE]";
-        //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
-            ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2*20, ofColor::black, ofColor::white);
-        //#else
+                str = "SORT   : [1]NAME    [2]HUE    [3]BRIGHTNESS    [4]SATURATION    [5]NEXT    \n";
+                str += "PALETTE: [BACKSPACE]    [d]DEBUG RECTANGLES ";
+                //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 40, ofColor::black, ofColor::white);
+                ofDrawBitmapStringHighlight(str, position.x + 250, position.y - 2 * 20, ofColor::black, ofColor::white);
 #endif
+            }
+
+            //-
 
             str = "SORTING: ";
             switch (MODE_SORTING) {
@@ -532,6 +549,8 @@ void ofxColorsBrowser::draw()
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 30, ofColor::black, ofColor::white);
             ofDrawBitmapStringHighlight(str, position.x, position.y - 2 * 20, ofColor::black, ofColor::white);
 
+            //-
+
             str = "PALETTE: ";
             switch (MODE_COLOR) {
                 case 0:
@@ -543,7 +562,6 @@ void ofxColorsBrowser::draw()
             }
 //    ofDrawBitmapStringHighlight(str, position.x, ofGetHeight()-70 + 50, ofColor::black, ofColor::white);
             ofDrawBitmapStringHighlight(str, position.x, position.y - 1 * 20, ofColor::black, ofColor::white);
-//#endif
 
             ofPopStyle();
         }
@@ -607,21 +625,24 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
             clearPopulate();
             populateScene();
         }
-    } else if (key == '2'){
+    }
+    else if (key == '2'){
         if (MODE_SORTING != 2){
             MODE_SORTING = 2;
             ofSort(colorNames, compareHue);
             clearPopulate();
             populateScene();
         }
-    } else if (key == '3'){
+    }
+    else if (key == '3'){
         if (MODE_SORTING != 3){
             MODE_SORTING = 3;
             ofSort(colorNames, compareBrightness);
             clearPopulate();
             populateScene();
         }
-    } else if (key == '4'){
+    }
+    else if (key == '4'){
         if (MODE_SORTING != 4){
             MODE_SORTING = 4;
             ofSort(colorNames, compareSaturation);
@@ -629,6 +650,10 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
             populateScene();
         }
     }
+    else if (key == '5'){
+        switch_sorted_Type();
+    }
+
 
     else if (key == 'p'){
         RectangleUtils::pack(selectedRects, ofRectangle(0,
@@ -837,79 +862,81 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     const int & button = eventArgs.button;
 //    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
-//    if (bShowDebug) {
-    dragStart = glm::vec2(x, y);  // set a new drag start point
+    if (ENABLE_clicks)
+    {
+        dragStart = glm::vec2(x, y);  // set a new drag start point
 
+        if (!ofGetKeyPressed('A')) {
 
-    if (!ofGetKeyPressed('A')) {
+            bool foundAClickTarget = false;
 
-        bool foundAClickTarget = false;
-
-        // first check to see if we are in the bounding box
-        if (!selectedRects.empty() &&
-                selectedRectsBoundingBox.inside(dragStart))
-        {
-
-            if (bShowDebug)
+            // first check to see if we are in the bounding box
+            if (!selectedRects.empty() &&
+                    selectedRectsBoundingBox.inside(dragStart))
             {
-                draggingRectPtr = &selectedRectsBoundingBox;
+
+                if (bShowDebug)
+                {
+                    draggingRectPtr = &selectedRectsBoundingBox;
 //            selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
-                selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
-                selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
+                    selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
+                    selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
 
 
-                for (std::size_t i = 0; i < rectangles.size(); i++) {
-                    if (rectangles[i].isSelected) {
+                    for (std::size_t i = 0; i < rectangles.size(); i++) {
+                        if (rectangles[i].isSelected) {
 //                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition().xy;
-                        rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
-                        rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
+                            rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
+                            rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
+                        }
+                    }
+                    foundAClickTarget = true;
+                }
+            }
+
+            else
+            {
+                selectedRects.clear();
+                // otherwise, go through all of the rects and see if we can drag one
+                for (size_t i = 0; i < rectangles.size(); i++) {
+                    rectangles[i].isSelected = false; // assume none
+                    if (!foundAClickTarget && rectangles[i].isOver) {
+                        draggingRectPtr = &rectangles[i];
+                        rectangles[i].isSelected = true;
+                        rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
+                        foundAClickTarget = true;
+
+                        ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
+                        color_BACK = ofColor(rectangles[i].color);
                     }
                 }
-                foundAClickTarget = true;
             }
-        }
 
-        else
-        {
-            selectedRects.clear();
-            // otherwise, go through all of the rects and see if we can drag one
-            for (size_t i = 0; i < rectangles.size(); i++) {
-                rectangles[i].isSelected = false; // assume none
-                if (!foundAClickTarget && rectangles[i].isOver) {
-                    draggingRectPtr = &rectangles[i];
-                    rectangles[i].isSelected = true;
-                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
-                    foundAClickTarget = true;
-
-                    ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
-                    color_BACK = ofColor(rectangles[i].color);
-                }
+            isSelecting = !foundAClickTarget; // means our click did not land on an existing rect
+        } else {
+            if (anchorRect != nullptr) {
+                delete anchorRect;
+                anchorRect = nullptr;
             }
-        }
 
-        isSelecting = !foundAClickTarget; // means our click did not land on an existing rect
-    } else {
-        if (anchorRect != nullptr) {
-            delete anchorRect;
-            anchorRect = nullptr;
-        }
-
-        if (bShowDebug) {
-            anchorRect = new ofRectangle(dragStart, 0, 0);
+            if (bShowDebug) {
+                anchorRect = new ofRectangle(dragStart, 0, 0);
+            }
         }
     }
-//    }
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs){
-    const int & x = eventArgs.x;
-    const int & y = eventArgs.y;
-    const int & button = eventArgs.button;
+void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs) {
+    const int &x = eventArgs.x;
+    const int &y = eventArgs.y;
+    const int &button = eventArgs.button;
 //    ofLogNotice("ofxColorsBrowser") << "mouseReleased " <<  x << ", " << y << ", " << button;
 
-    draggingRectPtr = nullptr;
-    isSelecting     = false;
+    if (ENABLE_clicks) {
+        draggingRectPtr = nullptr;
+        isSelecting = false;
+    }
 }
 
 //--------------------------------------------------------------
@@ -1083,70 +1110,61 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 //--------------------------------------------------------------
 void ofxColorsBrowser::rectangles_update()
 {
-    ofPoint mouse(ofGetMouseX(),ofGetMouseY());
-
-
-    bool foundIsOver = false;
-    bool hasFirstSelection = false;
-
-    if (draggingRectPtr == NULL) {
-        selectedRects.clear();
-    }
-
-    for (size_t i = 0; i < rectangles.size(); ++i)
+    if (ENABLE_clicks)
     {
-        // if we are selecting, re-evaluate this each time
-        if (isSelecting)
-        {
-            rectangles[i].isSelected = rectangles[i].intersects(selectionRect);
+        ofPoint mouse(ofGetMouseX(), ofGetMouseY());
+
+
+        bool foundIsOver = false;
+        bool hasFirstSelection = false;
+
+        if (draggingRectPtr == NULL) {
+            selectedRects.clear();
         }
 
-        // grow the slection box
-        if (rectangles[i].isSelected)
-        {
+        for (size_t i = 0; i < rectangles.size(); ++i) {
+            // if we are selecting, re-evaluate this each time
+            if (isSelecting) {
+                rectangles[i].isSelected = rectangles[i].intersects(selectionRect);
+            }
 
-            if (draggingRectPtr == NULL)
-            {
+            // grow the slection box
+            if (rectangles[i].isSelected) {
 
-                if (!hasFirstSelection)
-                {
-                    selectedRectsBoundingBox = rectangles[i];
+                if (draggingRectPtr == NULL) {
+
+                    if (!hasFirstSelection) {
+                        selectedRectsBoundingBox = rectangles[i];
+                        hasFirstSelection = true;
+                    } else {
+                        selectedRectsBoundingBox.growToInclude(rectangles[i]);
+                    }
+
+                    selectedRects.push_back(&rectangles[i]);
                     hasFirstSelection = true;
                 }
-                else
-                {
-                    selectedRectsBoundingBox.growToInclude(rectangles[i]);
-                }
+            }
 
-                selectedRects.push_back(&rectangles[i]);
-                hasFirstSelection = true;
+            // check is over -- only set isOver if other things aren't happening
+            if (!foundIsOver &&
+                    /*selectedRects.empty() &&
+                    !rectangles[i].isSelected && */
+                            (draggingRectPtr == NULL ||
+                                    draggingRectPtr == &rectangles[i] ||
+                                    draggingRectPtr == &selectedRectsBoundingBox) &&
+                    rectangles[i].inside(mouse)) {
+                rectangles[i].isOver = true;
+                foundIsOver = true;
+            } else {
+                rectangles[i].isOver = false;
             }
         }
 
-        // check is over -- only set isOver if other things aren't happening
-        if (!foundIsOver &&
-                /*selectedRects.empty() &&
-                !rectangles[i].isSelected && */
-                        (draggingRectPtr == NULL ||
-                                draggingRectPtr == &rectangles[i] ||
-                                draggingRectPtr == &selectedRectsBoundingBox) &&
-                rectangles[i].inside(mouse))
-        {
-            rectangles[i].isOver = true;
-            foundIsOver = true;
-        }
-        else
-        {
-            rectangles[i].isOver = false;
+
+        if (isSelecting) {
+            selectionRect.set(glm::vec3(dragStart.x, dragStart.y, 0), mouse);
         }
     }
-
-
-    if (isSelecting)
-    {
-        selectionRect.set(glm::vec3(dragStart.x, dragStart.y, 0), mouse);
-    }
-
 }
 
 

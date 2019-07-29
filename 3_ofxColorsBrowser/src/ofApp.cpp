@@ -11,6 +11,9 @@ void ofApp::setup(){
     ColorBrowser.setup_colorBACK(color_BACK);
     ColorBrowser.setPosition(glm::vec2(400, 65));
 	ColorBrowser.setup();
+
+    ColorBrowser.setVisible(SHOW_ColorBrowser);
+    ColorBrowser.setVisible_debugText(SHOW_ColorBrowser);
 }
 
 //--------------------------------------------------------------
@@ -32,11 +35,18 @@ void ofApp::exit(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
-//    if (key == ' ')
+//    if (key == 'p')
 //        ColorBrowser.switch_palette_Type();
 //
-//    if (key == OF_KEY_RETURN)
+//    if (key == 's')
 //        ColorBrowser.switch_sorted_Type();
+
+    if (key == 'g')
+    {
+        SHOW_ColorBrowser =!SHOW_ColorBrowser;
+        ColorBrowser.setVisible(SHOW_ColorBrowser);
+        ColorBrowser.setVisible_debugText(SHOW_ColorBrowser);
+    }
 
 }
 
