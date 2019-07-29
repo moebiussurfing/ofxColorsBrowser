@@ -19,7 +19,7 @@
 #include "ofxRectangle.h"
 using namespace ofx;
 
-#define KEY_SHORTCUTS_ENABLE;// internal shorcuts no add listeners or remove
+#define KEY_SHORTCUTS_ENABLE; // internal shorcuts no add listeners or remove
 
 typedef struct
 {
@@ -111,7 +111,6 @@ public:
     std::vector<ofRectangle>  packedRects;
 //    ofRotatedRectangle rotatedRect;
 //    ofRectanglePacker packer;
-
     void rectangles_update();
     void rectangles_draw();
 
@@ -130,6 +129,8 @@ private:
     void addMouseListeners();
     void removeMouseListeners();
 
+    //-
+    
     bool SHOW_debugText = false;
     bool SHOW_ColorsBrowse = true;
     bool ENABLE_clicks = true;
