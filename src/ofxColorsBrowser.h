@@ -3,7 +3,7 @@
 
 #include "ofMain.h"
 
-#include "ofxColourLoversHelper.h"
+//#include "ofxColourLoversHelper.h"
 
 #include "ofxOpenColor.h"
 #include "ofxInterfaceWidgets.h"
@@ -99,13 +99,13 @@ public:
     //--
 
     // COLOUR LOVERS
-
-    ofxColourLoversHelper ColourLoversHelper;
-    void ColourLover_setup();
-    void ColourLover_draw();
-    ofColor myColor;
-    vector<ofColor> myPalette;
-    string myPalette_Name = "";
+//
+//    ofxColourLoversHelper ColourLoversHelper;
+//    void ColourLover_setup();
+//    void ColourLover_draw();
+//    ofColor myColor;
+//    vector<ofColor> myPalette;
+//    string myPalette_Name = "";
 
     //--
 

@@ -3,75 +3,81 @@
 //--------------------------------------------------------------
 void ofxColorsBrowser::setVisible(bool b){
     SHOW_ColorsBrowse = b;
-    ColourLoversHelper.setVisible(SHOW_ColorsBrowse);
+//    ColourLoversHelper.setVisible(SHOW_ColorsBrowse);
 }
 
-//--------------------------------------------------------------
-void ofxColorsBrowser::ColourLover_setup(){
+////--------------------------------------------------------------
+//void ofxColorsBrowser::ColourLover_setup(){
+//
+//    //-
+//
+//    // COLOUR LOVERS
+//
+//    // set positions and panel sizes
+//    glm::vec2 sizeGui(200, 240);
+//    glm::vec2 sizeGrid(120, ofGetHeight());
+//    glm::vec2 posGui(ofGetWidth()-sizeGui.x-sizeGrid.x, 0);
+//    glm::vec2 posGrid(posGui.x+sizeGui.x+2, 0);
+//
+//    //must be called before setup() to overwrite default settings
+//    ColourLoversHelper.setGrid(posGrid, sizeGrid);
+//    ColourLoversHelper.setup(posGui, sizeGui);
+//
+//    // receivers pointers
+//    ColourLoversHelper.setColor_BACK(myColor);
+//    ColourLoversHelper.setPalette_BACK(myPalette);
+//    ColourLoversHelper.setPalette_Name_BACK(myPalette_Name);
+//
+//    // initiation values
+//    myColor = ofColor::white;
+//    myPalette.resize(2);//pointer setter whill clear/resize. nevermind the vector size here
+//    myPalette[0] = ofColor::white;
+//    myPalette[0] = ofColor::white;
+//    myPalette_Name = "NOT LOADED";
 
-    // set positions and panel sizes
-    glm::vec2 sizeGui(200, 240);
-    glm::vec2 sizeGrid(120, ofGetHeight());
-    glm::vec2 posGui(ofGetWidth()-sizeGui.x-sizeGrid.x, 0);
-    glm::vec2 posGrid(posGui.x+sizeGui.x+2, 0);
+    //-
+//}
 
-    //must be called before setup() to overwrite default settings
-    ColourLoversHelper.setGrid(posGrid, sizeGrid);
-    ColourLoversHelper.setup(posGui, sizeGui);
-
-    // receivers pointers
-    ColourLoversHelper.setColor_BACK(myColor);
-    ColourLoversHelper.setPalette_BACK(myPalette);
-    ColourLoversHelper.setPalette_Name_BACK(myPalette_Name);
-
-    // initiation values
-    myColor = ofColor::white;
-    myPalette.resize(2);//pointer setter whill clear/resize. nevermind the vector size here
-    myPalette[0] = ofColor::white;
-    myPalette[0] = ofColor::white;
-    myPalette_Name = "NOT LOADED";
-}
-
-//--------------------------------------------------------------
-void ofxColorsBrowser::ColourLover_draw(){
-    // ColourLoversHelper.draw();//not required as drawing goes to ofxUI
-
-    // preview receivers
-    int x, y, w, h, pad, lineH;
-    x = 20;
-    y = 700;
-    w = h = 40;
-    pad = 3;
-    lineH = 20;
-
-    ofPushStyle();
-    ofFill();
-
-    ofDrawBitmapStringHighlight("myColor:", x, y, ofColor::black, ofColor::white);
-    y += pad;
-
-    ofSetColor(myColor);
-    ofDrawRectangle(ofRectangle(x,y,w,h));
-    y += (h+pad);
-
-    y += (lineH);
-    ofDrawBitmapStringHighlight("myPalette:", x, y, ofColor::black, ofColor::white);
-    y += pad;
-
-    for (int i=0; i<myPalette.size(); i++)
-    {
-        ofSetColor(myPalette[i]);
-        ofDrawRectangle(ofRectangle(x+i*(w+pad),y,w,h));
-    }
-    y += (h+pad);
-
-    y += (lineH);
-    ofDrawBitmapStringHighlight("myPalette_Name:", x, y, ofColor::black, ofColor::white);
-    y += (lineH);
-    ofDrawBitmapStringHighlight("'"+myPalette_Name+"'", x, y, ofColor::black, ofColor::white);
-
-    ofPopStyle();
-}
+////--------------------------------------------------------------
+//void ofxColorsBrowser::ColourLover_draw(){
+//    // ColourLoversHelper.draw();//not required as drawing goes to ofxUI
+//
+//    // preview receivers
+//    int x, y, w, h, pad, lineH;
+//    x = 20;
+//    y = 700;
+//    w = h = 40;
+//    pad = 3;
+//    lineH = 20;
+//
+//    ofPushStyle();
+//    ofFill();
+//
+//    ofDrawBitmapStringHighlight("myColor:", x, y, ofColor::black, ofColor::white);
+//    y += pad;
+//
+//    ofSetColor(myColor);
+//    ofDrawRectangle(ofRectangle(x,y,w,h));
+//    y += (h+pad);
+//
+//    y += (lineH);
+//    ofDrawBitmapStringHighlight("myPalette:", x, y, ofColor::black, ofColor::white);
+//    y += pad;
+//
+//    for (int i=0; i<myPalette.size(); i++)
+//    {
+//        ofSetColor(myPalette[i]);
+//        ofDrawRectangle(ofRectangle(x+i*(w+pad),y,w,h));
+//    }
+//    y += (h+pad);
+//
+//    y += (lineH);
+//    ofDrawBitmapStringHighlight("myPalette_Name:", x, y, ofColor::black, ofColor::white);
+//    y += (lineH);
+//    ofDrawBitmapStringHighlight("'"+myPalette_Name+"'", x, y, ofColor::black, ofColor::white);
+//
+//    ofPopStyle();
+//}
 
 //--------------------------------------------------------------
 
@@ -346,7 +352,7 @@ void ofxColorsBrowser::setup(){
 
     // COLOUR LOVERS
 
-    ColourLover_setup();
+//    ColourLover_setup();
 
     //-
 }
@@ -467,7 +473,7 @@ void ofxColorsBrowser::update(){
 
     // COLOUR LOVERS
 
-    ColourLoversHelper.update();
+//    ColourLoversHelper.update();
 
     //--
 }
@@ -551,16 +557,16 @@ void ofxColorsBrowser::draw()
         //--
 
         // COLOUR LOVERS DEBUG POINTER BACK
-
-        ColourLover_draw();
-
-        //TODO: should trig on callbacks!
-        ColourLoversHelper.setVisible(true);
+//
+//        ColourLover_draw();
+//
+//        //TODO: should trig on callbacks!
+//        ColourLoversHelper.setVisible(true);
         //--
     }
     else
     {
-        ColourLoversHelper.setVisible(false);
+//        ColourLoversHelper.setVisible(false);
     }
 }
 
@@ -925,7 +931,7 @@ void ofxColorsBrowser::removeMouseListeners()
 //--------------------------------------------------------------
 void ofxColorsBrowser::exit()
 {
-    ColourLoversHelper.exit();
+//    ColourLoversHelper.exit();
 
     removeKeysListeners();
     removeMouseListeners();
