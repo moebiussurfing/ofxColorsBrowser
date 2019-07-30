@@ -45,6 +45,8 @@ public:
     void set_palette_Type(int p);
     void set_sorted_Type(int p);
 
+    vector<ofColor> getPalette();
+
     void setRowsSize(int rows);
     void setBoxSize(float size);
 
@@ -115,7 +117,7 @@ private:
     bool ENABLE_keys = false;
 
     vector<ofColor> palete;
-    vector<ofColor> getPalette();
+
 
     ofFloatColor color_BACK;
     ofFloatColor color_BACK_PRE;
