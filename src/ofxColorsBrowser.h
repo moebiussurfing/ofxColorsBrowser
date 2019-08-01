@@ -171,12 +171,12 @@ private:
     ofFloatColor color_BACK_PRE;
     ofFloatColor *color_BACK_OFAPP;
 
-    void generate_ColorsInPalette();
+    void grid_generate();
 
     //--
 
-    void populate_colorsBoxes();
-    void clearPopulate();
+    void grid_create_boxes();
+    void grid_clear();
     bool bShowDebug = false;
 
     //-

@@ -60,7 +60,7 @@ ofxColorsBrowser::ofxColorsBrowser()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::generate_ColorsInPalette(){
+void ofxColorsBrowser::grid_generate(){
 
     colors_STRUCT.clear();
 //    colorNameMap.clear();
@@ -72,7 +72,7 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
     if (MODE_COLOR == OFX_PANTONE_COLORS)
     {
         cout<< endl;
-        ofLogNotice("ofxColorsBrowser::generate_ColorsInPalette")<<endl;
+        ofLogNotice("ofxColorsBrowser::grid_generate")<<endl;
 
         for (int i=0; i<pantoneNames.size(); i++)
         {
@@ -586,11 +586,11 @@ void ofxColorsBrowser::setup(){
 
     //--
 
-    generate_ColorsInPalette();
+    grid_generate();
 
     //--
 
-    populate_colorsBoxes();
+    grid_create_boxes();
 
     //-
 
@@ -604,7 +604,7 @@ void ofxColorsBrowser::setup(){
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::populate_colorsBoxes()
+void ofxColorsBrowser::grid_create_boxes()
 {
     float x = position.x;
     float y = position.y;
@@ -896,9 +896,9 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         ////        else if (MODE_COLOR = OFX_OPEN_COLOR)
         ////            MODE_COLOR = OFX_COLOR_NATIVE;
 
-        clearPopulate();
-        generate_ColorsInPalette();
-        populate_colorsBoxes();
+        grid_clear();
+        grid_generate();
+        grid_create_boxes();
     }
 
     // select sorting
@@ -906,40 +906,40 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         if (MODE_SORTING != 0){
             MODE_SORTING = 0;
             //            ofSort(colors_STRUCT, comparePosition);
-            clearPopulate();
-            populate_colorsBoxes();
+            grid_clear();
+            grid_create_boxes();
         }
     }
     else if (key == '1'){
         if (MODE_SORTING != 1){
             MODE_SORTING = 1;
             //            ofSort(colors_STRUCT, compareName);
-            clearPopulate();
-            populate_colorsBoxes();
+            grid_clear();
+            grid_create_boxes();
         }
     }
     else if (key == '2'){
         if (MODE_SORTING != 2){
             MODE_SORTING = 2;
             //            ofSort(colors_STRUCT, compareHue);
-            clearPopulate();
-            populate_colorsBoxes();
+            grid_clear();
+            grid_create_boxes();
         }
     }
     else if (key == '3'){
         if (MODE_SORTING != 3){
             MODE_SORTING = 3;
             //            ofSort(colors_STRUCT, compareBrightness);
-            clearPopulate();
-            populate_colorsBoxes();
+            grid_clear();
+            grid_create_boxes();
         }
     }
     else if (key == '4'){
         if (MODE_SORTING != 4){
             MODE_SORTING = 4;
             //            ofSort(colors_STRUCT, compareSaturation);
-            clearPopulate();
-            populate_colorsBoxes();
+            grid_clear();
+            grid_create_boxes();
         }
     }
     else if (key == '5'){
@@ -1047,10 +1047,10 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::clearPopulate()
+void ofxColorsBrowser::grid_clear()
 {
     // TODO: this is not require since swap from ofXInterface to ofxrectangleUtils
-    ofLogNotice("ofxColorsBrowser") << "clearPopulate";
+    ofLogNotice("ofxColorsBrowser") << "grid_clear";
 
     //    colors_STRUCT.clear();
 
@@ -1336,9 +1336,9 @@ void ofxColorsBrowser::switch_palette_Type(){
     MODE_COLOR = (MODE_COLOR+1) % 2;
     ofLogNotice("ofxColorsBrowser") << "switch_palette_Type: " << MODE_COLOR;
 
-    clearPopulate();
-    generate_ColorsInPalette();
-    populate_colorsBoxes();
+    grid_clear();
+    grid_generate();
+    grid_create_boxes();
 }
 
 
@@ -1376,8 +1376,8 @@ void ofxColorsBrowser::switch_sorted_Type(){
     if (MODE_SORTING >= 0 && MODE_SORTING<=4)
         //    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
     {
-        clearPopulate();
-        populate_colorsBoxes();
+        grid_clear();
+        grid_create_boxes();
     }
 }
 
@@ -1387,9 +1387,9 @@ void ofxColorsBrowser::set_palette_Type(int p)
 {
     MODE_COLOR = p;
 
-    clearPopulate();
-    generate_ColorsInPalette();
-    populate_colorsBoxes();
+    grid_clear();
+    grid_generate();
+    grid_create_boxes();
 }
 
 
@@ -1420,8 +1420,8 @@ void ofxColorsBrowser::set_sorted_Type(int p)
     if (p>=0  && p<=4)
         //    if (p>=1  && p<=4)
     {
-        clearPopulate();
-        populate_colorsBoxes();
+        grid_clear();
+        grid_create_boxes();
     }
 }
 
