@@ -17,6 +17,7 @@ typedef struct
 } colorNameMapping;
 
 enum {
+    OFX_PANTONE_COLORS,
     OFX_COLOR_NATIVE,
     OFX_OPEN_COLOR
 };
@@ -26,6 +27,17 @@ class ofxColorsBrowser {
 public:
 
 //--
+
+    // PANTONE COLORS
+    ofJson js;
+    ofJson stroke;
+    ofTrueTypeFont ttf;
+    ofPath path;
+    std::string text;
+    vector<ofColor> pantoneColors;
+    vector<std::string> pantoneNames;
+
+    //--
 
     ofxColorsBrowser();
     ~ofxColorsBrowser();
@@ -118,23 +130,23 @@ private:
 
     vector<ofColor> palete;
 
-
+    // pointer back
     ofFloatColor color_BACK;
     ofFloatColor color_BACK_PRE;
     ofFloatColor *color_BACK_OFAPP;
 
-    void generateColors();
+    void generate_ColorsInPalette();
     map < string, ofColor > colorNameMap;
     vector < colorNameMapping > colorNames;
 
-    void populateScene();
+    void populate_colorsBoxes();
     void clearPopulate();
     bool bShowDebug = false;
 
     //-
 
     glm::vec2 position;
-    int MODE_COLOR; // 0: OFX_COLOR_NATIVE, 1: OFX_OPEN_COLOR
+    int MODE_COLOR; // 0: PANTONE COLORS 1: OFX_COLOR_NATIVE, 2: OFX_OPEN_COLOR
     int MODE_SORTING;
     int perRow = 10;
     float size = 50;//boxes

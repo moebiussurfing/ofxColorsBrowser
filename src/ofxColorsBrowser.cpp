@@ -40,48 +40,64 @@ ofxColorsBrowser::ofxColorsBrowser()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::generateColors(){
+void ofxColorsBrowser::generate_ColorsInPalette(){
     colorNames.clear();
     colorNameMap.clear();
 
-    if (MODE_COLOR == OFX_OPEN_COLOR)
-    {
+    //--
 
-#define NUM_COLORS 10
-        for (int i = 0; i<NUM_COLORS; i++)
+    if (MODE_COLOR == OFX_PANTONE_COLORS)
+    {
+        for (int i=0; i<pantoneNames.size(); i++)
         {
+            colorNameMap[pantoneNames[i]] = pantoneColors[i];
+        }
+    }
+
+    else if (MODE_COLOR == OFX_OPEN_COLOR)
+    {
+        bool flipOrder = true;
+        int iFlip;
+
+#define NUM_COLORS_ROW 10
+        for (int i = 0; i<NUM_COLORS_ROW; i++)
+        {
+            if (flipOrder)
+                iFlip = (NUM_COLORS_ROW-1)-i;
+            else
+                iFlip = i;
+
             //  Gray
-            colorNameMap["GREY " + ofToString(i)] = oc_gray_[i];
+            colorNameMap["GREY " + ofToString(i)] = oc_gray_[iFlip];//flip order: iFlip
             //  Red
-            colorNameMap["RED " + ofToString(i)] = oc_red_[i];
+            colorNameMap["RED " + ofToString(i)] = oc_red_[iFlip];
             //  Pink
-            colorNameMap["PINK " + ofToString(i)] = oc_pink_[i];
+            colorNameMap["PINK " + ofToString(i)] = oc_pink_[iFlip];
             //  Grape
-            colorNameMap["GRAPE " + ofToString(i)] = oc_grape_[i];
+            colorNameMap["GRAPE " + ofToString(i)] = oc_grape_[iFlip];
             //  Violet
-            colorNameMap["VIOLET " + ofToString(i)] = oc_violet_[i];
+            colorNameMap["VIOLET " + ofToString(i)] = oc_violet_[iFlip];
             //  Indigo
-            colorNameMap["INDIGO " + ofToString(i)] = oc_indigo_[i];
+            colorNameMap["INDIGO " + ofToString(i)] = oc_indigo_[iFlip];
             //  Blue
-            colorNameMap["BLUE " + ofToString(i)] = oc_blue_[i];
+            colorNameMap["BLUE " + ofToString(i)] = oc_blue_[iFlip];
             //  Cyan
-            colorNameMap["CYAN " + ofToString(i)] = oc_cyan_[i];
+            colorNameMap["CYAN " + ofToString(i)] = oc_cyan_[iFlip];
             //  Teal
-            colorNameMap["TEAL " + ofToString(i)] = oc_teal_[i];
+            colorNameMap["TEAL " + ofToString(i)] = oc_teal_[iFlip];
             //  Green
-            colorNameMap["GREEN " + ofToString(i)] = oc_green_[i];
+            colorNameMap["GREEN " + ofToString(i)] = oc_green_[iFlip];
             //  Lime
-            colorNameMap["LIME " + ofToString(i)] =  oc_lime_[i];
+            colorNameMap["LIME " + ofToString(i)] =  oc_lime_[iFlip];
             //  Yellow
-            colorNameMap["YELLOW " + ofToString(i)] =  oc_yellow_[i];
+            colorNameMap["YELLOW " + ofToString(i)] =  oc_yellow_[iFlip];
             //  Orange
-            colorNameMap["ORANGE " + ofToString(i)] =  oc_orange_[i];
+            colorNameMap["ORANGE " + ofToString(i)] =  oc_orange_[iFlip];
         }
     }
 
     else if (MODE_COLOR == OFX_COLOR_NATIVE)
     {
-
         // build a map from name to ofColor of all the named OF colors;
 
         colorNameMap["white"] = ofColor::white;
@@ -253,16 +269,105 @@ void ofxColorsBrowser::generateColors(){
     //-
 }
 
+/*
+ These string to hex conversions aren't trivial.
+ */
+static int stringToHex(string hex){
+    int aHex;
+    stringstream convert ( hex );
+    convert>> std::hex >> aHex;
+    return aHex;
+}
+
+static void hexToColor(ofColor &col,string hex){
+    string r = hex.substr(0,2);
+    int ri = stringToHex(r);
+    string g = hex.substr(2,2);
+    int gi = stringToHex(g);
+    string b = hex.substr(4,2);
+    int bi = stringToHex(b);
+    col.set(ri,gi,bi);
+}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup(){
 
-    MODE_COLOR = OFX_OPEN_COLOR;//default palette mode
-    generateColors();
+    //--
+
+    // PANTONE COLORS
+
+    pantoneNames.clear();
+    pantoneColors.clear();
+
+    string path = "colors/pantone-colors.json";
+    ofFile file(path);
+    if(file.exists()){
+        file >> js;
+        cout << js;
+        cout<< endl;
+
+        int i;
+        i=0;
+        for (auto & jsName: js["names"]){
+            cout << "NAMES  ["<<i<<"] "<<jsName<<endl;
+            pantoneNames.push_back(jsName);
+            i++;
+        }
+
+        i=0;
+        for (auto & jsValues: js["values"]){
+            cout << "VALUES ["<<i<<"] "<<jsValues<<endl;
+
+            ofColor c;
+            string colorHEXcode = ofToString(jsValues);
+            cout<<"COLOR HEX:"<<colorHEXcode<<endl;
+
+            vector<string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
+            string myCol = colorHEXcode_VEC[1];
+            cout<<"myCol:"<<myCol<<endl;
+
+            vector<string> myCol2 = ofSplitString(myCol, "\"");
+            cout<<"myCol2:"<<myCol2[0]<<endl;
+//
+//            c.setHex(myCol2[0]);
+
+//            hexToColor(c,colorHEXcode);
+//            hexToColor(c,myCol);
+            hexToColor(c,myCol2[0]);
+            cout<<"hexToColor: "<<c<<endl;
+
+////            int colInt =ofToInt(colorHEXcode_VEC[1]);
+////            cout<<"colInt:"<<colInt<<endl;
+//
+////            ofSetHexColor(0xFFFFFF);
+////            "#254445"
+//
+//            int colInt =244445;
+//            c.setHex(colInt);
+//
+////            c.setHex(colorHEXcode, 255);
+
+            pantoneColors.push_back(c);
+            i++;
+        }
+    }
+    else
+    {
+        ofLogNotice("")<<"FILE '"<<path<<"' NOT FOUND!";
+    }
 
     //--
 
-    populateScene();
+    //default palette mode
+
+    MODE_COLOR == OFX_PANTONE_COLORS;
+//    MODE_COLOR = OFX_OPEN_COLOR;
+
+    generate_ColorsInPalette();
+
+    //--
+
+    populate_colorsBoxes();
 
     //-
 
@@ -296,7 +401,7 @@ vector<ofColor> ofxColorsBrowser::getPalette()
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::populateScene()
+void ofxColorsBrowser::populate_colorsBoxes()
 {
     float x = position.x;
     float y = position.y;
@@ -395,10 +500,13 @@ void ofxColorsBrowser::draw()
 
             str = "PALETTE: ";
             switch (MODE_COLOR) {
-                case 0:
+                case OFX_PANTONE_COLORS:
+                    str += "PANTONE COLORS";
+                    break;
+                case OFX_COLOR_NATIVE:
                     str += "OF NATIVE NAMES";
                     break;
-                case 1:
+                case OFX_OPEN_COLOR:
                     str += "OPEN COLOR";
                     break;
             }
@@ -433,17 +541,31 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         }
     }
 
-    // change palette
+    // change to next palette
     if(key == OF_KEY_BACKSPACE)
     {
-        if (MODE_COLOR == OFX_COLOR_NATIVE)
-            MODE_COLOR = OFX_OPEN_COLOR;
-        else if (MODE_COLOR = OFX_OPEN_COLOR)
-            MODE_COLOR = OFX_COLOR_NATIVE;
+        MODE_COLOR++;
+        MODE_COLOR = MODE_COLOR%3;
+
+//        switch (MODE_COLOR)
+//        {
+//            case OFX_COLOR_NATIVE:
+//                break;
+//
+//        }
+//
+////        if (MODE_COLOR == OFX_COLOR_NATIVE)
+////            MODE_COLOR = OFX_OPEN_COLOR;
+////
+////        else if (MODE_COLOR == OFX_COLOR_NATIVE)
+////            MODE_COLOR = OFX_OPEN_COLOR;
+////
+////        else if (MODE_COLOR = OFX_OPEN_COLOR)
+////            MODE_COLOR = OFX_COLOR_NATIVE;
 
         clearPopulate();
-        generateColors();
-        populateScene();
+        generate_ColorsInPalette();
+        populate_colorsBoxes();
     }
 
     // select sorting
@@ -452,7 +574,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
             MODE_SORTING = 1;
             ofSort(colorNames, compareName);
             clearPopulate();
-            populateScene();
+            populate_colorsBoxes();
         }
     }
     else if (key == '2'){
@@ -460,7 +582,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
             MODE_SORTING = 2;
             ofSort(colorNames, compareHue);
             clearPopulate();
-            populateScene();
+            populate_colorsBoxes();
         }
     }
     else if (key == '3'){
@@ -468,7 +590,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
             MODE_SORTING = 3;
             ofSort(colorNames, compareBrightness);
             clearPopulate();
-            populateScene();
+            populate_colorsBoxes();
         }
     }
     else if (key == '4'){
@@ -476,7 +598,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
             MODE_SORTING = 4;
             ofSort(colorNames, compareSaturation);
             clearPopulate();
-            populateScene();
+            populate_colorsBoxes();
         }
     }
     else if (key == '5'){
@@ -800,8 +922,8 @@ void ofxColorsBrowser::switch_palette_Type(){
     ofLogNotice("ofxColorsBrowser") << "switch_palette_Type: " << MODE_COLOR;
 
     clearPopulate();
-    generateColors();
-    populateScene();
+    generate_ColorsInPalette();
+    populate_colorsBoxes();
 }
 
 
@@ -832,7 +954,7 @@ void ofxColorsBrowser::switch_sorted_Type(){
     if (MODE_SORTING >= 1 && MODE_SORTING<=4)
     {
         clearPopulate();
-        populateScene();
+        populate_colorsBoxes();
     }
 }
 
@@ -843,8 +965,8 @@ void ofxColorsBrowser::set_palette_Type(int p)
     MODE_COLOR = p;
 
     clearPopulate();
-    generateColors();
-    populateScene();
+    generate_ColorsInPalette();
+    populate_colorsBoxes();
 }
 
 
@@ -872,7 +994,7 @@ void ofxColorsBrowser::set_sorted_Type(int p)
     if (p >= 1 && p<=4)
     {
         clearPopulate();
-        populateScene();
+        populate_colorsBoxes();
     }
 }
 
