@@ -5,6 +5,7 @@
 /*
  These string to hex conversions aren't trivial.
  */
+
 static int stringToHex(string hex){
     int aHex;
     stringstream convert ( hex );
@@ -292,7 +293,7 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
     // this map is useful if we want to address the colors by string.
     // since we might want to sort this, we can put them in a vector also
 
-    if (MODE_COLOR != OFX_PANTONE_COLORS) {
+    if (MODE_SORTING != SORTING_ORIGINAL) {
         colors_STRUCT.clear(); // TODO
 
         cout << endl;
@@ -323,7 +324,7 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
 
     // TEST sorting by original order..
 
-    if (MODE_COLOR == OFX_PANTONE_COLORS)
+    if (MODE_SORTING == SORTING_ORIGINAL)
     {
         colors_STRUCT.clear(); // TODO
 
@@ -343,9 +344,9 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
             colors_STRUCT.push_back(myColorNameMapping);
 
             cout << "colors_STRUCT\t"
-                    << "name:" << myColorNameMapping.name
-                    << "color:" << ofToString(myColorNameMapping.color)
-                    << " [" <<myColorNameMapping.position<< "]";
+                 << "name:" << myColorNameMapping.name
+                 << "color:" << ofToString(myColorNameMapping.color)
+                 << " [" <<myColorNameMapping.position<< "]";
             cout << endl;
 
         }
@@ -411,7 +412,7 @@ void ofxColorsBrowser::setup(){
     //--
 
     // 1. default sorting
-    MODE_SORTING = 0;
+    MODE_SORTING = SORTING_ORIGINAL;//
 //    MODE_SORTING = 1; // by name, at the start
 
     // 2. default palette mode
@@ -435,27 +436,6 @@ void ofxColorsBrowser::setup(){
     setVisible_debugText(false);
 
     //--
-}
-
-
-//--------------------------------------------------------------
-vector<ofColor> ofxColorsBrowser::getPalette()
-{
-    ofLogNotice("ofxColorsBrowser") << "getPalette:";
-
-    int numColors = colors_STRUCT.size();
-    ofLogNotice("ofxColorsBrowser") << "numColors:" << numColors;
-
-    vector<ofColor> _palette;
-    _palette.resize(numColors);
-
-    for (int i = 0; i < colors_STRUCT.size(); i++)
-    {
-        ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
-        _palette[i] = colors_STRUCT[i].color;
-    }
-
-    return _palette;
 }
 
 
@@ -633,7 +613,7 @@ void ofxColorsBrowser::draw()
             if (ENABLE_keys)
             {
 #ifdef KEY_SHORTCUTS_ENABLE
-                str = "SORT BY\n";
+                str = "SORT\n";
                 str += "[0] ORIGINAL\n";
                 str += "[1] NAME\n";
                 str += "[2] HUE\n";
@@ -663,7 +643,43 @@ void ofxColorsBrowser::draw()
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 {
     const int & key = eventArgs.key;
-//    ofLogNotice("ofxColorsBrowser") << "key: " << key;
+    ofLogNotice("ofxColorsBrowser") << "key: " << key;
+
+    //-
+
+    // change colors
+    if (key == OF_KEY_RIGHT)
+    {
+        currColor++;
+        int sizeCols = colors_STRUCT.size();
+        if (currColor>sizeCols-1)
+            currColor=0;
+        refresh_Clicks();
+    }
+    else if (key == OF_KEY_LEFT)
+    {
+        currColor--;
+        if (currColor<0)
+            currColor = colors_STRUCT.size()-1;
+        refresh_Clicks();
+    }
+    else if (key == OF_KEY_DOWN)
+    {
+        currColor = currColor + perRow;
+        int sizeCols = colors_STRUCT.size();
+        if (currColor>sizeCols-1)
+            currColor=sizeCols-1;
+        refresh_Clicks();
+    }
+    else if (key == OF_KEY_UP)
+    {
+        currColor = currColor - perRow;
+        if (currColor<0)
+            currColor=0;
+        refresh_Clicks();
+    }
+
+    //-
 
     // show debug
     if (key == 'd'){
@@ -969,19 +985,10 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
                         currColor = i;
                         currName = colors_STRUCT[currColor].name;
 
-                        currColor_OriginalPos = currColor;
-
-//                        colors_STRUCT.clear();
-//                        colorNameMap.clear();
-//
-//                        colorNameMap[pantoneNames[i]] = pantoneColors[i];
                         if (MODE_COLOR == OFX_PANTONE_COLORS)
                         {
                             currName = pantoneNames[i];//original name in position without sorting..
                         }
-
-                        //-
-
                     }
                 }
             }
@@ -1000,6 +1007,31 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
     }
 }
 
+//--------------------------------------------------------------
+void ofxColorsBrowser::refresh_Clicks()
+{
+    ofLogNotice("ofxColorsBrowser:refresh_Clicks")<<"make clicked box by keys ["<<currColor<<"]";
+
+    selectedRects.clear();//clear drag
+
+    //deselect all
+    for (size_t i = 0; i < rectangles.size(); i++) {
+        rectangles[i].isSelected = false; // assume none
+    }
+
+    // select current color
+    rectangles[currColor].isSelected = true;
+
+    color_BACK = ofColor(colors_STRUCT[currColor].color);
+//    color_BACK = ofColor(pantoneNames[currColor]);
+
+    // TEST
+    currName = colors_STRUCT[currColor].name;
+    if (MODE_COLOR == OFX_PANTONE_COLORS) {
+        currName = pantoneNames[currColor];//original name in position without sorting..
+    }
+
+}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs) {
@@ -1382,6 +1414,29 @@ void ofxColorsBrowser::rectangles_draw(){
         ofDrawRectangle(packedRects[i]);
     }
 }
+
+
+//--------------------------------------------------------------
+vector<ofColor> ofxColorsBrowser::getPalette()
+{
+    ofLogNotice("ofxColorsBrowser") << "getPalette:";
+
+    int numColors = colors_STRUCT.size();
+    ofLogNotice("ofxColorsBrowser") << "numColors:" << numColors;
+
+    vector<ofColor> _palette;
+    _palette.resize(numColors);
+
+    for (int i = 0; i < colors_STRUCT.size(); i++)
+    {
+        ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
+        _palette[i] = colors_STRUCT[i].color;
+    }
+
+    return _palette;
+}
+
+
 
 
 //--------------------------------------------------------------

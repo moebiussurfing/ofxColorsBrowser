@@ -11,6 +11,14 @@ using namespace ofx;
 #define KEY_SHORTCUTS_ENABLE; // internal shorcuts no add listeners or remove
 
 enum {
+    SORTING_ORIGINAL,
+    SORTING_NAME,
+    SORTING_HUE,
+    SORTING_BRIGHTNESS,
+    SORTING_SATURATION
+};
+
+enum {
     OFX_PANTONE_COLORS,
     OFX_COLOR_NATIVE,
     OFX_OPEN_COLOR
@@ -32,6 +40,8 @@ typedef struct
 class ofxColorsBrowser {
 
 public:
+
+    void refresh_Clicks();
 
     //--
 
