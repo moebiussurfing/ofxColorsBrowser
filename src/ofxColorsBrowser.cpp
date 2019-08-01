@@ -2,52 +2,6 @@
 
 
 //--------------------------------------------------------------
-/*
- These string to hex conversions aren't trivial.
- */
-
-static int stringToHex(string hex){
-    int aHex;
-    stringstream convert ( hex );
-    convert>> std::hex >> aHex;
-    return aHex;
-}
-
-static void hexToColor(ofColor &col,string hex){
-    string r = hex.substr(0,2);
-    int ri = stringToHex(r);
-    string g = hex.substr(2,2);
-    int gi = stringToHex(g);
-    string b = hex.substr(4,2);
-    int bi = stringToHex(b);
-    col.set(ri,gi,bi);
-}
-
-//--------------------------------------------------------------
-
-// comparing colors to sorting methods
-
-bool compareName( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
-    return s1.name < s2.name;
-}
-
-bool compareBrightness( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
-    return s1.color.getBrightness() < s2.color.getBrightness();
-}
-
-bool compareHue( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
-    return s1.color.getHue() < s2.color.getHue();
-}
-
-bool compareSaturation( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
-    return s1.color.getSaturation() < s2.color.getSaturation();
-}
-
-//bool comparePosition( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
-//    return s1.position < s2.position;
-//}
-
-//--------------------------------------------------------------
 ofxColorsBrowser::ofxColorsBrowser()
 {
     addMouseListeners();
@@ -59,11 +13,12 @@ ofxColorsBrowser::ofxColorsBrowser()
 #endif
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::grid_generate(){
 
     colors_STRUCT.clear();
-//    colorNameMap.clear();
+    colorNameMap.clear();
 
     //--
 
@@ -81,8 +36,8 @@ void ofxColorsBrowser::grid_generate(){
 
             //-
 
-//            // 1. map
-//            colorNameMap[name] = c;
+            // 1. map
+            colorNameMap[name] = c;
 
             //-
 
@@ -122,21 +77,21 @@ void ofxColorsBrowser::grid_generate(){
 
             //-
 
-//            // 1.
-//
-//            colorNameMap["GREY "+ofToString(i)]     = oc_gray_[iFlip];
-//            colorNameMap["RED "+ofToString(i)]      = oc_red_[iFlip];
-//            colorNameMap["PINK "+ofToString(i)]     = oc_pink_[iFlip];
-//            colorNameMap["GRAPE "+ofToString(i)]    = oc_grape_[iFlip];
-//            colorNameMap["VIOLET "+ofToString(i)]   = oc_violet_[iFlip];
-//            colorNameMap["INDIGO "+ofToString(i)]   = oc_indigo_[iFlip];
-//            colorNameMap["BLUE "+ofToString(i)]     = oc_blue_[iFlip];
-//            colorNameMap["CYAN "+ofToString(i)]     = oc_cyan_[iFlip];
-//            colorNameMap["TEAL "+ofToString(i)]     = oc_teal_[iFlip];
-//            colorNameMap["GREEN "+ofToString(i)]    = oc_green_[iFlip];
-//            colorNameMap["LIME "+ofToString(i)]     = oc_lime_[iFlip];
-//            colorNameMap["YELLOW "+ofToString(i)]   = oc_yellow_[iFlip];
-//            colorNameMap["ORANGE "+ofToString(i)]   = oc_orange_[iFlip];
+            // 1.
+
+            colorNameMap["GREY "+ofToString(i)]     = oc_gray_[iFlip];
+            colorNameMap["RED "+ofToString(i)]      = oc_red_[iFlip];
+            colorNameMap["PINK "+ofToString(i)]     = oc_pink_[iFlip];
+            colorNameMap["GRAPE "+ofToString(i)]    = oc_grape_[iFlip];
+            colorNameMap["VIOLET "+ofToString(i)]   = oc_violet_[iFlip];
+            colorNameMap["INDIGO "+ofToString(i)]   = oc_indigo_[iFlip];
+            colorNameMap["BLUE "+ofToString(i)]     = oc_blue_[iFlip];
+            colorNameMap["CYAN "+ofToString(i)]     = oc_cyan_[iFlip];
+            colorNameMap["TEAL "+ofToString(i)]     = oc_teal_[iFlip];
+            colorNameMap["GREEN "+ofToString(i)]    = oc_green_[iFlip];
+            colorNameMap["LIME "+ofToString(i)]     = oc_lime_[iFlip];
+            colorNameMap["YELLOW "+ofToString(i)]   = oc_yellow_[iFlip];
+            colorNameMap["ORANGE "+ofToString(i)]   = oc_orange_[iFlip];
 
             //-
 
@@ -221,153 +176,153 @@ void ofxColorsBrowser::grid_generate(){
     {
         // build a map from name to ofColor of all the named OF colors;
 
-//        colorNameMap["white"] = ofColor::white;
-//        colorNameMap["gray"] = ofColor::gray;
-//        colorNameMap["black"] = ofColor::black;
-//        colorNameMap["red"] = ofColor::red;
-//        colorNameMap["green"] = ofColor::green;
-//        colorNameMap["blue"] = ofColor::blue;
-//        colorNameMap["cyan"] = ofColor::cyan;
-//        colorNameMap["magenta"] = ofColor::magenta;
-//        colorNameMap["yellow"] = ofColor::yellow;
-//        colorNameMap["aliceBlue"] = ofColor::aliceBlue;
-//        colorNameMap["antiqueWhite"] = ofColor::antiqueWhite;
-//        colorNameMap["aqua"] = ofColor::aqua;
-//        colorNameMap["aquamarine"] = ofColor::aquamarine;
-//        colorNameMap["azure"] = ofColor::azure;
-//        colorNameMap["beige"] = ofColor::beige;
-//        colorNameMap["bisque"] = ofColor::bisque;
-//        colorNameMap["blanchedAlmond"] = ofColor::blanchedAlmond;
-//        colorNameMap["blueViolet"] = ofColor::blueViolet;
-//        colorNameMap["brown"] = ofColor::brown;
-//        colorNameMap["burlyWood"] = ofColor::burlyWood;
-//        colorNameMap["cadetBlue"] = ofColor::cadetBlue;
-//        colorNameMap["chartreuse"] = ofColor::chartreuse;
-//        colorNameMap["chocolate"] = ofColor::chocolate;
-//        colorNameMap["coral"] = ofColor::coral;
-//        colorNameMap["cornflowerBlue"] = ofColor::cornflowerBlue;
-//        colorNameMap["cornsilk"] = ofColor::cornsilk;
-//        colorNameMap["crimson"] = ofColor::crimson;
-//        colorNameMap["darkBlue"] = ofColor::darkBlue;
-//        colorNameMap["darkCyan"] = ofColor::darkCyan;
-//        colorNameMap["darkGoldenRod"] = ofColor::darkGoldenRod;
-//        colorNameMap["darkGray"] = ofColor::darkGray;
-//        colorNameMap["darkGrey"] = ofColor::darkGrey;
-//        colorNameMap["darkGreen"] = ofColor::darkGreen;
-//        colorNameMap["darkKhaki"] = ofColor::darkKhaki;
-//        colorNameMap["darkMagenta"] = ofColor::darkMagenta;
-//        colorNameMap["darkOliveGreen"] = ofColor::darkOliveGreen;
-//        colorNameMap["darkorange"] = ofColor::darkorange;
-//        colorNameMap["darkOrchid"] = ofColor::darkOrchid;
-//        colorNameMap["darkRed"] = ofColor::darkRed;
-//        colorNameMap["darkSalmon"] = ofColor::darkSalmon;
-//        colorNameMap["darkSeaGreen"] = ofColor::darkSeaGreen;
-//        colorNameMap["darkSlateBlue"] = ofColor::darkSlateBlue;
-//        colorNameMap["darkSlateGray"] = ofColor::darkSlateGray;
-//        colorNameMap["darkSlateGrey"] = ofColor::darkSlateGrey;
-//        colorNameMap["darkTurquoise"] = ofColor::darkTurquoise;
-//        colorNameMap["darkViolet"] = ofColor::darkViolet;
-//        colorNameMap["deepPink"] = ofColor::deepPink;
-//        colorNameMap["deepSkyBlue"] = ofColor::deepSkyBlue;
-//        colorNameMap["dimGray"] = ofColor::dimGray;
-//        colorNameMap["dimGrey"] = ofColor::dimGrey;
-//        colorNameMap["dodgerBlue"] = ofColor::dodgerBlue;
-//        colorNameMap["fireBrick"] = ofColor::fireBrick;
-//        colorNameMap["floralWhite"] = ofColor::floralWhite;
-//        colorNameMap["forestGreen"] = ofColor::forestGreen;
-//        colorNameMap["fuchsia"] = ofColor::fuchsia;
-//        colorNameMap["gainsboro"] = ofColor::gainsboro;
-//        colorNameMap["ghostWhite"] = ofColor::ghostWhite;
-//        colorNameMap["gold"] = ofColor::gold;
-//        colorNameMap["goldenRod"] = ofColor::goldenRod;
-//        colorNameMap["grey"] = ofColor::grey;
-//        colorNameMap["greenYellow"] = ofColor::greenYellow;
-//        colorNameMap["honeyDew"] = ofColor::honeyDew;
-//        colorNameMap["hotPink"] = ofColor::hotPink;
-//        colorNameMap["indianRed "] = ofColor::indianRed;
-//        colorNameMap["indigo "] = ofColor::indigo;
-//        colorNameMap["ivory"] = ofColor::ivory;
-//        colorNameMap["khaki"] = ofColor::khaki;
-//        colorNameMap["lavender"] = ofColor::lavender;
-//        colorNameMap["lavenderBlush"] = ofColor::lavenderBlush;
-//        colorNameMap["lawnGreen"] = ofColor::lawnGreen;
-//        colorNameMap["lemonChiffon"] = ofColor::lemonChiffon;
-//        colorNameMap["lightBlue"] = ofColor::lightBlue;
-//        colorNameMap["lightCoral"] = ofColor::lightCoral;
-//        colorNameMap["lightCyan"] = ofColor::lightCyan;
-//        colorNameMap["lightGoldenRodYellow"] = ofColor::lightGoldenRodYellow;
-//        colorNameMap["lightGray"] = ofColor::lightGray;
-//        colorNameMap["lightGrey"] = ofColor::lightGrey;
-//        colorNameMap["lightGreen"] = ofColor::lightGreen;
-//        colorNameMap["lightPink"] = ofColor::lightPink;
-//        colorNameMap["lightSalmon"] = ofColor::lightSalmon;
-//        colorNameMap["lightSeaGreen"] = ofColor::lightSeaGreen;
-//        colorNameMap["lightSkyBlue"] = ofColor::lightSkyBlue;
-//        colorNameMap["lightSlateGray"] = ofColor::lightSlateGray;
-//        colorNameMap["lightSlateGrey"] = ofColor::lightSlateGrey;
-//        colorNameMap["lightSteelBlue"] = ofColor::lightSteelBlue;
-//        colorNameMap["lightYellow"] = ofColor::lightYellow;
-//        colorNameMap["lime"] = ofColor::lime;
-//        colorNameMap["limeGreen"] = ofColor::limeGreen;
-//        colorNameMap["linen"] = ofColor::linen;
-//        colorNameMap["maroon"] = ofColor::maroon;
-//        colorNameMap["mediumAquaMarine"] = ofColor::mediumAquaMarine;
-//        colorNameMap["mediumBlue"] = ofColor::mediumBlue;
-//        colorNameMap["mediumOrchid"] = ofColor::mediumOrchid;
-//        colorNameMap["mediumPurple"] = ofColor::mediumPurple;
-//        colorNameMap["mediumSeaGreen"] = ofColor::mediumSeaGreen;
-//        colorNameMap["mediumSlateBlue"] = ofColor::mediumSlateBlue;
-//        colorNameMap["mediumSpringGreen"] = ofColor::mediumSpringGreen;
-//        colorNameMap["mediumTurquoise"] = ofColor::mediumTurquoise;
-//        colorNameMap["mediumVioletRed"] = ofColor::mediumVioletRed;
-//        colorNameMap["midnightBlue"] = ofColor::midnightBlue;
-//        colorNameMap["mintCream"] = ofColor::mintCream;
-//        colorNameMap["mistyRose"] = ofColor::mistyRose;
-//        colorNameMap["moccasin"] = ofColor::moccasin;
-//        colorNameMap["navajoWhite"] = ofColor::navajoWhite;
-//        colorNameMap["navy"] = ofColor::navy;
-//        colorNameMap["oldLace"] = ofColor::oldLace;
-//        colorNameMap["olive"] = ofColor::olive;
-//        colorNameMap["oliveDrab"] = ofColor::oliveDrab;
-//        colorNameMap["orange"] = ofColor::orange;
-//        colorNameMap["orangeRed"] = ofColor::orangeRed;
-//        colorNameMap["orchid"] = ofColor::orchid;
-//        colorNameMap["paleGoldenRod"] = ofColor::paleGoldenRod;
-//        colorNameMap["paleGreen"] = ofColor::paleGreen;
-//        colorNameMap["paleTurquoise"] = ofColor::paleTurquoise;
-//        colorNameMap["paleVioletRed"] = ofColor::paleVioletRed;
-//        colorNameMap["papayaWhip"] = ofColor::papayaWhip;
-//        colorNameMap["peachPuff"] = ofColor::peachPuff;
-//        colorNameMap["peru"] = ofColor::peru;
-//        colorNameMap["pink"] = ofColor::pink;
-//        colorNameMap["plum"] = ofColor::plum;
-//        colorNameMap["powderBlue"] = ofColor::powderBlue;
-//        colorNameMap["purple"] = ofColor::purple;
-//        colorNameMap["rosyBrown"] = ofColor::rosyBrown;
-//        colorNameMap["royalBlue"] = ofColor::royalBlue;
-//        colorNameMap["saddleBrown"] = ofColor::saddleBrown;
-//        colorNameMap["salmon"] = ofColor::salmon;
-//        colorNameMap["sandyBrown"] = ofColor::sandyBrown;
-//        colorNameMap["seaGreen"] = ofColor::seaGreen;
-//        colorNameMap["seaShell"] = ofColor::seaShell;
-//        colorNameMap["sienna"] = ofColor::sienna;
-//        colorNameMap["silver"] = ofColor::silver;
-//        colorNameMap["skyBlue"] = ofColor::skyBlue;
-//        colorNameMap["slateBlue"] = ofColor::slateBlue;
-//        colorNameMap["slateGray"] = ofColor::slateGray;
-//        colorNameMap["slateGrey"] = ofColor::slateGrey;
-//        colorNameMap["snow"] = ofColor::snow;
-//        colorNameMap["springGreen"] = ofColor::springGreen;
-//        colorNameMap["steelBlue"] = ofColor::steelBlue;
-//        colorNameMap["tan"] = ofColor::tan;
-//        colorNameMap["teal"] = ofColor::teal;
-//        colorNameMap["thistle"] = ofColor::thistle;
-//        colorNameMap["tomato"] = ofColor::tomato;
-//        colorNameMap["turquoise"] = ofColor::turquoise;
-//        colorNameMap["violet"] = ofColor::violet;
-//        colorNameMap["wheat"] = ofColor::wheat;
-//        colorNameMap["whiteSmoke"] = ofColor::whiteSmoke;
-//        colorNameMap["yellowGreen"] = ofColor::yellowGreen;
+        colorNameMap["white"] = ofColor::white;
+        colorNameMap["gray"] = ofColor::gray;
+        colorNameMap["black"] = ofColor::black;
+        colorNameMap["red"] = ofColor::red;
+        colorNameMap["green"] = ofColor::green;
+        colorNameMap["blue"] = ofColor::blue;
+        colorNameMap["cyan"] = ofColor::cyan;
+        colorNameMap["magenta"] = ofColor::magenta;
+        colorNameMap["yellow"] = ofColor::yellow;
+        colorNameMap["aliceBlue"] = ofColor::aliceBlue;
+        colorNameMap["antiqueWhite"] = ofColor::antiqueWhite;
+        colorNameMap["aqua"] = ofColor::aqua;
+        colorNameMap["aquamarine"] = ofColor::aquamarine;
+        colorNameMap["azure"] = ofColor::azure;
+        colorNameMap["beige"] = ofColor::beige;
+        colorNameMap["bisque"] = ofColor::bisque;
+        colorNameMap["blanchedAlmond"] = ofColor::blanchedAlmond;
+        colorNameMap["blueViolet"] = ofColor::blueViolet;
+        colorNameMap["brown"] = ofColor::brown;
+        colorNameMap["burlyWood"] = ofColor::burlyWood;
+        colorNameMap["cadetBlue"] = ofColor::cadetBlue;
+        colorNameMap["chartreuse"] = ofColor::chartreuse;
+        colorNameMap["chocolate"] = ofColor::chocolate;
+        colorNameMap["coral"] = ofColor::coral;
+        colorNameMap["cornflowerBlue"] = ofColor::cornflowerBlue;
+        colorNameMap["cornsilk"] = ofColor::cornsilk;
+        colorNameMap["crimson"] = ofColor::crimson;
+        colorNameMap["darkBlue"] = ofColor::darkBlue;
+        colorNameMap["darkCyan"] = ofColor::darkCyan;
+        colorNameMap["darkGoldenRod"] = ofColor::darkGoldenRod;
+        colorNameMap["darkGray"] = ofColor::darkGray;
+        colorNameMap["darkGrey"] = ofColor::darkGrey;
+        colorNameMap["darkGreen"] = ofColor::darkGreen;
+        colorNameMap["darkKhaki"] = ofColor::darkKhaki;
+        colorNameMap["darkMagenta"] = ofColor::darkMagenta;
+        colorNameMap["darkOliveGreen"] = ofColor::darkOliveGreen;
+        colorNameMap["darkorange"] = ofColor::darkorange;
+        colorNameMap["darkOrchid"] = ofColor::darkOrchid;
+        colorNameMap["darkRed"] = ofColor::darkRed;
+        colorNameMap["darkSalmon"] = ofColor::darkSalmon;
+        colorNameMap["darkSeaGreen"] = ofColor::darkSeaGreen;
+        colorNameMap["darkSlateBlue"] = ofColor::darkSlateBlue;
+        colorNameMap["darkSlateGray"] = ofColor::darkSlateGray;
+        colorNameMap["darkSlateGrey"] = ofColor::darkSlateGrey;
+        colorNameMap["darkTurquoise"] = ofColor::darkTurquoise;
+        colorNameMap["darkViolet"] = ofColor::darkViolet;
+        colorNameMap["deepPink"] = ofColor::deepPink;
+        colorNameMap["deepSkyBlue"] = ofColor::deepSkyBlue;
+        colorNameMap["dimGray"] = ofColor::dimGray;
+        colorNameMap["dimGrey"] = ofColor::dimGrey;
+        colorNameMap["dodgerBlue"] = ofColor::dodgerBlue;
+        colorNameMap["fireBrick"] = ofColor::fireBrick;
+        colorNameMap["floralWhite"] = ofColor::floralWhite;
+        colorNameMap["forestGreen"] = ofColor::forestGreen;
+        colorNameMap["fuchsia"] = ofColor::fuchsia;
+        colorNameMap["gainsboro"] = ofColor::gainsboro;
+        colorNameMap["ghostWhite"] = ofColor::ghostWhite;
+        colorNameMap["gold"] = ofColor::gold;
+        colorNameMap["goldenRod"] = ofColor::goldenRod;
+        colorNameMap["grey"] = ofColor::grey;
+        colorNameMap["greenYellow"] = ofColor::greenYellow;
+        colorNameMap["honeyDew"] = ofColor::honeyDew;
+        colorNameMap["hotPink"] = ofColor::hotPink;
+        colorNameMap["indianRed "] = ofColor::indianRed;
+        colorNameMap["indigo "] = ofColor::indigo;
+        colorNameMap["ivory"] = ofColor::ivory;
+        colorNameMap["khaki"] = ofColor::khaki;
+        colorNameMap["lavender"] = ofColor::lavender;
+        colorNameMap["lavenderBlush"] = ofColor::lavenderBlush;
+        colorNameMap["lawnGreen"] = ofColor::lawnGreen;
+        colorNameMap["lemonChiffon"] = ofColor::lemonChiffon;
+        colorNameMap["lightBlue"] = ofColor::lightBlue;
+        colorNameMap["lightCoral"] = ofColor::lightCoral;
+        colorNameMap["lightCyan"] = ofColor::lightCyan;
+        colorNameMap["lightGoldenRodYellow"] = ofColor::lightGoldenRodYellow;
+        colorNameMap["lightGray"] = ofColor::lightGray;
+        colorNameMap["lightGrey"] = ofColor::lightGrey;
+        colorNameMap["lightGreen"] = ofColor::lightGreen;
+        colorNameMap["lightPink"] = ofColor::lightPink;
+        colorNameMap["lightSalmon"] = ofColor::lightSalmon;
+        colorNameMap["lightSeaGreen"] = ofColor::lightSeaGreen;
+        colorNameMap["lightSkyBlue"] = ofColor::lightSkyBlue;
+        colorNameMap["lightSlateGray"] = ofColor::lightSlateGray;
+        colorNameMap["lightSlateGrey"] = ofColor::lightSlateGrey;
+        colorNameMap["lightSteelBlue"] = ofColor::lightSteelBlue;
+        colorNameMap["lightYellow"] = ofColor::lightYellow;
+        colorNameMap["lime"] = ofColor::lime;
+        colorNameMap["limeGreen"] = ofColor::limeGreen;
+        colorNameMap["linen"] = ofColor::linen;
+        colorNameMap["maroon"] = ofColor::maroon;
+        colorNameMap["mediumAquaMarine"] = ofColor::mediumAquaMarine;
+        colorNameMap["mediumBlue"] = ofColor::mediumBlue;
+        colorNameMap["mediumOrchid"] = ofColor::mediumOrchid;
+        colorNameMap["mediumPurple"] = ofColor::mediumPurple;
+        colorNameMap["mediumSeaGreen"] = ofColor::mediumSeaGreen;
+        colorNameMap["mediumSlateBlue"] = ofColor::mediumSlateBlue;
+        colorNameMap["mediumSpringGreen"] = ofColor::mediumSpringGreen;
+        colorNameMap["mediumTurquoise"] = ofColor::mediumTurquoise;
+        colorNameMap["mediumVioletRed"] = ofColor::mediumVioletRed;
+        colorNameMap["midnightBlue"] = ofColor::midnightBlue;
+        colorNameMap["mintCream"] = ofColor::mintCream;
+        colorNameMap["mistyRose"] = ofColor::mistyRose;
+        colorNameMap["moccasin"] = ofColor::moccasin;
+        colorNameMap["navajoWhite"] = ofColor::navajoWhite;
+        colorNameMap["navy"] = ofColor::navy;
+        colorNameMap["oldLace"] = ofColor::oldLace;
+        colorNameMap["olive"] = ofColor::olive;
+        colorNameMap["oliveDrab"] = ofColor::oliveDrab;
+        colorNameMap["orange"] = ofColor::orange;
+        colorNameMap["orangeRed"] = ofColor::orangeRed;
+        colorNameMap["orchid"] = ofColor::orchid;
+        colorNameMap["paleGoldenRod"] = ofColor::paleGoldenRod;
+        colorNameMap["paleGreen"] = ofColor::paleGreen;
+        colorNameMap["paleTurquoise"] = ofColor::paleTurquoise;
+        colorNameMap["paleVioletRed"] = ofColor::paleVioletRed;
+        colorNameMap["papayaWhip"] = ofColor::papayaWhip;
+        colorNameMap["peachPuff"] = ofColor::peachPuff;
+        colorNameMap["peru"] = ofColor::peru;
+        colorNameMap["pink"] = ofColor::pink;
+        colorNameMap["plum"] = ofColor::plum;
+        colorNameMap["powderBlue"] = ofColor::powderBlue;
+        colorNameMap["purple"] = ofColor::purple;
+        colorNameMap["rosyBrown"] = ofColor::rosyBrown;
+        colorNameMap["royalBlue"] = ofColor::royalBlue;
+        colorNameMap["saddleBrown"] = ofColor::saddleBrown;
+        colorNameMap["salmon"] = ofColor::salmon;
+        colorNameMap["sandyBrown"] = ofColor::sandyBrown;
+        colorNameMap["seaGreen"] = ofColor::seaGreen;
+        colorNameMap["seaShell"] = ofColor::seaShell;
+        colorNameMap["sienna"] = ofColor::sienna;
+        colorNameMap["silver"] = ofColor::silver;
+        colorNameMap["skyBlue"] = ofColor::skyBlue;
+        colorNameMap["slateBlue"] = ofColor::slateBlue;
+        colorNameMap["slateGray"] = ofColor::slateGray;
+        colorNameMap["slateGrey"] = ofColor::slateGrey;
+        colorNameMap["snow"] = ofColor::snow;
+        colorNameMap["springGreen"] = ofColor::springGreen;
+        colorNameMap["steelBlue"] = ofColor::steelBlue;
+        colorNameMap["tan"] = ofColor::tan;
+        colorNameMap["teal"] = ofColor::teal;
+        colorNameMap["thistle"] = ofColor::thistle;
+        colorNameMap["tomato"] = ofColor::tomato;
+        colorNameMap["turquoise"] = ofColor::turquoise;
+        colorNameMap["violet"] = ofColor::violet;
+        colorNameMap["wheat"] = ofColor::wheat;
+        colorNameMap["whiteSmoke"] = ofColor::whiteSmoke;
+        colorNameMap["yellowGreen"] = ofColor::yellowGreen;
     }
 
     //----
@@ -1647,8 +1602,6 @@ vector<ofColor> ofxColorsBrowser::getPalette()
 
     return _palette;
 }
-
-
 
 
 //--------------------------------------------------------------

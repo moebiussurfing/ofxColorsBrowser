@@ -143,6 +143,57 @@ public:
 //    ofRotatedRectangle rotatedRect;
 //    ofRectanglePacker packer;
 
+//--
+
+
+
+//--------------------------------------------------------------
+/*
+ These string to hex conversions aren't trivial.
+ */
+
+    static int stringToHex(string hex){
+        int aHex;
+        stringstream convert ( hex );
+        convert>> std::hex >> aHex;
+        return aHex;
+    }
+
+    static void hexToColor(ofColor &col,string hex){
+        string r = hex.substr(0,2);
+        int ri = stringToHex(r);
+        string g = hex.substr(2,2);
+        int gi = stringToHex(g);
+        string b = hex.substr(4,2);
+        int bi = stringToHex(b);
+        col.set(ri,gi,bi);
+    }
+
+
+//--------------------------------------------------------------
+
+// comparing colors to sorting methods
+
+    bool compareName( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
+        return s1.name < s2.name;
+    }
+
+    bool compareBrightness( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
+        return s1.color.getBrightness() < s2.color.getBrightness();
+    }
+
+    bool compareHue( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
+        return s1.color.getHue() < s2.color.getHue();
+    }
+
+    bool compareSaturation( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
+        return s1.color.getSaturation() < s2.color.getSaturation();
+    }
+
+//bool comparePosition( const colorMapping_STRUCT& s1, const colorMapping_STRUCT& s2 ) {
+//    return s1.position < s2.position;
+//}
+
     //--
 
 private:
