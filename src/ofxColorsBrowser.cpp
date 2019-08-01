@@ -292,50 +292,68 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
     // this map is useful if we want to address the colors by string.
     // since we might want to sort this, we can put them in a vector also
 
-    cout<<endl;
-    for (unsigned int i = 0; i < colorNameMap.size(); i++){
+    if (MODE_COLOR != OFX_PANTONE_COLORS) {
+        colors_STRUCT.clear(); // TODO
 
-        map<string, ofColor>::iterator mapEntry = colorNameMap.begin();
-        std::advance( mapEntry, i );
+        cout << endl;
+        for (unsigned int i = 0; i < colorNameMap.size(); i++) {
 
-        colorNameMapping mapping;
-        mapping.name = mapEntry->first;
-        mapping.color = mapEntry->second;
+            map<string, ofColor>::iterator mapEntry = colorNameMap.begin();
+            std::advance(mapEntry, i);
 
-        colors_STRUCT.push_back(mapping);
+            colorNameMapping mapping;
+            mapping.name = mapEntry->first;
+            mapping.color = mapEntry->second;
 
-        // TEST
-        cout<<"colorNameMap\t"<<"name:"<<mapping.name<<" ["<<i<<"]"<< "color:"<<ofToString(mapping.color)<<endl;
+            //-
 
+            colors_STRUCT.push_back(mapping);
 
-//        string n  = colorNameMap[i].name;
+            //-
 
+            // TEST
+            cout << "colorNameMap\t" << "name:" << mapping.name << " [" << i << "]" << "color:"
+                 << ofToString(mapping.color) << endl;
+
+        }
+        cout << endl;
     }
-    cout<<endl;
 
     //-
 
     // TEST sorting by original order..
 
-    cout<<endl;
-    cout << "colorPositions"<< endl;
+    if (MODE_COLOR == OFX_PANTONE_COLORS)
+    {
+        colors_STRUCT.clear(); // TODO
 
-    for (unsigned int i = 0; i < positionNameMap.size(); i++){
+//        string name = pantoneNames[i];
+//        colorNameMap[name] = pantoneColors[i];
 
-        map<string, int>::iterator mapEntry = positionNameMap.begin();
-        std::advance( mapEntry, i );
+        cout << endl;
+        cout << "MODE_COLOR == OFX_PANTONE_COLOR" << endl;
 
-        colorPositionMapping mapping;
-        mapping.name = mapEntry->first;
-        mapping.position = mapEntry->second;
+        for (unsigned int i=0; i<pantoneColors.size(); i++) {
 
-        colorPositions.push_back(mapping);
-    }
-    cout<<endl;
-    cout << "colorPositions"<< endl;
+            colorNameMapping myColorNameMapping;
+            myColorNameMapping.name = pantoneNames[i];
+            myColorNameMapping.color = pantoneColors[i];
+            myColorNameMapping.position = i;
+
+            colors_STRUCT.push_back(myColorNameMapping);
+
+            cout << "colors_STRUCT\t"
+                    << "name:" << myColorNameMapping.name
+                    << "color:" << ofToString(myColorNameMapping.color)
+                    << " [" <<myColorNameMapping.position<< "]";
+            cout << endl;
+
+        }
+        cout << endl;
+        cout << "colorPositions" << endl;
 //    cout << ofToString(colorPositions)<<endl;
 //    cout<<endl;
-
+    }
 
     //---
 }
@@ -363,8 +381,6 @@ void ofxColorsBrowser::load_Pantone_JSON(){
 
         i=0;
         for (auto & jsValues: js["values"]){
-//            cout << "VALUES ["<<i<<"] "<< setw(30) <<jsValues<<endl;
-//            cout << fname + " " + lname << right << setw(20) << setprecision(2) << fixed << height << endl;
             cout << "VALUES ["<<i<<"] "<<jsValues<<endl;
 
             ofColor c;
@@ -501,22 +517,53 @@ void ofxColorsBrowser::draw()
     // 1. ALL THE COLORS NAMES
 
     // show all names from loaded palette
-    for (int i=0; i<colors_STRUCT.size(); i++) {
-        string str = colors_STRUCT[i].name;
-        if (i == currColor) {
+    int lineBegin;
+    int lineEnd;
+    int linesPage = 7*4;
 
-            ofDrawBitmapStringHighlight(str, 0, 20 + i * 20, ofColor::white, ofColor::black);
-        } else {
-            ofDrawBitmapStringHighlight(str, 0, 20 + i * 20, ofColor::black, ofColor::white);
+    int pageNum;
+    if (currColor<linesPage)
+    {
+        pageNum = 0;
+        lineBegin = 0;
+    }
+    else
+    {
+        pageNum = 1;
+        lineBegin = pageNum*linesPage;
+    }
+    lineEnd = lineBegin+linesPage;
+    //TODO: add more pages...
+
+    for (int i=lineBegin; i<lineEnd; i++)
+    {
+        int line;
+        line = lineBegin+i;
+        string str;
+        str = colors_STRUCT[line].name;
+
+        int iPadded;
+        int currPadded;
+        if (pageNum==0)
+        {
+            iPadded = i;
+            currPadded = currColor;
+        }
+        else if (pageNum==1)
+        {
+            iPadded = i-lineBegin;
+            currPadded = currColor+lineBegin;
+        }
+
+        if (line==currPadded)
+        {
+            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded*20, ofColor::white, ofColor::black);
+        }
+        else
+        {
+            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded*20, ofColor::black, ofColor::white);
         }
     }
-
-//    for (int i=0; i<pantoneNames.size(); i++)
-//    {
-//        string str;
-//        str = pantoneNames[i];
-//        ofDrawBitmapStringHighlight(str, 0, 0+20 + i*20, ofColor::black, ofColor::white);
-//    }
 
     //-
 
@@ -524,11 +571,13 @@ void ofxColorsBrowser::draw()
 
     {
         int i = 0;
-        int x = position.x;
+        int x = position.x+5;
         int y = 25;
-        ofDrawBitmapStringHighlight("currName : "+currName, x, y+(i++)*20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("currColor: "+ofToString(currColor), x, y+(i++)*20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("currColor_OriginalPos: "+ofToString(currColor_OriginalPos), x, y+(i++)*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("name: "+currName, x, y+(i++)*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("position: "+ofToString(currColor), x, y+(i++)*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("page: "+ofToString(pageNum), x, y+(i++)*20, ofColor::black, ofColor::white);
+
+//        ofDrawBitmapStringHighlight("currColor_OriginalPos: "+ofToString(currColor_OriginalPos), x, y+(i++)*20, ofColor::black, ofColor::white);
     }
 
     //-
