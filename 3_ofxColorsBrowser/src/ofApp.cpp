@@ -6,11 +6,15 @@ void ofApp::setup(){
     ofBackground(64);
     ofSetFrameRate(30);
     
-    ColorBrowser.setBoxSize(25);
-    ColorBrowser.setRowsSize(5);
+    ColorBrowser.setBoxSize(10);
+    ColorBrowser.setRowsSize(7*8);
+//    ColorBrowser.setRowsSize(5);
     ColorBrowser.setup_colorBACK(color_BACK);
-    ColorBrowser.setPosition(glm::vec2(400, 65));
-	ColorBrowser.setup();
+
+    ColorBrowser.setPosition(glm::vec2(300, 65));
+    ColorBrowser.setPositionHelper(glm::vec2(ofGetWidth()-250, 20));
+
+    ColorBrowser.setup();
 
     ColorBrowser.setVisible(SHOW_ColorBrowser);
     ColorBrowser.setVisible_debugText(SHOW_ColorBrowser);

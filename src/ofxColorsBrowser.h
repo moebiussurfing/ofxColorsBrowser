@@ -52,6 +52,10 @@ public:
     // API
 
     void setPosition(glm::vec2 p);
+    void setPositionHelper(glm::vec2 p){
+        positionHelper = p;
+    };
+
     void switch_palette_Type();
     void switch_sorted_Type();
     void set_palette_Type(int p);
@@ -144,11 +148,17 @@ private:
     bool bShowDebug = false;
 
     //-
-
     glm::vec2 position;
+
+    glm::vec2 positionHelper;
+
+
     int MODE_COLOR; // 0: PANTONE COLORS 1: OFX_COLOR_NATIVE, 2: OFX_OPEN_COLOR
     int MODE_SORTING;
     int perRow = 10;
     float size = 50;//boxes
     float pad = 2;
+
+    string currName = "";
+    int currColor = 0;
 };
