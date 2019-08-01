@@ -868,7 +868,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     else if (key == '1'){
         if (MODE_SORTING != 1){
             MODE_SORTING = 1;
-            //            ofSort(colors_STRUCT, compareName);
+//                        ofSort(colors_STRUCT, compareName);
             grid_clear();
             grid_create_boxes();
         }
@@ -1381,33 +1381,6 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 }
 
 
-////--------------------------------------------------------------
-//void ofxColorsBrowser::draw_native(){
-//
-//    // calculate the total size needed to display all the colors
-//
-//    float totalSize = (ceil(colorNameMap.size()/3.0)) * 50 - ofGetHeight() + 60;
-//
-//    // map the smoothed mouse to this:
-//
-//    float offset = ofMap(mouseSmoothed.y, 0, ofGetHeight(), 0, totalSize, true);
-//
-//    // draw all the colors
-//    // note this could be optimized, since we're drawing plenty that's offscreen here.
-//
-//    for (unsigned int i = 0; i < colors_STRUCT.size(); i++){
-//
-//        int x = (i % 3) * ofGetWidth()/3.0;
-//        int y = (floor(i / 3)) * 50;
-//
-//        ofSetColor( colors_STRUCT[i].color );
-//        ofDrawRectangle(0 + x, y - offset, (i%3 == 2) ? ofGetWidth() - x : ofGetWidth()/3.0, 50);
-//
-//        ofDrawBitmapStringHighlight(colors_STRUCT[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
-//    }
-//}
-
-
 //--------------------------------------------------------------
 void ofxColorsBrowser::rectangles_update()
 {
@@ -1594,7 +1567,7 @@ vector<ofColor> ofxColorsBrowser::getPalette()
     vector<ofColor> _palette;
     _palette.resize(numColors);
 
-    for (int i = 0; i < colors_STRUCT.size(); i++)
+    for (int i=0; i<colors_STRUCT.size(); i++)
     {
         ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
         _palette[i] = colors_STRUCT[i].color;
