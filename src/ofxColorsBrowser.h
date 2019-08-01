@@ -20,8 +20,14 @@ typedef struct
 {
     string name;
     ofColor color;
-//    int position;//original
+    int position;//original position
 } colorNameMapping;
+
+typedef struct
+{
+    string name;
+    int position;//original
+} colorPositionMapping;
 
 class ofxColorsBrowser {
 
@@ -33,11 +39,16 @@ public:
 
     // this map is useful if we want to address the colors by string.
     // since we might want to sort this, we can put them in a vector also
-    vector < colorNameMapping > colorNames;
+    vector < colorNameMapping > colors_STRUCT;
 
-//--
+    // TEST
+    map < string, int > positionNameMap;
+    vector < colorPositionMapping > colorPositions;
+
+    //--
 
     // PANTONE COLORS
+
     ofJson js;
     ofPath path;
     vector<ofColor> pantoneColors;

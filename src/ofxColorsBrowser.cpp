@@ -1,10 +1,25 @@
 #include "ofxColorsBrowser.h"
 
+
 //--------------------------------------------------------------
-void ofxColorsBrowser::setVisible(bool b)
-{
-    SHOW_ColorsBrowse = b;
-    set_ENABLE_clicks(b);
+/*
+ These string to hex conversions aren't trivial.
+ */
+static int stringToHex(string hex){
+    int aHex;
+    stringstream convert ( hex );
+    convert>> std::hex >> aHex;
+    return aHex;
+}
+
+static void hexToColor(ofColor &col,string hex){
+    string r = hex.substr(0,2);
+    int ri = stringToHex(r);
+    string g = hex.substr(2,2);
+    int gi = stringToHex(g);
+    string b = hex.substr(4,2);
+    int bi = stringToHex(b);
+    col.set(ri,gi,bi);
 }
 
 //--------------------------------------------------------------
@@ -45,7 +60,8 @@ ofxColorsBrowser::ofxColorsBrowser()
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::generate_ColorsInPalette(){
-    colorNames.clear();
+
+    colors_STRUCT.clear();
     colorNameMap.clear();
 
     //--
@@ -54,15 +70,23 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
 
     if (MODE_COLOR == OFX_PANTONE_COLORS)
     {
+        cout<< endl;
+        cout << "generate_ColorsInPalette"<< endl;
         for (int i=0; i<pantoneNames.size(); i++)
         {
-            colorNameMap[pantoneNames[i]] = pantoneColors[i];
+            string name = pantoneNames[i];
+            colorNameMap[name] = pantoneColors[i];
+
+            // TEST
+            positionNameMap[name] = i;
+            cout<<"positionNameMap[name]\t"<<"name:"<<name<<" ["<<i<<"]"<<endl;
         }
+        cout<< endl;
     }
 
-    //--
+        //--
 
-    // 2. OFX_OPEN_COLOR
+        // 2. OFX_OPEN_COLOR
 
     else if (MODE_COLOR == OFX_OPEN_COLOR)
     {
@@ -106,9 +130,9 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         }
     }
 
-    //--
+        //--
 
-    // 3. OFX_COLOR_NATIVE
+        // 3. OFX_COLOR_NATIVE
 
     else if (MODE_COLOR == OFX_COLOR_NATIVE)
     {
@@ -268,6 +292,7 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
     // this map is useful if we want to address the colors by string.
     // since we might want to sort this, we can put them in a vector also
 
+    cout<<endl;
     for (unsigned int i = 0; i < colorNameMap.size(); i++){
 
         map<string, ofColor>::iterator mapEntry = colorNameMap.begin();
@@ -277,38 +302,44 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         mapping.name = mapEntry->first;
         mapping.color = mapEntry->second;
 
-        //add original position
-//        mapping.position = mapEntry->third;
+        colors_STRUCT.push_back(mapping);
 
-        colorNames.push_back(mapping);
+        // TEST
+        cout<<"colorNameMap\t"<<"name:"<<mapping.name<<" ["<<i<<"]"<< "color:"<<ofToString(mapping.color)<<endl;
+
+
+//        string n  = colorNameMap[i].name;
 
     }
-
-    MODE_SORTING = 0; // by name, at the start
-//    MODE_SORTING = 1; // by name, at the start
+    cout<<endl;
 
     //-
+
+    // TEST sorting by original order..
+
+    cout<<endl;
+    cout << "colorPositions"<< endl;
+
+    for (unsigned int i = 0; i < positionNameMap.size(); i++){
+
+        map<string, int>::iterator mapEntry = positionNameMap.begin();
+        std::advance( mapEntry, i );
+
+        colorPositionMapping mapping;
+        mapping.name = mapEntry->first;
+        mapping.position = mapEntry->second;
+
+        colorPositions.push_back(mapping);
+    }
+    cout<<endl;
+    cout << "colorPositions"<< endl;
+//    cout << ofToString(colorPositions)<<endl;
+//    cout<<endl;
+
+
+    //---
 }
 
-/*
- These string to hex conversions aren't trivial.
- */
-static int stringToHex(string hex){
-    int aHex;
-    stringstream convert ( hex );
-    convert>> std::hex >> aHex;
-    return aHex;
-}
-
-static void hexToColor(ofColor &col,string hex){
-    string r = hex.substr(0,2);
-    int ri = stringToHex(r);
-    string g = hex.substr(2,2);
-    int gi = stringToHex(g);
-    string b = hex.substr(4,2);
-    int bi = stringToHex(b);
-    col.set(ri,gi,bi);
-}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::load_Pantone_JSON(){
@@ -323,8 +354,7 @@ void ofxColorsBrowser::load_Pantone_JSON(){
         cout << js;
         cout<< endl;
 
-        int i;
-        i=0;
+        int i=0;
         for (auto & jsName: js["names"]){
             cout << "NAMES  ["<<i<<"] "<<jsName<<endl;
             pantoneNames.push_back(jsName);
@@ -333,18 +363,16 @@ void ofxColorsBrowser::load_Pantone_JSON(){
 
         i=0;
         for (auto & jsValues: js["values"]){
+//            cout << "VALUES ["<<i<<"] "<< setw(30) <<jsValues<<endl;
+//            cout << fname + " " + lname << right << setw(20) << setprecision(2) << fixed << height << endl;
             cout << "VALUES ["<<i<<"] "<<jsValues<<endl;
 
             ofColor c;
             string colorHEXcode = ofToString(jsValues);
-//            cout<<"COLOR HEX:"<<colorHEXcode<<endl;
             vector<string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
             string myCol = colorHEXcode_VEC[1];
-//            cout<<"myCol:"<<myCol<<endl;
             vector<string> myCol2 = ofSplitString(myCol, "\"");
-//            cout<<"myCol2:"<<myCol2[0]<<endl;
-            hexToColor(c,myCol2[0]);
-//            cout<<"hexToColor: "<<c<<endl;
+            hexToColor(c, myCol2[0]);
 
             pantoneColors.push_back(c);
             i++;
@@ -366,10 +394,16 @@ void ofxColorsBrowser::setup(){
 
     //--
 
-    // default palette mode
+    // 1. default sorting
+    MODE_SORTING = 0;
+//    MODE_SORTING = 1; // by name, at the start
+
+    // 2. default palette mode
 
     MODE_COLOR = OFX_PANTONE_COLORS;
 //    MODE_COLOR = OFX_OPEN_COLOR;
+
+    //--
 
     generate_ColorsInPalette();
 
@@ -379,8 +413,9 @@ void ofxColorsBrowser::setup(){
 
     //-
 
-    set_ENABLE_clicks(true);
+    // STARTUP
 
+    set_ENABLE_clicks(true);
     setVisible_debugText(false);
 
     //--
@@ -392,16 +427,16 @@ vector<ofColor> ofxColorsBrowser::getPalette()
 {
     ofLogNotice("ofxColorsBrowser") << "getPalette:";
 
-    int numColors = colorNames.size();
+    int numColors = colors_STRUCT.size();
     ofLogNotice("ofxColorsBrowser") << "numColors:" << numColors;
 
     vector<ofColor> _palette;
     _palette.resize(numColors);
 
-    for (int i = 0; i < colorNames.size(); i++)
+    for (int i = 0; i < colors_STRUCT.size(); i++)
     {
         ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
-        _palette[i] = colorNames[i].color;
+        _palette[i] = colors_STRUCT[i].color;
     }
 
     return _palette;
@@ -419,12 +454,12 @@ void ofxColorsBrowser::populate_colorsBoxes()
     isSelecting = false;
     draggingRectPtr = NULL;
 
-    for (int i = 0; i < colorNames.size(); i++)
+    for (int i = 0; i < colors_STRUCT.size(); i++)
     {
         float xBtn = x + (i%perRow)*(size+pad);
         float yBtn = y + (i/perRow)*(size+pad);
 
-        ofxRectangle rect(ofRectangle(xBtn,yBtn,size,size), colorNames[i].color);
+        ofxRectangle rect(ofRectangle(xBtn,yBtn,size,size), colors_STRUCT[i].color);
 
         // add the random rectangle
         rectangles.push_back(rect);
@@ -466,8 +501,8 @@ void ofxColorsBrowser::draw()
     // 1. ALL THE COLORS NAMES
 
     // show all names from loaded palette
-    for (int i=0; i<colorNames.size(); i++) {
-        string str = colorNames[i].name;
+    for (int i=0; i<colors_STRUCT.size(); i++) {
+        string str = colors_STRUCT[i].name;
         if (i == currColor) {
 
             ofDrawBitmapStringHighlight(str, 0, 20 + i * 20, ofColor::white, ofColor::black);
@@ -549,7 +584,7 @@ void ofxColorsBrowser::draw()
             if (ENABLE_keys)
             {
 #ifdef KEY_SHORTCUTS_ENABLE
-                str = "\tSORT BY\n";
+                str = "SORT BY\n";
                 str += "[0] ORIGINAL\n";
                 str += "[1] NAME\n";
                 str += "[2] HUE\n";
@@ -557,7 +592,7 @@ void ofxColorsBrowser::draw()
                 str += "[4] SATURATION\n";
                 str += "[5] NEXT\n";
                 str += "\n";
-                str += "\tPALETTE\n";
+                str += "PALETTE\n";
                 str += "[BACKSPACE] NEXT\n";
                 str += "[D] DEBUG";
                 ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+100, ofColor::black, ofColor::white);
@@ -622,7 +657,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     if (key == '0'){
         if (MODE_SORTING != 0){
             MODE_SORTING = 0;
-//            ofSort(colorNames, comparePosition);
+//            ofSort(colors_STRUCT, comparePosition);
             clearPopulate();
             populate_colorsBoxes();
         }
@@ -630,7 +665,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     else if (key == '1'){
         if (MODE_SORTING != 1){
             MODE_SORTING = 1;
-            ofSort(colorNames, compareName);
+            ofSort(colors_STRUCT, compareName);
             clearPopulate();
             populate_colorsBoxes();
         }
@@ -638,7 +673,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     else if (key == '2'){
         if (MODE_SORTING != 2){
             MODE_SORTING = 2;
-            ofSort(colorNames, compareHue);
+            ofSort(colors_STRUCT, compareHue);
             clearPopulate();
             populate_colorsBoxes();
         }
@@ -646,7 +681,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     else if (key == '3'){
         if (MODE_SORTING != 3){
             MODE_SORTING = 3;
-            ofSort(colorNames, compareBrightness);
+            ofSort(colors_STRUCT, compareBrightness);
             clearPopulate();
             populate_colorsBoxes();
         }
@@ -654,7 +689,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     else if (key == '4'){
         if (MODE_SORTING != 4){
             MODE_SORTING = 4;
-            ofSort(colorNames, compareSaturation);
+            ofSort(colors_STRUCT, compareSaturation);
             clearPopulate();
             populate_colorsBoxes();
         }
@@ -769,7 +804,7 @@ void ofxColorsBrowser::clearPopulate()
     // TODO: this is not require since swap from ofXInterface to ofxrectangleUtils
     ofLogNotice("ofxColorsBrowser") << "clearPopulate";
 
-//    colorNames.clear();
+//    colors_STRUCT.clear();
 
     //-
 
@@ -883,11 +918,11 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
                         color_BACK = ofColor(rectangles[i].color);
 
                         currColor = i;
-                        currName = colorNames[currColor].name;
+                        currName = colors_STRUCT[currColor].name;
 
                         currColor_OriginalPos = currColor;
 
-//                        colorNames.clear();
+//                        colors_STRUCT.clear();
 //                        colorNameMap.clear();
 //
 //                        colorNameMap[pantoneNames[i]] = pantoneColors[i];
@@ -996,6 +1031,14 @@ void ofxColorsBrowser::setRowsSize(int rows){
 
 
 //--------------------------------------------------------------
+void ofxColorsBrowser::setVisible(bool b)
+{
+    SHOW_ColorsBrowse = b;
+    set_ENABLE_clicks(b);
+}
+
+
+//--------------------------------------------------------------
 void ofxColorsBrowser::switch_palette_Type(){
     MODE_COLOR = (MODE_COLOR+1) % 2;
     ofLogNotice("ofxColorsBrowser") << "switch_palette_Type: " << MODE_COLOR;
@@ -1021,19 +1064,19 @@ void ofxColorsBrowser::switch_sorted_Type(){
     switch (MODE_SORTING)
     {
         case 0:
-//            ofSort(colorNames, comparePosition);
+//            ofSort(colors_STRUCT, comparePosition);
             break;
         case 1:
-            ofSort(colorNames, compareName);
+            ofSort(colors_STRUCT, compareName);
             break;
         case 2:
-            ofSort(colorNames, compareHue);
+            ofSort(colors_STRUCT, compareHue);
             break;
         case 3:
-            ofSort(colorNames, compareBrightness);
+            ofSort(colors_STRUCT, compareBrightness);
             break;
         case 4:
-            ofSort(colorNames, compareSaturation);
+            ofSort(colors_STRUCT, compareSaturation);
             break;
     }
 
@@ -1065,19 +1108,19 @@ void ofxColorsBrowser::set_sorted_Type(int p)
     switch (MODE_SORTING)
     {
         case 0:
-//            ofSort(colorNames, comparePosition);
+//            ofSort(colors_STRUCT, comparePosition);
             break;
         case 1:
-            ofSort(colorNames, compareName);
+            ofSort(colors_STRUCT, compareName);
             break;
         case 2:
-            ofSort(colorNames, compareHue);
+            ofSort(colors_STRUCT, compareHue);
             break;
         case 3:
-            ofSort(colorNames, compareBrightness);
+            ofSort(colors_STRUCT, compareBrightness);
             break;
         case 4:
-            ofSort(colorNames, compareSaturation);
+            ofSort(colors_STRUCT, compareSaturation);
             break;
     }
 
@@ -1104,15 +1147,15 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 //    // draw all the colors
 //    // note this could be optimized, since we're drawing plenty that's offscreen here.
 //
-//    for (unsigned int i = 0; i < colorNames.size(); i++){
+//    for (unsigned int i = 0; i < colors_STRUCT.size(); i++){
 //
 //        int x = (i % 3) * ofGetWidth()/3.0;
 //        int y = (floor(i / 3)) * 50;
 //
-//        ofSetColor( colorNames[i].color );
+//        ofSetColor( colors_STRUCT[i].color );
 //        ofDrawRectangle(0 + x, y - offset, (i%3 == 2) ? ofGetWidth() - x : ofGetWidth()/3.0, 50);
 //
-//        ofDrawBitmapStringHighlight(colorNames[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
+//        ofDrawBitmapStringHighlight(colors_STRUCT[i].name, 20 + x, y -offset+30, ofColor::white, ofColor::black);
 //    }
 //}
 
