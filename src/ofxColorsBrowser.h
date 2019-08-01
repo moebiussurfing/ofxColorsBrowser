@@ -30,7 +30,7 @@ typedef struct
     ofColor color;
     int position;//original position
 
-} colorNameMapping;
+} colorMapping_STRUCT;
 
 ////TEST
 //typedef struct
@@ -53,7 +53,7 @@ public:
 
     // this map is useful if we want to address the colors by string.
     // since we might want to sort this, we can put them in a vector also
-    vector < colorNameMapping > colors_STRUCT;
+    vector < colorMapping_STRUCT > colors_STRUCT;
 
 //    // TEST
 //    map < string, int > positionNameMap;

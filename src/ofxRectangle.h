@@ -23,8 +23,11 @@ public:
 
     ofxRectangle()
     {
-        ofRectangle rect;
         ofColor c;
+        string name;
+        int position_inVector;
+
+        ofRectangle rect;
         init(rect, c);
     }
 
@@ -196,6 +199,21 @@ public:
     ofRectangle scaleHandles[8];
 
     ofColor color;
+
+    //-
+    // TEST
+    string name;
+    void setName(string n)
+    {
+        name = n;
+    }
+
+    int position_inVector;
+    void setPosition_inVector(int i)
+    {
+        position_inVector = i;
+    }
+    //-
 
     bool isOver;
     bool isPressed;
