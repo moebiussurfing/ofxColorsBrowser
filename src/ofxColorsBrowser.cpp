@@ -627,19 +627,9 @@ void ofxColorsBrowser::draw()
     pageNum = (int)currColor/linesPage;
     //    cout << "pageNum:"<<pageNum<<endl;
 
-    //    if (currColor<linesPage)
-    //    {
-    //        pageNum = 0;
-    //        lineBegin = 0;
-    //    }
-    //    else
-    //    {
-    //        pageNum = 1;
-    //        lineBegin = pageNum*linesPage;
-    //    }
     lineBegin = pageNum*linesPage;
-
     lineEnd = lineBegin+linesPage;
+
     //TODO: add more pages...
 
     for (int i=lineBegin; i<lineEnd; i++)
@@ -668,12 +658,15 @@ void ofxColorsBrowser::draw()
         }
         else//TODO: must make..
         {
-            iPadded = i-lineBegin;//TODO: must make..
-            //            currPadded = ( (pageNum-1) * linesPage) + currColor+lineBegin;//TODO: must make..
-            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
+//            iPadded = i - lineBegin;//TODO: must make..
+//            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
+
+            iPadded = i - lineBegin;//TODO: must make..
+//            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
         }
 
-        if (line==currPadded)
+        if ( i == currColor )
+//        if (line==currPadded)
         {
             ofDrawBitmapStringHighlight(str, 10, 20 + iPadded*20, ofColor::white, ofColor::black);
         }
