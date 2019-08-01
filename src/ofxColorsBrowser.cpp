@@ -27,6 +27,10 @@ bool compareSaturation( const colorNameMapping& s1, const colorNameMapping& s2 )
     return s1.color.getSaturation() < s2.color.getSaturation();
 }
 
+//bool comparePosition( const colorNameMapping& s1, const colorNameMapping& s2 ) {
+//    return s1.position < s2.position;
+//}
+
 //--------------------------------------------------------------
 ofxColorsBrowser::ofxColorsBrowser()
 {
@@ -56,7 +60,7 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         }
     }
 
-    //-
+    //--
 
     // 2. OFX_OPEN_COLOR
 
@@ -102,9 +106,9 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         }
     }
 
-    //-
+    //--
 
-        // 3. OFX_COLOR_NATIVE
+    // 3. OFX_COLOR_NATIVE
 
     else if (MODE_COLOR == OFX_COLOR_NATIVE)
     {
@@ -259,6 +263,8 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         colorNameMap["yellowGreen"] = ofColor::yellowGreen;
     }
 
+    //---
+
     // this map is useful if we want to address the colors by string.
     // since we might want to sort this, we can put them in a vector also
 
@@ -270,11 +276,16 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         colorNameMapping mapping;
         mapping.name = mapEntry->first;
         mapping.color = mapEntry->second;
+
+        //add original position
+//        mapping.position = mapEntry->third;
+
         colorNames.push_back(mapping);
 
     }
 
-    MODE_SORTING = 1; // by name, at the start
+    MODE_SORTING = 0; // by name, at the start
+//    MODE_SORTING = 1; // by name, at the start
 
     //-
 }
@@ -405,12 +416,9 @@ void ofxColorsBrowser::populate_colorsBoxes()
 
     //--
 
-    // 1. OFXRECTANGLE MODE
-
-    isSelecting     = false;
+    isSelecting = false;
     draggingRectPtr = NULL;
 
-    // create a random set of rectangles to play with
     for (int i = 0; i < colorNames.size(); i++)
     {
         float xBtn = x + (i%perRow)*(size+pad);
@@ -427,9 +435,7 @@ void ofxColorsBrowser::populate_colorsBoxes()
 
     hAlign = OF_ALIGN_HORZ_LEFT;
     vAlign = OF_ALIGN_VERT_TOP;
-
     anchorRect = NULL;
-
     showKeyboardCommands = false;
 
     //--
@@ -504,6 +510,9 @@ void ofxColorsBrowser::draw()
 
             str = "SORTING MODE: ";
             switch (MODE_SORTING) {
+                case 0:
+                    str += "ORIGINAL";
+                    break;
                 case 1:
                     str += "NAME";
                     break;
@@ -540,14 +549,15 @@ void ofxColorsBrowser::draw()
             if (ENABLE_keys)
             {
 #ifdef KEY_SHORTCUTS_ENABLE
-                str = "SORT BY:\n";
+                str = "\tSORT BY\n";
+                str += "[0] ORIGINAL\n";
                 str += "[1] NAME\n";
                 str += "[2] HUE\n";
                 str += "[3] BRIGHTNESS\n";
                 str += "[4] SATURATION\n";
                 str += "[5] NEXT\n";
                 str += "\n";
-                str += "PALETTE:\n";
+                str += "\tPALETTE\n";
                 str += "[BACKSPACE] NEXT\n";
                 str += "[D] DEBUG";
                 ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+100, ofColor::black, ofColor::white);
@@ -609,7 +619,15 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     }
 
     // select sorting
-    if (key == '1'){
+    if (key == '0'){
+        if (MODE_SORTING != 0){
+            MODE_SORTING = 0;
+//            ofSort(colorNames, comparePosition);
+            clearPopulate();
+            populate_colorsBoxes();
+        }
+    }
+    else if (key == '1'){
         if (MODE_SORTING != 1){
             MODE_SORTING = 1;
             ofSort(colorNames, compareName);
@@ -991,14 +1009,20 @@ void ofxColorsBrowser::switch_palette_Type(){
 //--------------------------------------------------------------
 void ofxColorsBrowser::switch_sorted_Type(){
     MODE_SORTING++;
-//    MODE_SORTING = MODE_SORTING%5;
-    if (MODE_SORTING == 5)
-        MODE_SORTING = 1;
+    MODE_SORTING = MODE_SORTING%6;
+
+//    MODE_SORTING++;
+////    MODE_SORTING = MODE_SORTING%5;
+//    if (MODE_SORTING == 5)
+//        MODE_SORTING = 1;
 
     ofLogNotice("ofxColorsBrowser") << "switch_sorted_Type: " << MODE_SORTING;
 
     switch (MODE_SORTING)
     {
+        case 0:
+//            ofSort(colorNames, comparePosition);
+            break;
         case 1:
             ofSort(colorNames, compareName);
             break;
@@ -1013,7 +1037,8 @@ void ofxColorsBrowser::switch_sorted_Type(){
             break;
     }
 
-    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
+    if (MODE_SORTING >= 0 && MODE_SORTING<=4)
+//    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
     {
         clearPopulate();
         populate_colorsBoxes();
@@ -1039,6 +1064,9 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 
     switch (MODE_SORTING)
     {
+        case 0:
+//            ofSort(colorNames, comparePosition);
+            break;
         case 1:
             ofSort(colorNames, compareName);
             break;
@@ -1053,7 +1081,8 @@ void ofxColorsBrowser::set_sorted_Type(int p)
             break;
     }
 
-    if (p >= 1 && p<=4)
+    if (p>=0  && p<=4)
+//    if (p>=1  && p<=4)
     {
         clearPopulate();
         populate_colorsBoxes();

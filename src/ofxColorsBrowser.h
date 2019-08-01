@@ -20,7 +20,7 @@ typedef struct
 {
     string name;
     ofColor color;
-    int position;//original
+//    int position;//original
 } colorNameMapping;
 
 class ofxColorsBrowser {
@@ -29,10 +29,10 @@ public:
 
     //--
 
-//    // user full loaded palette
-//    vector<ofColor> palete;
-
     map < string, ofColor > colorNameMap;
+
+    // this map is useful if we want to address the colors by string.
+    // since we might want to sort this, we can put them in a vector also
     vector < colorNameMapping > colorNames;
 
 //--
