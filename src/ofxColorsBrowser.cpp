@@ -475,7 +475,7 @@ void ofxColorsBrowser::draw()
                 str += "[3] BRIGHTNESS\n";
                 str += "[4] SATURATION\n";
                 str += "[5] NEXT\n";
-                str += "PALETTE:\n";
+                str += "\nPALETTE:\n";
                 str+= "[BACKSPACE] NEXT PALETTE\n";
                 str += "[D] DEBUG RECTANGLES\n";
                 ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y, ofColor::black, ofColor::white);
@@ -515,7 +515,7 @@ void ofxColorsBrowser::draw()
                     str += "OPEN COLOR";
                     break;
             }
-            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+400, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+240, ofColor::black, ofColor::white);
 
             ofPopStyle();
         }
@@ -524,7 +524,7 @@ void ofxColorsBrowser::draw()
 
         // COLOR BOXES
 
-        rectangles_draw();
+        rectangles_draw();//rectangles with mouse management and draggables..
 
         //--
     }
