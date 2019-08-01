@@ -10,30 +10,36 @@ using namespace ofx;
 
 #define KEY_SHORTCUTS_ENABLE; // internal shorcuts no add listeners or remove
 
-typedef struct
-{
-    string name;
-    ofColor color;
-} colorNameMapping;
-
 enum {
     OFX_PANTONE_COLORS,
     OFX_COLOR_NATIVE,
     OFX_OPEN_COLOR
 };
 
+typedef struct
+{
+    string name;
+    ofColor color;
+    int position;//original
+} colorNameMapping;
+
 class ofxColorsBrowser {
 
 public:
+
+    //--
+
+//    // user full loaded palette
+//    vector<ofColor> palete;
+
+    map < string, ofColor > colorNameMap;
+    vector < colorNameMapping > colorNames;
 
 //--
 
     // PANTONE COLORS
     ofJson js;
-    ofJson stroke;
-    ofTrueTypeFont ttf;
     ofPath path;
-    std::string text;
     vector<ofColor> pantoneColors;
     vector<std::string> pantoneNames;
 
@@ -41,6 +47,8 @@ public:
 
     ofxColorsBrowser();
     ~ofxColorsBrowser();
+
+    void load_Pantone_JSON();
 
     void setup();
     void update();
@@ -85,7 +93,7 @@ public:
 
     void setup_colorBACK(ofFloatColor &c);
 
-    // TODO:
+    // TODO: and resize buttons to fit..
     void setSize(glm::vec2 size);
 
     //----
@@ -105,10 +113,10 @@ public:
     string keyboardCommands;
     bool showKeyboardCommands;
     std::vector<ofRectangle>  packedRects;
-//    ofRotatedRectangle rotatedRect;
-//    ofRectanglePacker packer;
     void rectangles_update();
     void rectangles_draw();
+//    ofRotatedRectangle rotatedRect;
+//    ofRectanglePacker packer;
 
     //--
 
@@ -132,7 +140,6 @@ private:
     bool ENABLE_clicks = true;
     bool ENABLE_keys = false;
 
-    vector<ofColor> palete;
 
     // pointer back
     ofFloatColor color_BACK;
@@ -140,25 +147,27 @@ private:
     ofFloatColor *color_BACK_OFAPP;
 
     void generate_ColorsInPalette();
-    map < string, ofColor > colorNameMap;
-    vector < colorNameMapping > colorNames;
+
+    //--
 
     void populate_colorsBoxes();
     void clearPopulate();
     bool bShowDebug = false;
 
     //-
-    glm::vec2 position;
 
+    glm::vec2 position;
     glm::vec2 positionHelper;
 
-
-    int MODE_COLOR; // 0: PANTONE COLORS 1: OFX_COLOR_NATIVE, 2: OFX_OPEN_COLOR
+    // 0: PANTONE COLORS 1: OFX_COLOR_NATIVE, 2: OFX_OPEN_COLOR
+    int MODE_COLOR;
     int MODE_SORTING;
     int perRow = 10;
     float size = 50;//boxes
-    float pad = 2;
+    float pad = 1;
 
+    //last clicked color box
     string currName = "";
-    int currColor = 0;
+    int currColor = -1;
+    int currColor_OriginalPos = -1;
 };

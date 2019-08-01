@@ -11,21 +11,21 @@ void ofxColorsBrowser::setVisible(bool b)
 
 // comparing colors to sorting methods
 
-//bool compareName( const colorNameMapping& s1, const colorNameMapping& s2 ) {
-//    return s1.name < s2.name;
-//}
-//
-//bool compareBrightness( const colorNameMapping& s1, const colorNameMapping& s2 ) {
-//    return s1.color.getBrightness() < s2.color.getBrightness();
-//}
-//
-//bool compareHue( const colorNameMapping& s1, const colorNameMapping& s2 ) {
-//    return s1.color.getHue() < s2.color.getHue();
-//}
-//
-//bool compareSaturation( const colorNameMapping& s1, const colorNameMapping& s2 ) {
-//    return s1.color.getSaturation() < s2.color.getSaturation();
-//}
+bool compareName( const colorNameMapping& s1, const colorNameMapping& s2 ) {
+    return s1.name < s2.name;
+}
+
+bool compareBrightness( const colorNameMapping& s1, const colorNameMapping& s2 ) {
+    return s1.color.getBrightness() < s2.color.getBrightness();
+}
+
+bool compareHue( const colorNameMapping& s1, const colorNameMapping& s2 ) {
+    return s1.color.getHue() < s2.color.getHue();
+}
+
+bool compareSaturation( const colorNameMapping& s1, const colorNameMapping& s2 ) {
+    return s1.color.getSaturation() < s2.color.getSaturation();
+}
 
 //--------------------------------------------------------------
 ofxColorsBrowser::ofxColorsBrowser()
@@ -46,6 +46,8 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
 
     //--
 
+    // 1. OFX_PANTONE_COLORS
+
     if (MODE_COLOR == OFX_PANTONE_COLORS)
     {
         for (int i=0; i<pantoneNames.size(); i++)
@@ -53,6 +55,10 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
             colorNameMap[pantoneNames[i]] = pantoneColors[i];
         }
     }
+
+    //-
+
+    // 2. OFX_OPEN_COLOR
 
     else if (MODE_COLOR == OFX_OPEN_COLOR)
     {
@@ -95,6 +101,10 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
             colorNameMap["ORANGE " + ofToString(i)] =  oc_orange_[iFlip];
         }
     }
+
+    //-
+
+        // 3. OFX_COLOR_NATIVE
 
     else if (MODE_COLOR == OFX_COLOR_NATIVE)
     {
@@ -290,13 +300,7 @@ static void hexToColor(ofColor &col,string hex){
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setup(){
-
-    //--
-
-    // PANTONE COLORS
-
-//    setRowsSize(7*6);
+void ofxColorsBrowser::load_Pantone_JSON(){
 
     pantoneNames.clear();
     pantoneColors.clear();
@@ -329,7 +333,7 @@ void ofxColorsBrowser::setup(){
             vector<string> myCol2 = ofSplitString(myCol, "\"");
 //            cout<<"myCol2:"<<myCol2[0]<<endl;
             hexToColor(c,myCol2[0]);
-            cout<<"hexToColor: "<<c<<endl;
+//            cout<<"hexToColor: "<<c<<endl;
 
             pantoneColors.push_back(c);
             i++;
@@ -339,12 +343,21 @@ void ofxColorsBrowser::setup(){
     {
         ofLogNotice("")<<"FILE '"<<path<<"' NOT FOUND!";
     }
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setup(){
 
     //--
 
-    //default palette mode
+    // PANTONE COLORS
+    load_Pantone_JSON();
 
-    MODE_COLOR == OFX_PANTONE_COLORS;
+    //--
+
+    // default palette mode
+
+    MODE_COLOR = OFX_PANTONE_COLORS;
 //    MODE_COLOR = OFX_OPEN_COLOR;
 
     generate_ColorsInPalette();
@@ -442,49 +455,54 @@ void ofxColorsBrowser::update(){
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
-    int i;
-    for (i=0; i<pantoneNames.size(); i++)
-    {
-        string str;
-        str = pantoneNames[i];
-        ofDrawBitmapStringHighlight(str, 0, 0+20 + i*20, ofColor::black, ofColor::white);
-    }
-    {
-        i = 0;
-        int x = 120;
-        ofDrawBitmapStringHighlight("currName : "+currName, x, 0+20 + (i++)*20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("currColor: "+currColor, x, 0+20 + (i++)*20, ofColor::black, ofColor::white);
+    //-
+
+    // 1. ALL THE COLORS NAMES
+
+    // show all names from loaded palette
+    for (int i=0; i<colorNames.size(); i++) {
+        string str = colorNames[i].name;
+        if (i == currColor) {
+
+            ofDrawBitmapStringHighlight(str, 0, 20 + i * 20, ofColor::white, ofColor::black);
+        } else {
+            ofDrawBitmapStringHighlight(str, 0, 20 + i * 20, ofColor::black, ofColor::white);
+        }
     }
 
+//    for (int i=0; i<pantoneNames.size(); i++)
+//    {
+//        string str;
+//        str = pantoneNames[i];
+//        ofDrawBitmapStringHighlight(str, 0, 0+20 + i*20, ofColor::black, ofColor::white);
+//    }
+
+    //-
+
+    // 2. MONITOR COLOR SELECTED: name & position in vector
+
+    {
+        int i = 0;
+        int x = position.x;
+        int y = 25;
+        ofDrawBitmapStringHighlight("currName : "+currName, x, y+(i++)*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("currColor: "+ofToString(currColor), x, y+(i++)*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("currColor_OriginalPos: "+ofToString(currColor_OriginalPos), x, y+(i++)*20, ofColor::black, ofColor::white);
+    }
+
+    //-
+
+    // 3. MONITOR APP MODES
 
     if (SHOW_ColorsBrowse)
     {
-        //--
-
         if (SHOW_debugText)
         {
-            ofPushStyle();
             string str;
-
-            if (ENABLE_keys)
-            {
-#ifdef KEY_SHORTCUTS_ENABLE
-                str = "SORT:\n";
-                str += "[1] NAME\n";
-                str += "[2] HUE\n";
-                str += "[3] BRIGHTNESS\n";
-                str += "[4] SATURATION\n";
-                str += "[5] NEXT\n";
-                str += "\nPALETTE:\n";
-                str+= "[BACKSPACE] NEXT PALETTE\n";
-                str += "[D] DEBUG RECTANGLES\n";
-                ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y, ofColor::black, ofColor::white);
-#endif
-            }
 
             //-
 
-            str = "SORTING: ";
+            str = "SORTING MODE: ";
             switch (MODE_SORTING) {
                 case 1:
                     str += "NAME";
@@ -499,30 +517,47 @@ void ofxColorsBrowser::draw()
                     str += "SATURATION";
                     break;
             }
-            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+200, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+50, ofColor::black, ofColor::white);
 
             //-
 
-            str = "PALETTE: ";
+            str = "PALETTE NAME: ";
             switch (MODE_COLOR) {
                 case OFX_PANTONE_COLORS:
                     str += "PANTONE COLORS";
                     break;
                 case OFX_COLOR_NATIVE:
-                    str += "OF NATIVE NAMES";
+                    str += "OF NATIVE COLORS";
                     break;
                 case OFX_OPEN_COLOR:
                     str += "OPEN COLOR";
                     break;
             }
-            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+240, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+20, ofColor::black, ofColor::white);
 
-            ofPopStyle();
+            //-
+
+            if (ENABLE_keys)
+            {
+#ifdef KEY_SHORTCUTS_ENABLE
+                str = "SORT BY:\n";
+                str += "[1] NAME\n";
+                str += "[2] HUE\n";
+                str += "[3] BRIGHTNESS\n";
+                str += "[4] SATURATION\n";
+                str += "[5] NEXT\n";
+                str += "\n";
+                str += "PALETTE:\n";
+                str += "[BACKSPACE] NEXT\n";
+                str += "[D] DEBUG";
+                ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+100, ofColor::black, ofColor::white);
+#endif
+            }
         }
 
         //--
 
-        // COLOR BOXES
+        // 4. COLOR BOXES
 
         rectangles_draw();//rectangles with mouse management and draggables..
 
@@ -573,42 +608,42 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         populate_colorsBoxes();
     }
 
-//    // select sorting
-//    if (key == '1'){
-//        if (MODE_SORTING != 1){
-//            MODE_SORTING = 1;
-//            ofSort(colorNames, compareName);
-//            clearPopulate();
-//            populate_colorsBoxes();
-//        }
-//    }
-//    else if (key == '2'){
-//        if (MODE_SORTING != 2){
-//            MODE_SORTING = 2;
-//            ofSort(colorNames, compareHue);
-//            clearPopulate();
-//            populate_colorsBoxes();
-//        }
-//    }
-//    else if (key == '3'){
-//        if (MODE_SORTING != 3){
-//            MODE_SORTING = 3;
-//            ofSort(colorNames, compareBrightness);
-//            clearPopulate();
-//            populate_colorsBoxes();
-//        }
-//    }
-//    else if (key == '4'){
-//        if (MODE_SORTING != 4){
-//            MODE_SORTING = 4;
-//            ofSort(colorNames, compareSaturation);
-//            clearPopulate();
-//            populate_colorsBoxes();
-//        }
-//    }
-//    else if (key == '5'){
-//        switch_sorted_Type();
-//    }
+    // select sorting
+    if (key == '1'){
+        if (MODE_SORTING != 1){
+            MODE_SORTING = 1;
+            ofSort(colorNames, compareName);
+            clearPopulate();
+            populate_colorsBoxes();
+        }
+    }
+    else if (key == '2'){
+        if (MODE_SORTING != 2){
+            MODE_SORTING = 2;
+            ofSort(colorNames, compareHue);
+            clearPopulate();
+            populate_colorsBoxes();
+        }
+    }
+    else if (key == '3'){
+        if (MODE_SORTING != 3){
+            MODE_SORTING = 3;
+            ofSort(colorNames, compareBrightness);
+            clearPopulate();
+            populate_colorsBoxes();
+        }
+    }
+    else if (key == '4'){
+        if (MODE_SORTING != 4){
+            MODE_SORTING = 4;
+            ofSort(colorNames, compareSaturation);
+            clearPopulate();
+            populate_colorsBoxes();
+        }
+    }
+    else if (key == '5'){
+        switch_sorted_Type();
+    }
 
 
     else if (key == 'p'){
@@ -812,6 +847,8 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
 
             else
             {
+                // RECTANGLE COLOR CLICKED
+
                 selectedRects.clear();
                 // otherwise, go through all of the rects and see if we can drag one
                 for (size_t i = 0; i < rectangles.size(); i++) {
@@ -822,8 +859,27 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
                         rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
                         foundAClickTarget = true;
 
-                        ofLogNotice("ofxColorsBrowser") << "foundAClickTarget [i]: " << i;
+                        //-
+
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "clicked box ["<<i<<"]";
                         color_BACK = ofColor(rectangles[i].color);
+
+                        currColor = i;
+                        currName = colorNames[currColor].name;
+
+                        currColor_OriginalPos = currColor;
+
+//                        colorNames.clear();
+//                        colorNameMap.clear();
+//
+//                        colorNameMap[pantoneNames[i]] = pantoneColors[i];
+                        if (MODE_COLOR == OFX_PANTONE_COLORS)
+                        {
+                            currName = pantoneNames[i];//original name in position without sorting..
+                        }
+
+                        //-
+
                     }
                 }
             }
@@ -934,34 +990,34 @@ void ofxColorsBrowser::switch_palette_Type(){
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::switch_sorted_Type(){
-//    MODE_SORTING++;
-////    MODE_SORTING = MODE_SORTING%5;
-//    if (MODE_SORTING == 5)
-//        MODE_SORTING = 1;
-//
-//    ofLogNotice("ofxColorsBrowser") << "switch_sorted_Type: " << MODE_SORTING;
-//
-//    switch (MODE_SORTING)
-//    {
-//        case 1:
-//            ofSort(colorNames, compareName);
-//            break;
-//        case 2:
-//            ofSort(colorNames, compareHue);
-//            break;
-//        case 3:
-//            ofSort(colorNames, compareBrightness);
-//            break;
-//        case 4:
-//            ofSort(colorNames, compareSaturation);
-//            break;
-//    }
-//
-//    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
-//    {
-//        clearPopulate();
-//        populate_colorsBoxes();
-//    }
+    MODE_SORTING++;
+//    MODE_SORTING = MODE_SORTING%5;
+    if (MODE_SORTING == 5)
+        MODE_SORTING = 1;
+
+    ofLogNotice("ofxColorsBrowser") << "switch_sorted_Type: " << MODE_SORTING;
+
+    switch (MODE_SORTING)
+    {
+        case 1:
+            ofSort(colorNames, compareName);
+            break;
+        case 2:
+            ofSort(colorNames, compareHue);
+            break;
+        case 3:
+            ofSort(colorNames, compareBrightness);
+            break;
+        case 4:
+            ofSort(colorNames, compareSaturation);
+            break;
+    }
+
+    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
+    {
+        clearPopulate();
+        populate_colorsBoxes();
+    }
 }
 
 
@@ -979,29 +1035,29 @@ void ofxColorsBrowser::set_palette_Type(int p)
 //--------------------------------------------------------------
 void ofxColorsBrowser::set_sorted_Type(int p)
 {
-//    MODE_SORTING = p;
-//
-//    switch (MODE_SORTING)
-//    {
-//        case 1:
-//            ofSort(colorNames, compareName);
-//            break;
-//        case 2:
-//            ofSort(colorNames, compareHue);
-//            break;
-//        case 3:
-//            ofSort(colorNames, compareBrightness);
-//            break;
-//        case 4:
-//            ofSort(colorNames, compareSaturation);
-//            break;
-//    }
-//
-//    if (p >= 1 && p<=4)
-//    {
-//        clearPopulate();
-//        populate_colorsBoxes();
-//    }
+    MODE_SORTING = p;
+
+    switch (MODE_SORTING)
+    {
+        case 1:
+            ofSort(colorNames, compareName);
+            break;
+        case 2:
+            ofSort(colorNames, compareHue);
+            break;
+        case 3:
+            ofSort(colorNames, compareBrightness);
+            break;
+        case 4:
+            ofSort(colorNames, compareSaturation);
+            break;
+    }
+
+    if (p >= 1 && p<=4)
+    {
+        clearPopulate();
+        populate_colorsBoxes();
+    }
 }
 
 

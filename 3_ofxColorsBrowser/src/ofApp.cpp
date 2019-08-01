@@ -11,7 +11,7 @@ void ofApp::setup(){
 //    ColorBrowser.setRowsSize(5);
     ColorBrowser.setup_colorBACK(color_BACK);
 
-    ColorBrowser.setPosition(glm::vec2(220, 65));
+    ColorBrowser.setPosition(glm::vec2(220, 80));
     ColorBrowser.setPositionHelper(glm::vec2(ofGetWidth()-250, 20));
 
     ColorBrowser.setup();
