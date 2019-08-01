@@ -29,21 +29,25 @@ typedef struct
     string name;
     ofColor color;
     int position;//original position
+
 } colorNameMapping;
 
-typedef struct
-{
-    string name;
-    int position;//original
-} colorPositionMapping;
+////TEST
+//typedef struct
+//{
+//    string name;
+//    int position;//original
+//} colorPositionMapping;
 
 class ofxColorsBrowser {
 
 public:
 
-    void refresh_Clicks();
+    void refresh_Clicks();// to browsing by keys
 
     //--
+
+    // MAIN STORAGE
 
     map < string, ofColor > colorNameMap;
 
@@ -51,9 +55,9 @@ public:
     // since we might want to sort this, we can put them in a vector also
     vector < colorNameMapping > colors_STRUCT;
 
-    // TEST
-    map < string, int > positionNameMap;
-    vector < colorPositionMapping > colorPositions;
+//    // TEST
+//    map < string, int > positionNameMap;
+//    vector < colorPositionMapping > colorPositions;
 
     //--
 

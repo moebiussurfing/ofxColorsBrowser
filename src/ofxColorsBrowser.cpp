@@ -76,11 +76,12 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         for (int i=0; i<pantoneNames.size(); i++)
         {
             string name = pantoneNames[i];
+
             colorNameMap[name] = pantoneColors[i];
 
             // TEST
-            positionNameMap[name] = i;
-            cout<<"positionNameMap[name]\t"<<"name:"<<name<<" ["<<i<<"]"<<endl;
+//            positionNameMap[name] = i;
+//            cout<<"positionNameMap[name]\t"<<"name:"<<name<<" ["<<i<<"]"<<endl;
         }
         cout<< endl;
     }
@@ -94,7 +95,7 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         bool flipOrder = true;
         int iFlip;
 
-#define NUM_COLORS_ROW 10
+#define NUM_COLORS_ROW 10//that's also the ideal indent for open color palette
         for (int i = 0; i<NUM_COLORS_ROW; i++)
         {
             if (flipOrder)
@@ -288,14 +289,13 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         colorNameMap["yellowGreen"] = ofColor::yellowGreen;
     }
 
-    //---
+    //----
 
     // this map is useful if we want to address the colors by string.
     // since we might want to sort this, we can put them in a vector also
 
-    if (MODE_SORTING != SORTING_ORIGINAL) {
-        colors_STRUCT.clear(); // TODO
-
+    if (MODE_SORTING != SORTING_ORIGINAL)
+    {
         cout << endl;
         for (unsigned int i = 0; i < colorNameMap.size(); i++) {
 
@@ -305,6 +305,9 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
             colorNameMapping mapping;
             mapping.name = mapEntry->first;
             mapping.color = mapEntry->second;
+
+            // TEST
+            mapping.position = i;
 
             //-
 
@@ -324,10 +327,8 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
 
     // TEST sorting by original order..
 
-    if (MODE_SORTING == SORTING_ORIGINAL)
+    else if (MODE_SORTING == SORTING_ORIGINAL)
     {
-        colors_STRUCT.clear(); // TODO
-
 //        string name = pantoneNames[i];
 //        colorNameMap[name] = pantoneColors[i];
 
@@ -352,6 +353,7 @@ void ofxColorsBrowser::generate_ColorsInPalette(){
         }
         cout << endl;
         cout << "colorPositions" << endl;
+        
 //    cout << ofToString(colorPositions)<<endl;
 //    cout<<endl;
     }
@@ -502,16 +504,21 @@ void ofxColorsBrowser::draw()
     int linesPage = 7*4;
 
     int pageNum;
-    if (currColor<linesPage)
-    {
-        pageNum = 0;
-        lineBegin = 0;
-    }
-    else
-    {
-        pageNum = 1;
-        lineBegin = pageNum*linesPage;
-    }
+    pageNum = (int)currColor/linesPage;
+//    cout << "pageNum:"<<pageNum<<endl;
+
+//    if (currColor<linesPage)
+//    {
+//        pageNum = 0;
+//        lineBegin = 0;
+//    }
+//    else
+//    {
+//        pageNum = 1;
+//        lineBegin = pageNum*linesPage;
+//    }
+    lineBegin = pageNum*linesPage;
+
     lineEnd = lineBegin+linesPage;
     //TODO: add more pages...
 
@@ -524,15 +531,26 @@ void ofxColorsBrowser::draw()
 
         int iPadded;
         int currPadded;
+//        if (pageNum==0)
+//        {
+//            iPadded = i;
+//            currPadded = currColor;
+//        }
+//        else if (pageNum==1)
+//        {
+//            iPadded = i-lineBegin;
+//            currPadded = currColor+lineBegin;
+//        }
         if (pageNum==0)
         {
             iPadded = i;
             currPadded = currColor;
         }
-        else if (pageNum==1)
+        else//TODO: must make..
         {
-            iPadded = i-lineBegin;
-            currPadded = currColor+lineBegin;
+            iPadded = i-lineBegin;//TODO: must make..
+//            currPadded = ( (pageNum-1) * linesPage) + currColor+lineBegin;//TODO: must make..
+            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
         }
 
         if (line==currPadded)
@@ -623,6 +641,7 @@ void ofxColorsBrowser::draw()
                 str += "\n";
                 str += "PALETTE\n";
                 str += "[BACKSPACE] NEXT\n";
+                str += "\n";
                 str += "[D] DEBUG";
                 ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+100, ofColor::black, ofColor::white);
 #endif
