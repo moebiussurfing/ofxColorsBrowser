@@ -105,6 +105,16 @@ public:
     void set_ENABLE_clicks(bool b)
     {
         ENABLE_clicks = b;
+        if(b)
+        {
+            addKeysListeners();
+            addMouseListeners();
+        }
+        else
+        {
+            removeKeysListeners();
+            removeMouseListeners();
+        }
     }
 
     void set_ENABLE_keys(bool b)
