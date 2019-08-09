@@ -774,7 +774,7 @@ void ofxColorsBrowser::draw()
 void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 {
     const int & key = eventArgs.key;
-    ofLogNotice("ofxColorsBrowser") << "key: " << key;
+//    ofLogNotice("ofxColorsBrowser") << "key: " << key;
 
     //-
 
