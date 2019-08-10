@@ -2,8 +2,7 @@
 
 
 //--------------------------------------------------------------
-ofxColorsBrowser::ofxColorsBrowser()
-{
+ofxColorsBrowser::ofxColorsBrowser() {
     addMouseListeners();
 
 #ifdef KEY_SHORTCUTS_ENABLE
@@ -15,7 +14,7 @@ ofxColorsBrowser::ofxColorsBrowser()
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::grid_generate(){
+void ofxColorsBrowser::grid_generate() {
 
     colors_STRUCT.clear();
     colorNameMap.clear();
@@ -24,13 +23,11 @@ void ofxColorsBrowser::grid_generate(){
 
     // 1. OFX_PANTONE_COLORS
 
-    if (MODE_COLOR == OFX_PANTONE_COLORS)
-    {
-        cout<< endl;
-        ofLogNotice("ofxColorsBrowser::grid_generate")<<endl;
+    if (MODE_COLOR == OFX_PANTONE_COLORS) {
+//        cout << endl;
+        ofLogNotice("ofxColorsBrowser::grid_generate") << endl;
 
-        for (int i=0; i<pantoneNames.size(); i++)
-        {
+        for (int i = 0; i < pantoneNames.size(); i++) {
             string name = pantoneNames[i];
             ofColor c = pantoneColors[i];
 
@@ -47,19 +44,18 @@ void ofxColorsBrowser::grid_generate(){
             myColor.name = name;
             myColor.color = c;
             myColor.position = i;
-            colors_STRUCT.push_back( myColor );
+            colors_STRUCT.push_back(myColor);
 
             //-
         }
-        cout<< endl;
+//        cout << endl;
     }
 
         //--
 
         // 2. OFX_OPEN_COLOR
 
-    else if (MODE_COLOR == OFX_OPEN_COLOR)
-    {
+    else if (MODE_COLOR == OFX_OPEN_COLOR) {
         bool flipOrder = true;
         int iFlip;
 
@@ -67,11 +63,10 @@ void ofxColorsBrowser::grid_generate(){
         int pos = 0;//-1? to set correlative positions...
 
 #define NUM_COLORS_ROW 10//that's also the ideal indent for open color palette
-        for (int i = 0; i<NUM_COLORS_ROW; i++)
-        {
+        for (int i = 0; i < NUM_COLORS_ROW; i++) {
             //flip order: iFlip
             if (flipOrder)
-                iFlip = (NUM_COLORS_ROW-1)-i;
+                iFlip = (NUM_COLORS_ROW - 1) - i;
             else
                 iFlip = i;
 
@@ -79,19 +74,19 @@ void ofxColorsBrowser::grid_generate(){
 
             // 1.
 
-            colorNameMap["GREY "+ofToString(i)]     = oc_gray_[iFlip];
-            colorNameMap["RED "+ofToString(i)]      = oc_red_[iFlip];
-            colorNameMap["PINK "+ofToString(i)]     = oc_pink_[iFlip];
-            colorNameMap["GRAPE "+ofToString(i)]    = oc_grape_[iFlip];
-            colorNameMap["VIOLET "+ofToString(i)]   = oc_violet_[iFlip];
-            colorNameMap["INDIGO "+ofToString(i)]   = oc_indigo_[iFlip];
-            colorNameMap["BLUE "+ofToString(i)]     = oc_blue_[iFlip];
-            colorNameMap["CYAN "+ofToString(i)]     = oc_cyan_[iFlip];
-            colorNameMap["TEAL "+ofToString(i)]     = oc_teal_[iFlip];
-            colorNameMap["GREEN "+ofToString(i)]    = oc_green_[iFlip];
-            colorNameMap["LIME "+ofToString(i)]     = oc_lime_[iFlip];
-            colorNameMap["YELLOW "+ofToString(i)]   = oc_yellow_[iFlip];
-            colorNameMap["ORANGE "+ofToString(i)]   = oc_orange_[iFlip];
+            colorNameMap["GREY " + ofToString(i)] = oc_gray_[iFlip];
+            colorNameMap["RED " + ofToString(i)] = oc_red_[iFlip];
+            colorNameMap["PINK " + ofToString(i)] = oc_pink_[iFlip];
+            colorNameMap["GRAPE " + ofToString(i)] = oc_grape_[iFlip];
+            colorNameMap["VIOLET " + ofToString(i)] = oc_violet_[iFlip];
+            colorNameMap["INDIGO " + ofToString(i)] = oc_indigo_[iFlip];
+            colorNameMap["BLUE " + ofToString(i)] = oc_blue_[iFlip];
+            colorNameMap["CYAN " + ofToString(i)] = oc_cyan_[iFlip];
+            colorNameMap["TEAL " + ofToString(i)] = oc_teal_[iFlip];
+            colorNameMap["GREEN " + ofToString(i)] = oc_green_[iFlip];
+            colorNameMap["LIME " + ofToString(i)] = oc_lime_[iFlip];
+            colorNameMap["YELLOW " + ofToString(i)] = oc_yellow_[iFlip];
+            colorNameMap["ORANGE " + ofToString(i)] = oc_orange_[iFlip];
 
             //-
 
@@ -110,59 +105,59 @@ void ofxColorsBrowser::grid_generate(){
             colorMapping_STRUCT colorLIME;
             colorMapping_STRUCT colorYELLOW;
             colorMapping_STRUCT colorORANGE;
-            colorGREY   .name = "GREY "+ofToString(i);
-            colorRED    .name = "RED "+ofToString(i);
-            colorPINK   .name = "PINK "+ofToString(i);
-            colorGRAPE  .name = "GRAPE "+ofToString(i);
-            colorVIOLET .name = "VIOLET "+ofToString(i);
-            colorINDIGO .name = "INDIGO "+ofToString(i);
-            colorBLUE   .name = "BLUE "+ofToString(i);
-            colorCYAN   .name = "CYAN "+ofToString(i);
-            colorTEAL   .name = "TEAL "+ofToString(i);
-            colorGREEN  .name = "GREEN "+ofToString(i);
-            colorLIME   .name = "LIME "+ofToString(i);
-            colorYELLOW .name = "YELLOW "+ofToString(i);
-            colorORANGE .name = "ORANGE "+ofToString(i);
-            colorGREY   .color = oc_gray_[iFlip];
-            colorRED    .color = oc_red_[iFlip];
-            colorPINK   .color = oc_pink_[iFlip];
-            colorGRAPE  .color = oc_grape_[iFlip];
-            colorVIOLET .color = oc_violet_[iFlip];
-            colorINDIGO .color = oc_indigo_[iFlip];
-            colorBLUE   .color = oc_blue_[iFlip];
-            colorCYAN   .color = oc_cyan_[iFlip];
-            colorTEAL   .color = oc_teal_[iFlip];
-            colorGREEN  .color = oc_green_[iFlip];
-            colorLIME   .color = oc_lime_[iFlip];
-            colorYELLOW .color = oc_yellow_[iFlip];
-            colorORANGE .color = oc_orange_[iFlip];
-            colorGREY   .position = pos++;
-            colorRED    .position = pos++;
-            colorPINK   .position = pos++;
-            colorGRAPE  .position = pos++;
-            colorVIOLET .position = pos++;
-            colorINDIGO .position = pos++;
-            colorBLUE   .position = pos++;
-            colorCYAN   .position = pos++;
-            colorTEAL   .position = pos++;
-            colorGREEN  .position = pos++;
-            colorLIME   .position = pos++;
-            colorYELLOW .position = pos++;
-            colorORANGE .position = pos++;
+            colorGREY.name = "GREY " + ofToString(i);
+            colorRED.name = "RED " + ofToString(i);
+            colorPINK.name = "PINK " + ofToString(i);
+            colorGRAPE.name = "GRAPE " + ofToString(i);
+            colorVIOLET.name = "VIOLET " + ofToString(i);
+            colorINDIGO.name = "INDIGO " + ofToString(i);
+            colorBLUE.name = "BLUE " + ofToString(i);
+            colorCYAN.name = "CYAN " + ofToString(i);
+            colorTEAL.name = "TEAL " + ofToString(i);
+            colorGREEN.name = "GREEN " + ofToString(i);
+            colorLIME.name = "LIME " + ofToString(i);
+            colorYELLOW.name = "YELLOW " + ofToString(i);
+            colorORANGE.name = "ORANGE " + ofToString(i);
+            colorGREY.color = oc_gray_[iFlip];
+            colorRED.color = oc_red_[iFlip];
+            colorPINK.color = oc_pink_[iFlip];
+            colorGRAPE.color = oc_grape_[iFlip];
+            colorVIOLET.color = oc_violet_[iFlip];
+            colorINDIGO.color = oc_indigo_[iFlip];
+            colorBLUE.color = oc_blue_[iFlip];
+            colorCYAN.color = oc_cyan_[iFlip];
+            colorTEAL.color = oc_teal_[iFlip];
+            colorGREEN.color = oc_green_[iFlip];
+            colorLIME.color = oc_lime_[iFlip];
+            colorYELLOW.color = oc_yellow_[iFlip];
+            colorORANGE.color = oc_orange_[iFlip];
+            colorGREY.position = pos++;
+            colorRED.position = pos++;
+            colorPINK.position = pos++;
+            colorGRAPE.position = pos++;
+            colorVIOLET.position = pos++;
+            colorINDIGO.position = pos++;
+            colorBLUE.position = pos++;
+            colorCYAN.position = pos++;
+            colorTEAL.position = pos++;
+            colorGREEN.position = pos++;
+            colorLIME.position = pos++;
+            colorYELLOW.position = pos++;
+            colorORANGE.position = pos++;
 
-            colors_STRUCT.push_back( colorGREY   );
-            colors_STRUCT.push_back( colorRED    );
-            colors_STRUCT.push_back( colorPINK   );
-            colors_STRUCT.push_back( colorGRAPE  );
-            colors_STRUCT.push_back( colorVIOLET );
-            colors_STRUCT.push_back( colorINDIGO );
-            colors_STRUCT.push_back( colorBLUE   );
-            colors_STRUCT.push_back( colorCYAN   );
-            colors_STRUCT.push_back( colorTEAL   );
-            colors_STRUCT.push_back( colorGREEN  );
-            colors_STRUCT.push_back( colorLIME   );
-            colors_STRUCT.push_back( colorYELLOW );
-            colors_STRUCT.push_back( colorORANGE );
+            colors_STRUCT.push_back(colorGREY);
+            colors_STRUCT.push_back(colorRED);
+            colors_STRUCT.push_back(colorPINK);
+            colors_STRUCT.push_back(colorGRAPE);
+            colors_STRUCT.push_back(colorVIOLET);
+            colors_STRUCT.push_back(colorINDIGO);
+            colors_STRUCT.push_back(colorBLUE);
+            colors_STRUCT.push_back(colorCYAN);
+            colors_STRUCT.push_back(colorTEAL);
+            colors_STRUCT.push_back(colorGREEN);
+            colors_STRUCT.push_back(colorLIME);
+            colors_STRUCT.push_back(colorYELLOW);
+            colors_STRUCT.push_back(colorORANGE);
 
             //-
         }
@@ -172,8 +167,7 @@ void ofxColorsBrowser::grid_generate(){
 
         // 3. OFX_COLOR_NATIVE
 
-    else if (MODE_COLOR == OFX_COLOR_NATIVE)
-    {
+    else if (MODE_COLOR == OFX_COLOR_NATIVE) {
         // build a map from name to ofColor of all the named OF colors;
 
         colorNameMap["white"] = ofColor::white;
@@ -481,28 +475,28 @@ void ofxColorsBrowser::grid_generate(){
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::load_Pantone_JSON(){
+void ofxColorsBrowser::load_Pantone_JSON() {
 
     pantoneNames.clear();
     pantoneColors.clear();
 
     string path = "colors/pantone-colors.json";
     ofFile file(path);
-    if(file.exists()){
+    if (file.exists()) {
         file >> js;
         cout << js;
-        cout<< endl;
+        cout << endl;
 
-        int i=0;
-        for (auto & jsName: js["names"]){
-            cout << "NAMES  ["<<i<<"] "<<jsName<<endl;
-            pantoneNames.push_back( jsName );
+        int i = 0;
+        for (auto &jsName: js["names"]) {
+//            cout << "NAMES  [" << i << "] " << jsName << endl;
+            pantoneNames.push_back(jsName);
             i++;
         }
 
-        i=0;
-        for (auto & jsValues: js["values"]){
-            cout << "VALUES ["<<i<<"] "<<jsValues<<endl;
+        i = 0;
+        for (auto &jsValues: js["values"]) {
+//            cout << "VALUES [" << i << "] " << jsValues << endl;
 
             ofColor c;
             string colorHEXcode = ofToString(jsValues);
@@ -511,18 +505,16 @@ void ofxColorsBrowser::load_Pantone_JSON(){
             vector<string> myCol2 = ofSplitString(myCol, "\"");
             hexToColor(c, myCol2[0]);
 
-            pantoneColors.push_back( c );
+            pantoneColors.push_back(c);
             i++;
         }
-    }
-    else
-    {
-        ofLogNotice("")<<"FILE '"<<path<<"' NOT FOUND!";
+    } else {
+        ofLogNotice("") << "FILE '" << path << "' NOT FOUND!";
     }
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setup(){
+void ofxColorsBrowser::setup() {
 
     //--
 
@@ -559,8 +551,7 @@ void ofxColorsBrowser::setup(){
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::grid_create_boxes()
-{
+void ofxColorsBrowser::grid_create_boxes() {
     float x = position.x;
     float y = position.y;
 
@@ -569,14 +560,13 @@ void ofxColorsBrowser::grid_create_boxes()
     isSelecting = false;
     draggingRectPtr = NULL;
 
-    for (int i = 0; i < colors_STRUCT.size(); i++)
-    {
-        float xBtn = x + (i%perRow)*(size+pad);
-        float yBtn = y + (i/perRow)*(size+pad);
+    for (int i = 0; i < colors_STRUCT.size(); i++) {
+        float xBtn = x + (i % perRow) * (size + pad);
+        float yBtn = y + (i / perRow) * (size + pad);
 
         ofColor c = colors_STRUCT[i].color;
 
-        ofxRectangle rect( ofRectangle(xBtn,yBtn,size,size), c );
+        ofxRectangle rect(ofRectangle(xBtn, yBtn, size, size), c);
 
         // TEST
         rect.setName(colors_STRUCT[i].name);
@@ -586,7 +576,7 @@ void ofxColorsBrowser::grid_create_boxes()
         rectangles.push_back(rect);
     }
 
-    selectedRectsBoundingBox = ofxRectangle(ofRectangle(), ofColor(127,80));
+    selectedRectsBoundingBox = ofxRectangle(ofRectangle(), ofColor(127, 80));
     hAlign = OF_ALIGN_HORZ_LEFT;
     vAlign = OF_ALIGN_VERT_TOP;
     anchorRect = NULL;
@@ -597,10 +587,9 @@ void ofxColorsBrowser::grid_create_boxes()
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::update(){
+void ofxColorsBrowser::update() {
 
-    if (color_BACK != color_BACK_PRE)
-    {
+    if (color_BACK != color_BACK_PRE) {
         color_BACK_OFAPP->set(color_BACK);
         color_BACK_PRE = color_BACK;
     }
@@ -613,8 +602,7 @@ void ofxColorsBrowser::update(){
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::draw()
-{
+void ofxColorsBrowser::draw() {
     //-
 
     // 1. ALL THE COLORS NAMES
@@ -622,20 +610,19 @@ void ofxColorsBrowser::draw()
     // show all names from loaded palette
     int lineBegin;
     int lineEnd;
-    int linesPage = 7*4;
+    int linesPage = 7 * 4;
     int pageNum;
-    pageNum = (int)currColor/linesPage;
+    pageNum = (int) currColor / linesPage;
     //    cout << "pageNum:"<<pageNum<<endl;
 
-    lineBegin = pageNum*linesPage;
-    lineEnd = lineBegin+linesPage;
+    lineBegin = pageNum * linesPage;
+    lineEnd = lineBegin + linesPage;
 
     //TODO: add more pages...
 
-    for (int i=lineBegin; i<lineEnd; i++)
-    {
+    for (int i = lineBegin; i < lineEnd; i++) {
         int line;
-        line = lineBegin+i;
+        line = lineBegin + i;
         string str;
         str = colors_STRUCT[line].name;
 
@@ -651,12 +638,10 @@ void ofxColorsBrowser::draw()
         //            iPadded = i-lineBegin;
         //            currPadded = currColor+lineBegin;
         //        }
-        if (pageNum==0)
-        {
+        if (pageNum == 0) {
             iPadded = i;
             currPadded = currColor;
-        }
-        else//TODO: must make..
+        } else//TODO: must make..
         {
 //            iPadded = i - lineBegin;//TODO: must make..
 //            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
@@ -665,14 +650,12 @@ void ofxColorsBrowser::draw()
 //            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
         }
 
-        if ( i == currColor )
+        if (i == currColor)
 //        if (line==currPadded)
         {
-            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded*20, ofColor::white, ofColor::black);
-        }
-        else
-        {
-            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded*20, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, ofColor::white, ofColor::black);
+        } else {
+            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, ofColor::black, ofColor::white);
         }
     }
 
@@ -682,22 +665,20 @@ void ofxColorsBrowser::draw()
 
     {
         int i = 0;
-        int x = position.x+5;
+        int x = position.x + 5;
         int y = 25;
-        ofDrawBitmapStringHighlight("name: "+currName, x, y+(i++)*20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("position: "+ofToString(currColor), x, y+(i++)*20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("original pos: "+ofToString(currColor_OriginalPos), x, y+(i++)*20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("page: "+ofToString(pageNum), x, y+(i++)*20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("name: " + currName, x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("position: " + ofToString(currColor), x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("original pos: " + ofToString(currColor_OriginalPos), x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
     }
 
     //-
 
     // 3. MONITOR APP MODES
 
-    if (SHOW_ColorsBrowse)
-    {
-        if (SHOW_debugText)
-        {
+    if (SHOW_ColorsBrowse) {
+        if (SHOW_debugText) {
             string str;
 
             //-
@@ -720,7 +701,7 @@ void ofxColorsBrowser::draw()
                     str += "SATURATION";
                     break;
             }
-            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+50, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
 
             //-
 
@@ -736,12 +717,11 @@ void ofxColorsBrowser::draw()
                     str += "OPEN COLOR";
                     break;
             }
-            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+20, ofColor::black, ofColor::white);
+            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
 
             //-
 
-            if (ENABLE_keys)
-            {
+            if (ENABLE_keys) {
 #ifdef KEY_SHORTCUTS_ENABLE
                 str = "SORT\n";
                 str += "[0] ORIGINAL\n";
@@ -755,7 +735,7 @@ void ofxColorsBrowser::draw()
                 str += "[BACKSPACE] NEXT\n";
                 //                str += "\n";
                 //                str += "[D] DEBUG";
-                ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y+100, ofColor::black, ofColor::white);
+                ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 100, ofColor::black, ofColor::white);
 #endif
             }
         }
@@ -771,62 +751,52 @@ void ofxColorsBrowser::draw()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
-{
-    const int & key = eventArgs.key;
+void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs) {
+    const int &key = eventArgs.key;
 //    ofLogNotice("ofxColorsBrowser") << "key: " << key;
 
     //-
 
     // change colors
-    if (key == OF_KEY_RIGHT)
-    {
+    if (key == OF_KEY_RIGHT) {
         currColor++;
         int sizeCols = colors_STRUCT.size();
-        if (currColor>sizeCols-1)
-            currColor=0;
+        if (currColor > sizeCols - 1)
+            currColor = 0;
         refresh_Clicks();
-    }
-    else if (key == OF_KEY_LEFT)
-    {
+    } else if (key == OF_KEY_LEFT) {
         currColor--;
-        if (currColor<0)
-            currColor = colors_STRUCT.size()-1;
+        if (currColor < 0)
+            currColor = colors_STRUCT.size() - 1;
         refresh_Clicks();
-    }
-    else if (key == OF_KEY_DOWN)
-    {
+    } else if (key == OF_KEY_DOWN) {
         currColor = currColor + perRow;
         int sizeCols = colors_STRUCT.size();
-        if (currColor>sizeCols-1)
-            currColor=sizeCols-1;
+        if (currColor > sizeCols - 1)
+            currColor = sizeCols - 1;
         refresh_Clicks();
-    }
-    else if (key == OF_KEY_UP)
-    {
+    } else if (key == OF_KEY_UP) {
         currColor = currColor - perRow;
-        if (currColor<0)
-            currColor=0;
+        if (currColor < 0)
+            currColor = 0;
         refresh_Clicks();
     }
 
     //-
 
     // show debug
-    if (key == 'd'){
+    if (key == 'd') {
         bShowDebug = !bShowDebug;
 
-        for (int i = 0; i < rectangles.size(); i++)
-        {
+        for (int i = 0; i < rectangles.size(); i++) {
             rectangles[i].setDebug(bShowDebug);
         }
     }
 
     // change to next palette
-    if(key == OF_KEY_BACKSPACE)
-    {
+    if (key == OF_KEY_BACKSPACE) {
         MODE_COLOR++;
-        MODE_COLOR = MODE_COLOR%3;
+        MODE_COLOR = MODE_COLOR % 3;
 
         //        switch (MODE_COLOR)
         //        {
@@ -850,64 +820,55 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
     }
 
     // select sorting
-    if (key == '0'){
-        if (MODE_SORTING != 0){
+    if (key == '0') {
+        if (MODE_SORTING != 0) {
             MODE_SORTING = 0;
             //            ofSort(colors_STRUCT, comparePosition);
             grid_clear();
             grid_create_boxes();
         }
-    }
-    else if (key == '1'){
-        if (MODE_SORTING != 1){
+    } else if (key == '1') {
+        if (MODE_SORTING != 1) {
             MODE_SORTING = 1;
 //                        ofSort(colors_STRUCT, compareName);
             grid_clear();
             grid_create_boxes();
         }
-    }
-    else if (key == '2'){
-        if (MODE_SORTING != 2){
+    } else if (key == '2') {
+        if (MODE_SORTING != 2) {
             MODE_SORTING = 2;
             //            ofSort(colors_STRUCT, compareHue);
             grid_clear();
             grid_create_boxes();
         }
-    }
-    else if (key == '3'){
-        if (MODE_SORTING != 3){
+    } else if (key == '3') {
+        if (MODE_SORTING != 3) {
             MODE_SORTING = 3;
             //            ofSort(colors_STRUCT, compareBrightness);
             grid_clear();
             grid_create_boxes();
         }
-    }
-    else if (key == '4'){
-        if (MODE_SORTING != 4){
+    } else if (key == '4') {
+        if (MODE_SORTING != 4) {
             MODE_SORTING = 4;
             //            ofSort(colors_STRUCT, compareSaturation);
             grid_clear();
             grid_create_boxes();
         }
-    }
-    else if (key == '5'){
+    } else if (key == '5') {
         switch_sorted_Type();
-    }
-
-
-    else if (key == 'p'){
+    } else if (key == 'p') {
         RectangleUtils::pack(selectedRects, ofRectangle(0,
-                0,
-                ofRandom(500),
-                ofRandom(500)));
+            0,
+            ofRandom(500),
+            ofRandom(500)));
     }
 
     //---
 
     // debug ofxRectangle handling
 
-    if (bShowDebug)
-    {
+    if (bShowDebug) {
 
         //    if (key == OF_KEY_UP) {
         //        for(size_t i = 0; i < selectedRects.size(); i++) {
@@ -983,9 +944,9 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
         } else if (key == 'p') {
 
             RectangleUtils::pack(selectedRects, ofRectangle(0,
-                    0,
-                    ofGetWidth(),
-                    ofGetHeight()));
+                0,
+                ofGetWidth(),
+                ofGetHeight()));
 
 
         } else if (key == ' ') {
@@ -995,8 +956,7 @@ void ofxColorsBrowser::keyPressed( ofKeyEventArgs& eventArgs )
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::grid_clear()
-{
+void ofxColorsBrowser::grid_clear() {
     // TODO: this is not require since swap from ofXInterface to ofxrectangleUtils
     ofLogNotice("ofxColorsBrowser") << "grid_clear";
 
@@ -1008,44 +968,39 @@ void ofxColorsBrowser::grid_clear()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::keyReleased( ofKeyEventArgs& eventArgs )
-{
-    if( eventArgs.key == ' ')
-    {
+void ofxColorsBrowser::keyReleased(ofKeyEventArgs &eventArgs) {
+    if (eventArgs.key == ' ') {
     }
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::addKeysListeners()
-{
-    ofAddListener( ofEvents().keyPressed, this, &ofxColorsBrowser::keyPressed );
+void ofxColorsBrowser::addKeysListeners() {
+    ofAddListener(ofEvents().keyPressed, this, &ofxColorsBrowser::keyPressed);
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::removeKeysListeners()
-{
-    ofRemoveListener( ofEvents().keyPressed, this, &ofxColorsBrowser::keyPressed );
+void ofxColorsBrowser::removeKeysListeners() {
+    ofRemoveListener(ofEvents().keyPressed, this, &ofxColorsBrowser::keyPressed);
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
-    const int & x = eventArgs.x;
-    const int & y = eventArgs.y;
-    const int & button = eventArgs.button;
+void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs) {
+    const int &x = eventArgs.x;
+    const int &y = eventArgs.y;
+    const int &button = eventArgs.button;
     //    ofLogNotice("ofxColorsBrowser") << "mouseDragged " <<  x << ", " << y << ", " << button;
 
-    if (bShowDebug)
-    {
+    if (bShowDebug) {
         if (draggingRectPtr != NULL) {
-            draggingRectPtr->setPosition(ofPoint(x,y) - draggingRectPtr->dragOffset);
+            draggingRectPtr->setPosition(ofPoint(x, y) - draggingRectPtr->dragOffset);
 
             if (draggingRectPtr == &selectedRectsBoundingBox) {
-                for(size_t i = 0; i < rectangles.size(); i++) {
+                for (size_t i = 0; i < rectangles.size(); i++) {
                     if (rectangles[i].isSelected) {
-                        rectangles[i].setPosition(ofPoint(x,y) - rectangles[i].dragOffset);
+                        rectangles[i].setPosition(ofPoint(x, y) - rectangles[i].dragOffset);
                     }
                 }
             }
@@ -1056,14 +1011,13 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs& eventArgs){
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
-    const int & x = eventArgs.x;
-    const int & y = eventArgs.y;
-    const int & button = eventArgs.button;
+void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs) {
+    const int &x = eventArgs.x;
+    const int &y = eventArgs.y;
+    const int &button = eventArgs.button;
     //    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
-    if (ENABLE_clicks)
-    {
+    if (ENABLE_clicks) {
         dragStart = glm::vec2(x, y);  // set a new drag start point
 
         if (!ofGetKeyPressed('A')) {
@@ -1072,11 +1026,9 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
 
             // first check to see if we are in the bounding box
             if (!selectedRects.empty() &&
-                    selectedRectsBoundingBox.inside(dragStart))
-            {
+                selectedRectsBoundingBox.inside(dragStart)) {
 
-                if (bShowDebug)
-                {
+                if (bShowDebug) {
                     draggingRectPtr = &selectedRectsBoundingBox;
                     //            selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
                     selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
@@ -1092,20 +1044,15 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
                     }
                     foundAClickTarget = true;
                 }
-            }
-
-            else
-            {
+            } else {
                 // RECTANGLE COLOR CLICKED
 
                 selectedRects.clear();
                 // otherwise, go through all of the rects and see if we can drag one
-                for (size_t i = 0; i < rectangles.size(); i++)
-                {
+                for (size_t i = 0; i < rectangles.size(); i++) {
                     rectangles[i].isSelected = false; // assume none
 
-                    if (!foundAClickTarget && rectangles[i].isOver)
-                    {
+                    if (!foundAClickTarget && rectangles[i].isOver) {
                         draggingRectPtr = &rectangles[i];
                         rectangles[i].isSelected = true;
                         rectangles[i].dragOffset = dragStart - rectangles[i].getPosition();
@@ -1114,9 +1061,10 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
                         //-
 
                         // TEST
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box clicked  ["<<i<<"]";
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box name     ["<<rectangles[i].name<<"]";
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box position ["<<rectangles[i].position_inVector<<"]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box clicked  [" << i << "]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box name     [" << rectangles[i].name << "]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box position ["
+                                                                     << rectangles[i].position_inVector << "]";
 
                         //-
 
@@ -1124,7 +1072,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
                         ofColor cRect = rectangles[i].color;
 
                         // apply color pointer back
-                        color_BACK = ofColor( cRect );
+                        color_BACK = ofColor(cRect);
                         //                        ofColor c = colors_STRUCT[currColor].color;
                         //                        color_BACK = ofColor( c );
 
@@ -1133,13 +1081,14 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
                         // update browsing grid
 
                         currColor = i;
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor    ["<<currColor<<"]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor    [" << currColor << "]";
 
                         currName = colors_STRUCT[currColor].name;
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currName     ["<<currName<<"]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currName     [" << currName << "]";
 
                         currColor_OriginalPos = colors_STRUCT[currColor].position;
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos  ["<<currColor_OriginalPos<<"]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos  [" << currColor_OriginalPos
+                                                                     << "]";
                     }
                 }
             }
@@ -1160,9 +1109,9 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs& eventArgs){
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::refresh_Clicks()
-{
-    ofLogNotice("ofxColorsBrowser:refresh_Clicks")<<"make clicked box by keys following currColor: ["<<currColor<<"]";
+void ofxColorsBrowser::refresh_Clicks() {
+    ofLogNotice("ofxColorsBrowser:refresh_Clicks") << "make clicked box by keys following currColor: [" << currColor
+                                                   << "]";
 
     //-
 
@@ -1181,20 +1130,20 @@ void ofxColorsBrowser::refresh_Clicks()
     //-
 
     ofColor c = colors_STRUCT[currColor].color;
-    color_BACK = ofColor( c );
+    color_BACK = ofColor(c);
 
-    ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor is ["<<currColor<<"]";
+    ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor is [" << currColor << "]";
 
     currName = colors_STRUCT[currColor].name;
-    ofLogNotice("ofxColorsBrowser:mousePressed") << "currName is ["<<currName<<"]";
+    ofLogNotice("ofxColorsBrowser:mousePressed") << "currName is [" << currName << "]";
 
     currColor_OriginalPos = colors_STRUCT[currColor].position;
-    ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos was ["<<currColor_OriginalPos<<"]";
+    ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos was [" << currColor_OriginalPos << "]";
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs) {
+void ofxColorsBrowser::mouseReleased(ofMouseEventArgs &eventArgs) {
     const int &x = eventArgs.x;
     const int &y = eventArgs.y;
     const int &button = eventArgs.button;
@@ -1208,26 +1157,23 @@ void ofxColorsBrowser::mouseReleased(ofMouseEventArgs& eventArgs) {
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::addMouseListeners()
-{
-    ofAddListener( ofEvents().mouseDragged, this, &ofxColorsBrowser::mouseDragged );
-    ofAddListener( ofEvents().mousePressed, this, &ofxColorsBrowser::mousePressed );
-    ofAddListener( ofEvents().mouseReleased, this, &ofxColorsBrowser::mouseReleased );
+void ofxColorsBrowser::addMouseListeners() {
+    ofAddListener(ofEvents().mouseDragged, this, &ofxColorsBrowser::mouseDragged);
+    ofAddListener(ofEvents().mousePressed, this, &ofxColorsBrowser::mousePressed);
+    ofAddListener(ofEvents().mouseReleased, this, &ofxColorsBrowser::mouseReleased);
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::removeMouseListeners()
-{
-    ofRemoveListener( ofEvents().mouseDragged, this, &ofxColorsBrowser::mouseDragged );
-    ofRemoveListener( ofEvents().mousePressed, this, &ofxColorsBrowser::mousePressed );
-    ofRemoveListener( ofEvents().mouseReleased, this, &ofxColorsBrowser::mouseReleased );
+void ofxColorsBrowser::removeMouseListeners() {
+    ofRemoveListener(ofEvents().mouseDragged, this, &ofxColorsBrowser::mouseDragged);
+    ofRemoveListener(ofEvents().mousePressed, this, &ofxColorsBrowser::mousePressed);
+    ofRemoveListener(ofEvents().mouseReleased, this, &ofxColorsBrowser::mouseReleased);
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::exit()
-{
+void ofxColorsBrowser::exit() {
     //    ColourLoversHelper.exit();
 
     removeKeysListeners();
@@ -1236,16 +1182,14 @@ void ofxColorsBrowser::exit()
 
 
 //--------------------------------------------------------------
-ofxColorsBrowser::~ofxColorsBrowser()
-{
+ofxColorsBrowser::~ofxColorsBrowser() {
     //    removeKeysListeners();
     //    removeMouseListeners();
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
-{
+void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c) {
     //    colorBack_DEFINED = true;
     //    color_BACK = c;
     color_BACK_OFAPP = &c;
@@ -1253,35 +1197,33 @@ void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setPosition(glm::vec2 p){
+void ofxColorsBrowser::setPosition(glm::vec2 p) {
     position = p;
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setBoxSize(float _size)
-{
+void ofxColorsBrowser::setBoxSize(float _size) {
     size = _size;
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setRowsSize(int rows){
+void ofxColorsBrowser::setRowsSize(int rows) {
     perRow = rows;
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setVisible(bool b)
-{
+void ofxColorsBrowser::setVisible(bool b) {
     SHOW_ColorsBrowse = b;
     set_ENABLE_clicks(b);
 }
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::switch_palette_Type(){
-    MODE_COLOR = (MODE_COLOR+1) % 2;
+void ofxColorsBrowser::switch_palette_Type() {
+    MODE_COLOR = (MODE_COLOR + 1) % 2;
     ofLogNotice("ofxColorsBrowser") << "switch_palette_Type: " << MODE_COLOR;
 
     grid_clear();
@@ -1291,9 +1233,9 @@ void ofxColorsBrowser::switch_palette_Type(){
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::switch_sorted_Type(){
+void ofxColorsBrowser::switch_sorted_Type() {
     MODE_SORTING++;
-    MODE_SORTING = MODE_SORTING%6;
+    MODE_SORTING = MODE_SORTING % 6;
 
     //    MODE_SORTING++;
     ////    MODE_SORTING = MODE_SORTING%5;
@@ -1302,8 +1244,7 @@ void ofxColorsBrowser::switch_sorted_Type(){
 
     ofLogNotice("ofxColorsBrowser") << "switch_sorted_Type: " << MODE_SORTING;
 
-    switch (MODE_SORTING)
-    {
+    switch (MODE_SORTING) {
         case 0:
             //            ofSort(colors_STRUCT, comparePosition);
             break;
@@ -1321,7 +1262,7 @@ void ofxColorsBrowser::switch_sorted_Type(){
             break;
     }
 
-    if (MODE_SORTING >= 0 && MODE_SORTING<=4)
+    if (MODE_SORTING >= 0 && MODE_SORTING <= 4)
         //    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
     {
         grid_clear();
@@ -1331,8 +1272,7 @@ void ofxColorsBrowser::switch_sorted_Type(){
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::set_palette_Type(int p)
-{
+void ofxColorsBrowser::set_palette_Type(int p) {
     MODE_COLOR = p;
 
     grid_clear();
@@ -1342,12 +1282,10 @@ void ofxColorsBrowser::set_palette_Type(int p)
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::set_sorted_Type(int p)
-{
+void ofxColorsBrowser::set_sorted_Type(int p) {
     MODE_SORTING = p;
 
-    switch (MODE_SORTING)
-    {
+    switch (MODE_SORTING) {
         case 0:
             //            ofSort(colors_STRUCT, comparePosition);
             break;
@@ -1365,7 +1303,7 @@ void ofxColorsBrowser::set_sorted_Type(int p)
             break;
     }
 
-    if (p>=0  && p<=4)
+    if (p >= 0 && p <= 4)
         //    if (p>=1  && p<=4)
     {
         grid_clear();
@@ -1375,10 +1313,8 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::rectangles_update()
-{
-    if (ENABLE_clicks)
-    {
+void ofxColorsBrowser::rectangles_update() {
+    if (ENABLE_clicks) {
         ofPoint mouse(ofGetMouseX(), ofGetMouseY());
 
 
@@ -1414,12 +1350,12 @@ void ofxColorsBrowser::rectangles_update()
 
             // check is over -- only set isOver if other things aren't happening
             if (!foundIsOver &&
-                    /*selectedRects.empty() &&
-                    !rectangles[i].isSelected && */
-                            (draggingRectPtr == NULL ||
-                                    draggingRectPtr == &rectangles[i] ||
-                                    draggingRectPtr == &selectedRectsBoundingBox) &&
-                    rectangles[i].inside(mouse)) {
+                /*selectedRects.empty() &&
+                !rectangles[i].isSelected && */
+                    (draggingRectPtr == NULL ||
+                        draggingRectPtr == &rectangles[i] ||
+                        draggingRectPtr == &selectedRectsBoundingBox) &&
+                rectangles[i].inside(mouse)) {
                 rectangles[i].isOver = true;
                 foundIsOver = true;
             } else {
@@ -1436,29 +1372,26 @@ void ofxColorsBrowser::rectangles_update()
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::rectangles_draw(){
+void ofxColorsBrowser::rectangles_draw() {
 
-    ofPoint mouse(ofGetMouseX(),ofGetMouseY());
+    ofPoint mouse(ofGetMouseX(), ofGetMouseY());
 
-    if (bShowDebug)
-    {
+    if (bShowDebug) {
         ofFill();
-        ofSetColor(255,showKeyboardCommands ? 255 : 127);
-        ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12,16);
+        ofSetColor(255, showKeyboardCommands ? 255 : 127);
+        ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12, 16);
     }
 
     // draw all of our rectangles
-    for (size_t i = 0; i < rectangles.size(); ++i)
-    {
-        ofRectangle* rect = (ofRectangle*)&rectangles[i];
+    for (size_t i = 0; i < rectangles.size(); ++i) {
+        ofRectangle *rect = (ofRectangle *) &rectangles[i];
         unsigned int selectionIndex = ofFind(selectedRects, rect);
-        rectangles[i].draw(i,selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+        rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
     }
 
     // clicked color border
     // draw our bounding box rectangle
-    if (!isSelecting && !selectedRects.empty())
-    {
+    if (!isSelecting && !selectedRects.empty()) {
         //        ofFill();
         ////        ofSetColor(255,20);
         //        ofSetColor(0,200);
@@ -1467,21 +1400,19 @@ void ofxColorsBrowser::rectangles_draw(){
         ofNoFill();
         //        ofSetColor(255,80);
         //        ofSetColor(0,64);
-        ofSetColor(0,255);//full black
+        ofSetColor(0, 255);//full black
         ofDrawRectangle(selectedRectsBoundingBox);
     }
 
     // draw our selection rectangle
-    if (isSelecting && bShowDebug)
-    {
+    if (isSelecting && bShowDebug) {
         ofNoFill();
         //        ofSetColor(255,255,0,200);
         ofSetColor(ofColor(ofColor::black, 200));
         ofDrawRectangle(selectionRect);
     }
 
-    if (bShowDebug)
-    {
+    if (bShowDebug) {
         stringstream ss;
         ss << "Keyboard [(Spacebar) to hide]" << endl;
         ss << "W: sort by absolute width" << endl;
@@ -1540,18 +1471,16 @@ void ofxColorsBrowser::rectangles_draw(){
     }
 
     ofNoFill();
-    ofSetColor(255,255,0);
+    ofSetColor(255, 255, 0);
 
-    for(int i = 0; i < packedRects.size(); i++)
-    {
+    for (int i = 0; i < packedRects.size(); i++) {
         ofDrawRectangle(packedRects[i]);
     }
 }
 
 
 //--------------------------------------------------------------
-vector<ofColor> ofxColorsBrowser::getPalette()
-{
+vector<ofColor> ofxColorsBrowser::getPalette() {
     ofLogNotice("ofxColorsBrowser") << "getPalette:";
 
     int numColors = colors_STRUCT.size();
@@ -1560,9 +1489,8 @@ vector<ofColor> ofxColorsBrowser::getPalette()
     vector<ofColor> _palette;
     _palette.resize(numColors);
 
-    for (int i=0; i<colors_STRUCT.size(); i++)
-    {
-        ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
+    for (int i = 0; i < colors_STRUCT.size(); i++) {
+        ofLogNotice("ofxColorsBrowser") << "color: " + ofToString(i) + "_" + ofToString(_palette[i]);
         _palette[i] = colors_STRUCT[i].color;
     }
 
@@ -1571,7 +1499,6 @@ vector<ofColor> ofxColorsBrowser::getPalette()
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setVisible_debugText(bool b)
-{
+void ofxColorsBrowser::setVisible_debugText(bool b) {
     SHOW_debugText = b;
 }
