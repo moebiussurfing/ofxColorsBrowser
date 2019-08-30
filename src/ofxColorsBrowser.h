@@ -43,6 +43,8 @@ class ofxColorsBrowser {
 
 public:
 
+    string path = "colorsBrowser/pantone-colors.json";
+
     void refresh_Clicks();// to browsing by keys
 
     //--
@@ -64,7 +66,7 @@ public:
     // PANTONE COLORS
 
     ofJson js;
-    ofPath path;
+    //ofPath path;
     vector<ofColor> pantoneColors;
     vector<std::string> pantoneNames;
 
