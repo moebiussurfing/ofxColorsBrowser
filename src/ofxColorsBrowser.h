@@ -8,7 +8,8 @@
 #include "ofxRectangle.h"
 using namespace ofx;
 
-#define KEY_SHORTCUTS_ENABLE; // internal shorcuts no add listeners or remove
+#define KEY_SHORTCUTS_ENABLE
+// internal shorcuts no add listeners or remove
 
 enum {
     SORTING_ORIGINAL,
@@ -44,6 +45,9 @@ class ofxColorsBrowser {
 public:
 
     string path = "colorsBrowser/pantone-colors.json";
+
+    ofParameter<int> cardSize{"CARD SIZE", 7, 2, 100};
+    ofParameter<int> cardsPerRow{"CARDS PER ROW", 4, 2, 100};
 
     void refresh_Clicks();// to browsing by keys
 
@@ -250,6 +254,7 @@ private:
     // 0: PANTONE COLORS 1: OFX_COLOR_NATIVE, 2: OFX_OPEN_COLOR
     int MODE_COLOR;
     int MODE_SORTING;
+
     int perRow = 10;
     float size = 50;//boxes
     float pad = 1;

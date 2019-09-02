@@ -17,6 +17,7 @@ ofxColorsBrowser::ofxColorsBrowser()
 //--------------------------------------------------------------
 void ofxColorsBrowser::grid_generate()
 {
+    ofLogNotice("ofxColorsBrowser") << "grid_generate";
 
     colors_STRUCT.clear();
     colorNameMap.clear();
@@ -27,8 +28,12 @@ void ofxColorsBrowser::grid_generate()
 
     if (MODE_COLOR == OFX_PANTONE_COLORS)
     {
-        cout << endl;
-        ofLogNotice("ofxColorsBrowser::grid_generate") << endl;
+
+ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
+
+        // dessired distribution for this palette
+        cardSize = 7;
+        cardsPerRow = 8;
 
         for (int i = 0; i < pantoneNames.size(); i++)
         {
@@ -52,7 +57,7 @@ void ofxColorsBrowser::grid_generate()
 
             //-
         }
-        cout << endl;
+        ofLogNotice("ofxColorsBrowser");
     }
 
         //--
@@ -61,13 +66,21 @@ void ofxColorsBrowser::grid_generate()
 
     else if (MODE_COLOR == OFX_OPEN_COLOR)
     {
+        ofLogNotice("ofxColorsBrowser") << "OFX_OPEN_COLOR";
+
+    #define NUM_COLORS_ROW 10//that's also the ideal distribution for open color palette
+
+        // dessired distribution for this palette
+        cardSize = 10;
+        cardsPerRow = 1;
+
         bool flipOrder = true;
         int iFlip;
 
         //TEST
         int pos = 0;//-1? to set correlative positions...
 
-#define NUM_COLORS_ROW 10//that's also the ideal indent for open color palette
+
         for (int i = 0; i < NUM_COLORS_ROW; i++)
         {
             //flip order: iFlip
@@ -330,7 +343,7 @@ void ofxColorsBrowser::grid_generate()
 
 
     //    // TEST
-    //    cout << endl;
+    //    ofLogNotice("ofxColorsBrowser") << endl;
     //    for (unsigned int i=0; i<colorNameMap.size(); i++)
     //    {
     //        map<string, ofColor>::iterator mapEntry = colorNameMap.begin();
@@ -348,24 +361,24 @@ void ofxColorsBrowser::grid_generate()
     //        //-
     //
     //        // TEST
-    //        cout << "colorNameMap\t" << "name:" << mapping.name << " [" << i << "]" << "color:"
+    //        ofLogNotice("ofxColorsBrowser") << "colorNameMap\t" << "name:" << mapping.name << " [" << i << "]" << "color:"
     //             << ofToString(mapping.color) << endl;
     //    }
     //
-    //    cout << endl;
-    //    cout << "------------------------TESTING--------------------------"<<endl;
+    //    ofLogNotice("ofxColorsBrowser") << endl;
+    //    ofLogNotice("ofxColorsBrowser") << "------------------------TESTING--------------------------"<<endl;
     //    for (int i=0; i<colors_STRUCT.size(); i++)
     //    {
     //
-    //        cout << "colors_STRUCT\t"
+    //        ofLogNotice("ofxColorsBrowser") << "colors_STRUCT\t"
     //             << "name:"     << colors_STRUCT[i].name
     //             << "color:"    << ofToString(colors_STRUCT[i].color)
     //             << " ["        << colors_STRUCT[i].position << "]";
-    //        cout << endl;
+    //        ofLogNotice("ofxColorsBrowser") << endl;
     //
     //    }
-    //    cout << "------------------------TESTING--------------------------"<<endl;
-    //    cout << endl;
+    //    ofLogNotice("ofxColorsBrowser") << "------------------------TESTING--------------------------"<<endl;
+    //    ofLogNotice("ofxColorsBrowser") << endl;
 
 
 
@@ -382,8 +395,8 @@ void ofxColorsBrowser::grid_generate()
     ////        string name = pantoneNames[i];
     ////        colorNameMap[name] = pantoneColors[i];
     //
-    //        cout << endl;
-    //        cout << "MODE_COLOR == OFX_PANTONE_COLOR" << endl;
+    //        ofLogNotice("ofxColorsBrowser") << endl;
+    //        ofLogNotice("ofxColorsBrowser") << "MODE_COLOR == OFX_PANTONE_COLOR" << endl;
     //
     //        for (unsigned int i=0; i<pantoneColors.size(); i++) {
     //
@@ -394,17 +407,17 @@ void ofxColorsBrowser::grid_generate()
     //
     //            colors_STRUCT.push_back(myColorNameMapping);
     //
-    //            cout << "colors_STRUCT\t"
+    //            ofLogNotice("ofxColorsBrowser") << "colors_STRUCT\t"
     //                 << "name:" << myColorNameMapping.name
     //                 << "color:" << ofToString(myColorNameMapping.color)
     //                 << " [" <<myColorNameMapping.position<< "]";
-    //            cout << endl;
+    //            ofLogNotice("ofxColorsBrowser") << endl;
     //
     //        }
-    //        cout << endl;
-    //        cout << "colorPositions" << endl;
+    //        ofLogNotice("ofxColorsBrowser") << endl;
+    //        ofLogNotice("ofxColorsBrowser") << "colorPositions" << endl;
     //
-    ////    cout << ofToString(colorPositions)<<endl;
+    ////    ofLogNotice("ofxColorsBrowser") << ofToString(colorPositions)<<endl;
     ////    cout<<endl;
     //    }
 
@@ -415,7 +428,7 @@ void ofxColorsBrowser::grid_generate()
     //
     //    if (MODE_SORTING != SORTING_ORIGINAL)
     //    {
-    //        cout << endl;
+    //        ofLogNotice("ofxColorsBrowser") << endl;
     //        for (unsigned int i = 0; i < colorNameMap.size(); i++) {
     //
     //            map<string, ofColor>::iterator mapEntry = colorNameMap.begin();
@@ -435,11 +448,11 @@ void ofxColorsBrowser::grid_generate()
     //            //-
     //
     //            // TEST
-    //            cout << "colorNameMap\t" << "name:" << mapping.name << " [" << i << "]" << "color:"
+    //            ofLogNotice("ofxColorsBrowser") << "colorNameMap\t" << "name:" << mapping.name << " [" << i << "]" << "color:"
     //                 << ofToString(mapping.color) << endl;
     //
     //        }
-    //        cout << endl;
+    //        ofLogNotice("ofxColorsBrowser") << endl;
     //    }
     //
     //    //-
@@ -451,8 +464,8 @@ void ofxColorsBrowser::grid_generate()
     ////        string name = pantoneNames[i];
     ////        colorNameMap[name] = pantoneColors[i];
     //
-    //        cout << endl;
-    //        cout << "MODE_COLOR == OFX_PANTONE_COLOR" << endl;
+    //        ofLogNotice("ofxColorsBrowser") << endl;
+    //        ofLogNotice("ofxColorsBrowser") << "MODE_COLOR == OFX_PANTONE_COLOR" << endl;
     //
     //        for (unsigned int i=0; i<pantoneColors.size(); i++) {
     //
@@ -463,17 +476,17 @@ void ofxColorsBrowser::grid_generate()
     //
     //            colors_STRUCT.push_back(myColorNameMapping);
     //
-    //            cout << "colors_STRUCT\t"
+    //            ofLogNotice("ofxColorsBrowser") << "colors_STRUCT\t"
     //                 << "name:" << myColorNameMapping.name
     //                 << "color:" << ofToString(myColorNameMapping.color)
     //                 << " [" <<myColorNameMapping.position<< "]";
-    //            cout << endl;
+    //            ofLogNotice("ofxColorsBrowser") << endl;
     //
     //        }
-    //        cout << endl;
-    //        cout << "colorPositions" << endl;
+    //        ofLogNotice("ofxColorsBrowser") << endl;
+    //        ofLogNotice("ofxColorsBrowser") << "colorPositions" << endl;
     //
-    ////    cout << ofToString(colorPositions)<<endl;
+    ////    ofLogNotice("ofxColorsBrowser") << ofToString(colorPositions)<<endl;
     ////    cout<<endl;
     //    }
 
@@ -492,13 +505,13 @@ void ofxColorsBrowser::load_Pantone_JSON()
     if (file.exists())
     {
         file >> js;
-        cout << js;
-        cout << endl;
+        ofLogNotice("ofxColorsBrowser") << js;
+        ofLogNotice("ofxColorsBrowser") << endl;
 
         int i = 0;
         for (auto &jsName: js["names"])
         {
-            //cout << "NAMES  ["<<i<<"] "<<jsName<<endl;
+            //ofLogNotice("ofxColorsBrowser") << "NAMES  ["<<i<<"] "<<jsName<<endl;
             pantoneNames.push_back(jsName);
             i++;
         }
@@ -506,7 +519,7 @@ void ofxColorsBrowser::load_Pantone_JSON()
         i = 0;
         for (auto &jsValues: js["values"])
         {
-            //cout << "VALUES ["<<i<<"] "<<jsValues<<endl;
+            //ofLogNotice("ofxColorsBrowser") << "VALUES ["<<i<<"] "<<jsValues<<endl;
 
             ofColor c;
             string colorHEXcode = ofToString(jsValues);
@@ -574,8 +587,16 @@ void ofxColorsBrowser::grid_create_boxes()
     isSelecting = false;
     draggingRectPtr = NULL;
 
+//    int perRow = 10;
+//    float size = 50;//boxes
+//    float pad = 1;
+
+    perRow = cardSize * cardsPerRow;
+
     for (int i = 0; i < colors_STRUCT.size(); i++)
     {
+//        float xBtn = x + (i % perRow) * (size + pad);
+//        float yBtn = y + (i / perRow) * (size + pad);
         float xBtn = x + (i % perRow) * (size + pad);
         float yBtn = y + (i / perRow) * (size + pad);
 
@@ -621,6 +642,9 @@ void ofxColorsBrowser::update()
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
+    ofPushMatrix();
+    ofPushStyle();
+
     //-
 
     // 1. ALL THE COLORS NAMES
@@ -628,25 +652,36 @@ void ofxColorsBrowser::draw()
     // show all names from loaded palette
     int lineBegin;
     int lineEnd;
-    int linesPage = 7 * 4;
+
+//    int linesPage = cardSize * cardsPerRow;//7 color per card, 4 cards per row line
+    int linesPage = cardSize * 4;
     int pageNum;
     pageNum = (int) currColor / linesPage;
-    //    cout << "pageNum:"<<pageNum<<endl;
+    //    ofLogNotice("ofxColorsBrowser") << "pageNum:"<<pageNum<<endl;
 
     lineBegin = pageNum * linesPage;
-    lineEnd = lineBegin + linesPage;
+//    lineEnd = lineBegin + linesPage;//-1
+    lineEnd = lineBegin + linesPage - 1;//-1
+
+    int iPadded;
+//    int currPadded;
+    int line;
+
 
     //TODO: add more pages...
 
-    for (int i = lineBegin; i < lineEnd; i++)
-    {
-        int line;
-        line = lineBegin + i;
-        string str;
-        str = colors_STRUCT[line].name;
+    // draw all color names marking the one selected
 
-        int iPadded;
-        int currPadded;
+//    for (int i = lineBegin; i < lineEnd; i++)
+for (int i = lineBegin; i <= lineEnd; i++)
+{
+//    line = lineBegin + i;
+    line = i;
+    string str;
+
+        if (colors_STRUCT.size()>0)
+            str = colors_STRUCT[line].name;
+
         //        if (pageNum==0)
         //        {
         //            iPadded = i;
@@ -657,20 +692,23 @@ void ofxColorsBrowser::draw()
         //            iPadded = i-lineBegin;
         //            currPadded = currColor+lineBegin;
         //        }
+
         if (pageNum == 0)
         {
             iPadded = i;
-            currPadded = currColor;
+//            currPadded = currColor;
         }
         else//TODO: must make..
         {
             //            iPadded = i - lineBegin;//TODO: must make..
             //            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
 
-            iPadded = i - lineBegin;//TODO: must make..
-            //            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
+            iPadded = i - lineBegin; //TODO: must make..
+//            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
+//            currPadded = currColor-lineBegin;
         }
 
+        // mark names
         if (i == currColor)
             //        if (line==currPadded)
         {
@@ -690,10 +728,16 @@ void ofxColorsBrowser::draw()
         int i = 0;
         int x = position.x + 5;
         int y = 25;
-        ofDrawBitmapStringHighlight("name: " + currName, x, y + (i++) * 20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("position: " + ofToString(currColor), x, y + (i++) * 20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("original pos: " + ofToString(currColor_OriginalPos), x, y + (i++) * 20, ofColor::black, ofColor::white);
+
         ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("name: " + currName, x, y + (i++) * 20, ofColor::black, ofColor::white);
+//        ofDrawBitmapStringHighlight("position: " + ofToString(currColor), x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("number: " + ofToString(currColor_OriginalPos), x, y + (i++) * 20, ofColor::black, ofColor::white);
+
+        ofDrawBitmapStringHighlight("cardSize: " + ofToString(cardSize), x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("cardsPerRow: " + ofToString(cardsPerRow), x, y + (i++) * 20, ofColor::black, ofColor::white);
+//        ofDrawBitmapStringHighlight("currColor: " + ofToString(currColor), x, y + (i++) * 20, ofColor::black, ofColor::white);
+
     }
 
     //-
@@ -776,6 +820,9 @@ void ofxColorsBrowser::draw()
 
         //--
     }
+
+    ofPopMatrix();
+    ofPopStyle();
 }
 
 //--------------------------------------------------------------
@@ -1235,8 +1282,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 //--------------------------------------------------------------
 void ofxColorsBrowser::refresh_Clicks()
 {
-    ofLogNotice("ofxColorsBrowser:refresh_Clicks") << "make clicked box by keys following currColor: [" << currColor
-                                                   << "]";
+    ofLogNotice("ofxColorsBrowser") << "refresh_Clicks: make clicked box by keys following currColor: [" << currColor << "]";
 
     //-
 
@@ -1250,21 +1296,27 @@ void ofxColorsBrowser::refresh_Clicks()
         rectangles[i].isSelected = false; // assume none
     }
 
-    // select current color
-    rectangles[currColor].isSelected = true;
+    if (currColor < rectangles.size() )
+    {
+        // select current color
+        rectangles[currColor].isSelected = true;
+    }
 
     //-
 
+    if (currColor < colors_STRUCT.size() )
+    {
     ofColor c = colors_STRUCT[currColor].color;
     color_BACK = ofColor(c);
 
-    ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor is [" << currColor << "]";
+    ofLogNotice("ofxColorsBrowser") << "currColor is [" << currColor << "]";
 
     currName = colors_STRUCT[currColor].name;
-    ofLogNotice("ofxColorsBrowser:mousePressed") << "currName is [" << currName << "]";
+    ofLogNotice("ofxColorsBrowser") << "currName is [" << currName << "]";
 
     currColor_OriginalPos = colors_STRUCT[currColor].position;
-    ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos was [" << currColor_OriginalPos << "]";
+    ofLogNotice("ofxColorsBrowser") << "originalPos was [" << currColor_OriginalPos << "]";
+    }
 }
 
 
