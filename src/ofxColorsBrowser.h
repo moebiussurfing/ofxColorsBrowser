@@ -46,8 +46,18 @@ public:
 
     string path = "colorsBrowser/pantone-colors.json";
 
-    ofParameter<int> cardSize{"CARD SIZE", 7, 2, 100};
+//    int perRow = 10;
+//    float size = 50;//boxes
+//    float pad = 1;
+
+    int perRow = 10;
+    ofParameter<float> size {"BOX SIZE", 15, 10, 100};//boxes
+    ofParameter<float> pad {"PAD", 1, 0, 10};
+
+    ofParameter<int> cardSize{"CARD SIZE", 7, 2, 100};// minimal card of colors
     ofParameter<int> cardsPerRow{"CARDS PER ROW", 4, 2, 100};
+
+    ofParameter<bool> ENABLE_oneCard_MODE{"ONE CARD MODE", true};
 
     void refresh_Clicks();// to browsing by keys
 
@@ -255,9 +265,9 @@ private:
     int MODE_COLOR;
     int MODE_SORTING;
 
-    int perRow = 10;
-    float size = 50;//boxes
-    float pad = 1;
+//    int perRow = 10;
+//    float size = 50;//boxes
+//    float pad = 1;
 
     //last clicked color box
     string currName = "";

@@ -22,6 +22,9 @@ void ofxColorsBrowser::grid_generate()
     colors_STRUCT.clear();
     colorNameMap.clear();
 
+    colorNameMap.clear();
+//    pantoneNames.clear();
+
     //--
 
     // 1. OFX_PANTONE_COLORS
@@ -34,6 +37,8 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
         // dessired distribution for this palette
         cardSize = 7;
         cardsPerRow = 8;
+        size = 15;
+        pad = 1;
 
         for (int i = 0; i < pantoneNames.size(); i++)
         {
@@ -71,15 +76,16 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
     #define NUM_COLORS_ROW 10//that's also the ideal distribution for open color palette
 
         // dessired distribution for this palette
-        cardSize = 10;
+        cardSize = 13;
         cardsPerRow = 1;
+        size = 30;
+        pad = 1;
 
         bool flipOrder = true;
         int iFlip;
 
         //TEST
         int pos = 0;//-1? to set correlative positions...
-
 
         for (int i = 0; i < NUM_COLORS_ROW; i++)
         {
@@ -188,6 +194,12 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
 
     else if (MODE_COLOR == OFX_COLOR_NATIVE)
     {
+        // dessired distribution for this palette
+        cardSize = 12;
+        cardsPerRow = 1;
+        size = 50;
+        pad = 2;
+
         // build a map from name to ofColor of all the named OF colors;
 
         colorNameMap["white"] = ofColor::white;
@@ -337,6 +349,23 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
         colorNameMap["wheat"] = ofColor::wheat;
         colorNameMap["whiteSmoke"] = ofColor::whiteSmoke;
         colorNameMap["yellowGreen"] = ofColor::yellowGreen;
+
+        int i = 0;
+        for (auto const& x : colorNameMap)
+        {
+//            std::cout << x.first  // string (key)
+//            << ':'
+//            << x.second // string's value
+//            << std::endl ;
+
+            colorMapping_STRUCT myColor;
+            myColor.name = x.first;
+            myColor.color = x.second;
+            myColor.position = i;
+            colors_STRUCT.push_back(myColor);
+            i++;
+        }
+
     }
 
     //----
@@ -654,7 +683,11 @@ void ofxColorsBrowser::draw()
     int lineEnd;
 
 //    int linesPage = cardSize * cardsPerRow;//7 color per card, 4 cards per row line
-    int linesPage = cardSize * 4;
+
+    int maxLinesThatFitsScreen = 42;
+    int maxCards = maxLinesThatFitsScreen / cardSize;
+
+    int linesPage = cardSize * maxCards;
     int pageNum;
     pageNum = (int) currColor / linesPage;
     //    ofLogNotice("ofxColorsBrowser") << "pageNum:"<<pageNum<<endl;
@@ -712,11 +745,17 @@ for (int i = lineBegin; i <= lineEnd; i++)
         if (i == currColor)
             //        if (line==currPadded)
         {
-            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, ofColor::white, ofColor::black);
+            ofColor c;
+//            c = colors_STRUCT[i].color;
+            c = ofColor::white;
+            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::black);
         }
         else
         {
-            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, ofColor::black, ofColor::white);
+            ofColor c;
+//            c = colors_STRUCT[i].color;
+            c = ofColor::black;
+            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
         }
     }
 
@@ -724,21 +763,17 @@ for (int i = lineBegin; i <= lineEnd; i++)
 
     // 2. MONITOR COLOR SELECTED: name & position in vector
 
-    {
         int i = 0;
         int x = position.x + 5;
         int y = 25;
 
-        ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
         ofDrawBitmapStringHighlight("name: " + currName, x, y + (i++) * 20, ofColor::black, ofColor::white);
 //        ofDrawBitmapStringHighlight("position: " + ofToString(currColor), x, y + (i++) * 20, ofColor::black, ofColor::white);
-        ofDrawBitmapStringHighlight("number: " + ofToString(currColor_OriginalPos), x, y + (i++) * 20, ofColor::black, ofColor::white);
-
+        string str = "number: " + ofToString(currColor_OriginalPos) + "/" + ofToString(colors_STRUCT.size()-1);
+        ofDrawBitmapStringHighlight(str, x, y + (i++) * 20, ofColor::black, ofColor::white);
+    ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
         ofDrawBitmapStringHighlight("cardSize: " + ofToString(cardSize), x, y + (i++) * 20, ofColor::black, ofColor::white);
         ofDrawBitmapStringHighlight("cardsPerRow: " + ofToString(cardsPerRow), x, y + (i++) * 20, ofColor::black, ofColor::white);
-//        ofDrawBitmapStringHighlight("currColor: " + ofToString(currColor), x, y + (i++) * 20, ofColor::black, ofColor::white);
-
-    }
 
     //-
 
@@ -921,7 +956,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         if (MODE_SORTING != 1)
         {
             MODE_SORTING = 1;
-            //                        ofSort(colors_STRUCT, compareName);
+//            ofSort(colors_STRUCT, compareName);
             grid_clear();
             grid_create_boxes();
         }
@@ -1438,19 +1473,19 @@ void ofxColorsBrowser::switch_sorted_Type()
     switch (MODE_SORTING)
     {
         case 0:
-            //            ofSort(colors_STRUCT, comparePosition);
+//                        ofSort(colors_STRUCT, comparePosition);
             break;
         case 1:
-            //            ofSort(colors_STRUCT, compareName);
+//                        ofSort(colors_STRUCT, compareName);
             break;
         case 2:
-            //            ofSort(colors_STRUCT, compareHue);
+//                        ofSort(colors_STRUCT, compareHue);
             break;
         case 3:
-            //            ofSort(colors_STRUCT, compareBrightness);
+//                        ofSort(colors_STRUCT, compareBrightness);
             break;
         case 4:
-            //            ofSort(colors_STRUCT, compareSaturation);
+//                        ofSort(colors_STRUCT, compareSaturation);
             break;
     }
 
@@ -1593,6 +1628,19 @@ void ofxColorsBrowser::rectangles_draw()
         ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12, 16);
     }
 
+//    if (ENABLE_oneCard_MODE)
+//    {
+//        // draw all of our rectangles
+//        for (size_t i = 0; i < rectangles.size(); ++i)
+//        {
+//            ofRectangle *rect = (ofRectangle *) &rectangles[i];
+//            unsigned int selectionIndex = ofFind(selectedRects, rect);
+//            rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+//        }
+//    }
+//    else
+//    {
+
     // draw all of our rectangles
     for (size_t i = 0; i < rectangles.size(); ++i)
     {
@@ -1600,6 +1648,7 @@ void ofxColorsBrowser::rectangles_draw()
         unsigned int selectionIndex = ofFind(selectedRects, rect);
         rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
     }
+//    }
 
     // clicked color border
     // draw our bounding box rectangle
