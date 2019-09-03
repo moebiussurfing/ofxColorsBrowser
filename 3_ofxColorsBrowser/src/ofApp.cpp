@@ -12,7 +12,7 @@ void ofApp::setup(){
     ColorBrowser.setup_colorBACK(color_BACK);
 
     ColorBrowser.setPosition(glm::vec2(220, 290));
-    ColorBrowser.setPositionHelper(glm::vec2(ofGetWidth()-250, 20));
+    ColorBrowser.setPositionHelper(glm::vec2(ofGetWidth()-250, 0));
 
     ColorBrowser.setup();
 
@@ -48,8 +48,15 @@ void ofApp::keyPressed(int key){
     if (key == 'g')
     {
         SHOW_ColorBrowser =!SHOW_ColorBrowser;
+        
         ColorBrowser.setVisible(SHOW_ColorBrowser);
         ColorBrowser.setVisible_debugText(SHOW_ColorBrowser);
+    }
+
+    if (key == 'k')
+    {
+        ENABLE_ColorBrowser_Keys = !ENABLE_ColorBrowser_Keys;
+        ColorBrowser.set_ENABLE_keys(ENABLE_ColorBrowser_Keys);
     }
 
 }

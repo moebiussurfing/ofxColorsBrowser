@@ -508,18 +508,20 @@ void ofxColorsBrowser::update()
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
-    //TODO: add more pages...
-
     ofPushMatrix();
     ofPushStyle();
 
+    //TODO: add more pages...
+
     //-
 
-    // 1. ALL THE COLORS NAMES
+    // 1. DRAW ALL THE COLORS NAMES
 
     int maxLinesThatFitsScreen = 42;
     bool bColorizeLabel = false;
-    
+
+    int iPadded;
+    int line;
     int lineBegin;
     int lineEnd;
     int maxCards = maxLinesThatFitsScreen / cardSize;
@@ -528,8 +530,6 @@ void ofxColorsBrowser::draw()
     pageNum = (int) currColor / linesPage;
     lineBegin = pageNum * linesPage;
     lineEnd = lineBegin + linesPage - 1;//-1
-    int iPadded;
-    int line;
 
     // draw all color names marking the one selected
 
@@ -604,6 +604,23 @@ void ofxColorsBrowser::draw()
 
             //-
 
+            str = "PALETTE NAME: ";
+            switch (MODE_COLOR)
+            {
+                case OFX_PANTONE_COLORS:
+                    str += "PANTONE COLORS";
+                    break;
+                case OFX_COLOR_NATIVE:
+                    str += "OF NATIVE COLORS";
+                    break;
+                case OFX_OPEN_COLOR:
+                    str += "OPEN COLOR";
+                    break;
+            }
+            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
+
+            //-
+
             str = "SORTING MODE: ";
             switch (MODE_SORTING)
             {
@@ -627,27 +644,13 @@ void ofxColorsBrowser::draw()
 
             //-
 
-            str = "PALETTE NAME: ";
-            switch (MODE_COLOR)
-            {
-                case OFX_PANTONE_COLORS:
-                    str += "PANTONE COLORS";
-                    break;
-                case OFX_COLOR_NATIVE:
-                    str += "OF NATIVE COLORS";
-                    break;
-                case OFX_OPEN_COLOR:
-                    str += "OPEN COLOR";
-                    break;
-            }
-            ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
-
-            //-
-
             if (ENABLE_keys)
             {
 #ifdef KEY_SHORTCUTS_ENABLE
-                str = "SORT\n";
+                str = "PALETTES\n";
+                str += "[BACKSPACE] NEXT\n";
+                str += "\n";
+                str += "SORTING\n";
                 str += "[0] ORIGINAL\n";
                 str += "[1] NAME\n";
                 str += "[2] HUE\n";
@@ -655,20 +658,19 @@ void ofxColorsBrowser::draw()
                 str += "[4] SATURATION\n";
                 str += "[5] NEXT\n";
                 str += "\n";
-                str += "PALETTE\n";
-                str += "[BACKSPACE] NEXT\n";
-                //                str += "\n";
-                //                str += "[D] DEBUG";
-                ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 100, ofColor::black, ofColor::white);
+                str += "RECTANGLES\n";
+                str += "[D] DEBUG";
+                ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 80, ofColor::black, ofColor::white);
 #endif
             }
         }
 
         //--
 
-        // 4. COLOR BOXES
+        // 4. DRAW COLOR BOXES
 
-        rectangles_draw();//rectangles with mouse management and draggables..
+        rectangles_draw();
+        //rectangles with mouse management and draggables..
 
         //--
     }
@@ -1415,9 +1417,9 @@ void ofxColorsBrowser::rectangles_update()
 //--------------------------------------------------------------
 void ofxColorsBrowser::rectangles_draw()
 {
-
     ofPoint mouse(ofGetMouseX(), ofGetMouseY());
 
+    // debug rectangles manager
     if (bShowDebug)
     {
         ofFill();

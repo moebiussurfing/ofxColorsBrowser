@@ -24,5 +24,6 @@ public:
     ofFloatColor color_BACK;
 
     bool SHOW_ColorBrowser = true;
+    bool ENABLE_ColorBrowser_Keys = true;
 
 };
