@@ -1,5 +1,30 @@
 #include "ofxColorsBrowser.h"
 
+// comparing colors to sorting methods
+bool compareName(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
+{
+    return s1.name < s2.name;
+}
+
+bool compareBrightness(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
+{
+    return s1.color.getBrightness() < s2.color.getBrightness();
+}
+
+bool compareHue(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
+{
+    return s1.color.getHue() < s2.color.getHue();
+}
+
+bool compareSaturation(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
+{
+    return s1.color.getSaturation() < s2.color.getSaturation();
+}
+
+bool comparePosition(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
+{
+    return s1.position < s2.position;
+}
 
 //--------------------------------------------------------------
 ofxColorsBrowser::ofxColorsBrowser()
@@ -22,45 +47,34 @@ void ofxColorsBrowser::grid_generate()
     colors_STRUCT.clear();
     colorNameMap.clear();
 
-    colorNameMap.clear();
-//    pantoneNames.clear();
-
     //--
 
     // 1. OFX_PANTONE_COLORS
 
     if (MODE_COLOR == OFX_PANTONE_COLORS)
     {
-
-ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
+        ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
 
         // dessired distribution for this palette
         cardSize = 7;
-        cardsPerRow = 8;
-        size = 15;
-        pad = 1;
+        cardsPerRow = 10;
+        boxSize = 15;
+        boxPad = 1;
 
         for (int i = 0; i < pantoneNames.size(); i++)
         {
             string name = pantoneNames[i];
             ofColor c = pantoneColors[i];
 
-            //-
-
             // 1. map
             colorNameMap[name] = c;
 
-            //-
-
-            //TEST
             // 2. vector
             colorMapping_STRUCT myColor;
             myColor.name = name;
             myColor.color = c;
             myColor.position = i;
             colors_STRUCT.push_back(myColor);
-
-            //-
         }
         ofLogNotice("ofxColorsBrowser");
     }
@@ -73,18 +87,16 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
     {
         ofLogNotice("ofxColorsBrowser") << "OFX_OPEN_COLOR";
 
-    #define NUM_COLORS_ROW 10//that's also the ideal distribution for open color palette
+#define NUM_COLORS_ROW 10//that's also the ideal distribution for open color palette
 
         // dessired distribution for this palette
         cardSize = 13;
         cardsPerRow = 1;
-        size = 30;
-        pad = 1;
+        boxSize = 30;
+        boxPad = 1;
 
         bool flipOrder = true;
         int iFlip;
-
-        //TEST
         int pos = 0;//-1? to set correlative positions...
 
         for (int i = 0; i < NUM_COLORS_ROW; i++)
@@ -95,10 +107,7 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
             else
                 iFlip = i;
 
-            //-
-
             // 1.
-
             colorNameMap["GREY " + ofToString(i)] = oc_gray_[iFlip];
             colorNameMap["RED " + ofToString(i)] = oc_red_[iFlip];
             colorNameMap["PINK " + ofToString(i)] = oc_pink_[iFlip];
@@ -113,9 +122,6 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
             colorNameMap["YELLOW " + ofToString(i)] = oc_yellow_[iFlip];
             colorNameMap["ORANGE " + ofToString(i)] = oc_orange_[iFlip];
 
-            //-
-
-            //TEST
             // 2. vector
             colorMapping_STRUCT colorGREY;
             colorMapping_STRUCT colorRED;
@@ -183,8 +189,6 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
             colors_STRUCT.push_back(colorLIME);
             colors_STRUCT.push_back(colorYELLOW);
             colors_STRUCT.push_back(colorORANGE);
-
-            //-
         }
     }
 
@@ -197,11 +201,10 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
         // dessired distribution for this palette
         cardSize = 12;
         cardsPerRow = 1;
-        size = 50;
-        pad = 2;
+        boxSize = 50;
+        boxPad = 2;
 
         // build a map from name to ofColor of all the named OF colors;
-
         colorNameMap["white"] = ofColor::white;
         colorNameMap["gray"] = ofColor::gray;
         colorNameMap["black"] = ofColor::black;
@@ -351,12 +354,12 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
         colorNameMap["yellowGreen"] = ofColor::yellowGreen;
 
         int i = 0;
-        for (auto const& x : colorNameMap)
+        for (auto const &x : colorNameMap)
         {
-//            std::cout << x.first  // string (key)
-//            << ':'
-//            << x.second // string's value
-//            << std::endl ;
+            //            std::cout << x.first  // string (key)
+            //            << ':'
+            //            << x.second // string's value
+            //            << std::endl ;
 
             colorMapping_STRUCT myColor;
             myColor.name = x.first;
@@ -365,167 +368,14 @@ ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
             colors_STRUCT.push_back(myColor);
             i++;
         }
-
     }
-
-    //----
-
-
-    //    // TEST
-    //    ofLogNotice("ofxColorsBrowser") << endl;
-    //    for (unsigned int i=0; i<colorNameMap.size(); i++)
-    //    {
-    //        map<string, ofColor>::iterator mapEntry = colorNameMap.begin();
-    //        std::advance(mapEntry, i);
-    //
-    //        colorMapping_STRUCT mapping;
-    //        mapping.name = mapEntry->first;
-    //        mapping.color = mapEntry->second;
-    //        mapping.position = i;
-    //
-    //        //-
-    //
-    //        colors_STRUCT.push_back(mapping);
-    //
-    //        //-
-    //
-    //        // TEST
-    //        ofLogNotice("ofxColorsBrowser") << "colorNameMap\t" << "name:" << mapping.name << " [" << i << "]" << "color:"
-    //             << ofToString(mapping.color) << endl;
-    //    }
-    //
-    //    ofLogNotice("ofxColorsBrowser") << endl;
-    //    ofLogNotice("ofxColorsBrowser") << "------------------------TESTING--------------------------"<<endl;
-    //    for (int i=0; i<colors_STRUCT.size(); i++)
-    //    {
-    //
-    //        ofLogNotice("ofxColorsBrowser") << "colors_STRUCT\t"
-    //             << "name:"     << colors_STRUCT[i].name
-    //             << "color:"    << ofToString(colors_STRUCT[i].color)
-    //             << " ["        << colors_STRUCT[i].position << "]";
-    //        ofLogNotice("ofxColorsBrowser") << endl;
-    //
-    //    }
-    //    ofLogNotice("ofxColorsBrowser") << "------------------------TESTING--------------------------"<<endl;
-    //    ofLogNotice("ofxColorsBrowser") << endl;
-
-
-
-    //OLD
-
-    //--------------
-
-    //        //-
-    //
-    //        // TEST sorting by original order..
-    //
-    //    else if (MODE_SORTING == SORTING_ORIGINAL)
-    //    {
-    ////        string name = pantoneNames[i];
-    ////        colorNameMap[name] = pantoneColors[i];
-    //
-    //        ofLogNotice("ofxColorsBrowser") << endl;
-    //        ofLogNotice("ofxColorsBrowser") << "MODE_COLOR == OFX_PANTONE_COLOR" << endl;
-    //
-    //        for (unsigned int i=0; i<pantoneColors.size(); i++) {
-    //
-    //            colorMapping_STRUCT myColorNameMapping;
-    //            myColorNameMapping.name = pantoneNames[i];
-    //            myColorNameMapping.color = pantoneColors[i];
-    //            myColorNameMapping.position = i;
-    //
-    //            colors_STRUCT.push_back(myColorNameMapping);
-    //
-    //            ofLogNotice("ofxColorsBrowser") << "colors_STRUCT\t"
-    //                 << "name:" << myColorNameMapping.name
-    //                 << "color:" << ofToString(myColorNameMapping.color)
-    //                 << " [" <<myColorNameMapping.position<< "]";
-    //            ofLogNotice("ofxColorsBrowser") << endl;
-    //
-    //        }
-    //        ofLogNotice("ofxColorsBrowser") << endl;
-    //        ofLogNotice("ofxColorsBrowser") << "colorPositions" << endl;
-    //
-    ////    ofLogNotice("ofxColorsBrowser") << ofToString(colorPositions)<<endl;
-    ////    cout<<endl;
-    //    }
-
-    //----
-
-    //    // this map is useful if we want to address the colors by string.
-    //    // since we might want to sort this, we can put them in a vector also
-    //
-    //    if (MODE_SORTING != SORTING_ORIGINAL)
-    //    {
-    //        ofLogNotice("ofxColorsBrowser") << endl;
-    //        for (unsigned int i = 0; i < colorNameMap.size(); i++) {
-    //
-    //            map<string, ofColor>::iterator mapEntry = colorNameMap.begin();
-    //            std::advance(mapEntry, i);
-    //
-    //            colorMapping_STRUCT mapping;
-    //            mapping.name = mapEntry->first;
-    //            mapping.color = mapEntry->second;
-    //
-    //            // TEST
-    //            mapping.position = i;
-    //
-    //            //-
-    //
-    //            colors_STRUCT.push_back(mapping);
-    //
-    //            //-
-    //
-    //            // TEST
-    //            ofLogNotice("ofxColorsBrowser") << "colorNameMap\t" << "name:" << mapping.name << " [" << i << "]" << "color:"
-    //                 << ofToString(mapping.color) << endl;
-    //
-    //        }
-    //        ofLogNotice("ofxColorsBrowser") << endl;
-    //    }
-    //
-    //    //-
-    //
-    //    // TEST sorting by original order..
-    //
-    //    else if (MODE_SORTING == SORTING_ORIGINAL)
-    //    {
-    ////        string name = pantoneNames[i];
-    ////        colorNameMap[name] = pantoneColors[i];
-    //
-    //        ofLogNotice("ofxColorsBrowser") << endl;
-    //        ofLogNotice("ofxColorsBrowser") << "MODE_COLOR == OFX_PANTONE_COLOR" << endl;
-    //
-    //        for (unsigned int i=0; i<pantoneColors.size(); i++) {
-    //
-    //            colorMapping_STRUCT myColorNameMapping;
-    //            myColorNameMapping.name = pantoneNames[i];
-    //            myColorNameMapping.color = pantoneColors[i];
-    //            myColorNameMapping.position = i;
-    //
-    //            colors_STRUCT.push_back(myColorNameMapping);
-    //
-    //            ofLogNotice("ofxColorsBrowser") << "colors_STRUCT\t"
-    //                 << "name:" << myColorNameMapping.name
-    //                 << "color:" << ofToString(myColorNameMapping.color)
-    //                 << " [" <<myColorNameMapping.position<< "]";
-    //            ofLogNotice("ofxColorsBrowser") << endl;
-    //
-    //        }
-    //        ofLogNotice("ofxColorsBrowser") << endl;
-    //        ofLogNotice("ofxColorsBrowser") << "colorPositions" << endl;
-    //
-    ////    ofLogNotice("ofxColorsBrowser") << ofToString(colorPositions)<<endl;
-    ////    cout<<endl;
-    //    }
-
-    //---
 }
 
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::load_Pantone_JSON()
 {
+    ofLogNotice("ofxColorsBrowser") << "load_Pantone_JSON";
 
     pantoneNames.clear();
     pantoneColors.clear();
@@ -549,7 +399,6 @@ void ofxColorsBrowser::load_Pantone_JSON()
         for (auto &jsValues: js["values"])
         {
             //ofLogNotice("ofxColorsBrowser") << "VALUES ["<<i<<"] "<<jsValues<<endl;
-
             ofColor c;
             string colorHEXcode = ofToString(jsValues);
             vector<string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
@@ -567,10 +416,10 @@ void ofxColorsBrowser::load_Pantone_JSON()
     }
 }
 
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup()
 {
-
     //--
 
     // PANTONE COLORS
@@ -580,11 +429,10 @@ void ofxColorsBrowser::setup()
 
     // 1. DEFAULT SORTING
     MODE_SORTING = SORTING_ORIGINAL;//
-    //    MODE_SORTING = 1; // by name, at the start
+    // by name, at the start
 
     // 2. DEFAULT PALETTE MODE
     MODE_COLOR = OFX_PANTONE_COLORS;
-    //    MODE_COLOR = OFX_OPEN_COLOR;
 
     //--
 
@@ -608,36 +456,28 @@ void ofxColorsBrowser::setup()
 //--------------------------------------------------------------
 void ofxColorsBrowser::grid_create_boxes()
 {
+    ofLogNotice("ofxColorsBrowser") << "grid_create_boxes";
+
     float x = position.x;
     float y = position.y;
 
-    //--
+    perRow = cardSize * cardsPerRow;
 
     isSelecting = false;
     draggingRectPtr = NULL;
 
-//    int perRow = 10;
-//    float size = 50;//boxes
-//    float pad = 1;
-
-    perRow = cardSize * cardsPerRow;
-
     for (int i = 0; i < colors_STRUCT.size(); i++)
     {
-//        float xBtn = x + (i % perRow) * (size + pad);
-//        float yBtn = y + (i / perRow) * (size + pad);
-        float xBtn = x + (i % perRow) * (size + pad);
-        float yBtn = y + (i / perRow) * (size + pad);
+        float xBtn = x + (i % perRow) * (boxSize + boxPad);
+        float yBtn = y + (i / perRow) * (boxSize + boxPad);
 
         ofColor c = colors_STRUCT[i].color;
 
-        ofxRectangle rect(ofRectangle(xBtn, yBtn, size, size), c);
+        ofxRectangle rect(ofRectangle(xBtn, yBtn, boxSize, boxSize), c);
 
-        // TEST
         rect.setName(colors_STRUCT[i].name);
         rect.setPosition_inVector(colors_STRUCT[i].position);
 
-        // add the random rectangle
         rectangles.push_back(rect);
     }
 
@@ -646,15 +486,12 @@ void ofxColorsBrowser::grid_create_boxes()
     vAlign = OF_ALIGN_VERT_TOP;
     anchorRect = NULL;
     showKeyboardCommands = false;
-
-    //--
 }
 
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::update()
 {
-
     if (color_BACK != color_BACK_PRE)
     {
         color_BACK_OFAPP->set(color_BACK);
@@ -678,84 +515,62 @@ void ofxColorsBrowser::draw()
 
     // 1. ALL THE COLORS NAMES
 
-    // show all names from loaded palette
+    int maxLinesThatFitsScreen = 42;
+    bool bColorizeLabel = true;
+
     int lineBegin;
     int lineEnd;
-
-//    int linesPage = cardSize * cardsPerRow;//7 color per card, 4 cards per row line
-
-    int maxLinesThatFitsScreen = 42;
     int maxCards = maxLinesThatFitsScreen / cardSize;
-
     int linesPage = cardSize * maxCards;
     int pageNum;
     pageNum = (int) currColor / linesPage;
-    //    ofLogNotice("ofxColorsBrowser") << "pageNum:"<<pageNum<<endl;
-
     lineBegin = pageNum * linesPage;
-//    lineEnd = lineBegin + linesPage;//-1
     lineEnd = lineBegin + linesPage - 1;//-1
-
     int iPadded;
-//    int currPadded;
     int line;
-
 
     //TODO: add more pages...
 
     // draw all color names marking the one selected
 
-//    for (int i = lineBegin; i < lineEnd; i++)
-for (int i = lineBegin; i <= lineEnd; i++)
-{
-//    line = lineBegin + i;
-    line = i;
-    string str;
-
-        if (colors_STRUCT.size()>0)
-            str = colors_STRUCT[line].name;
-
-        //        if (pageNum==0)
-        //        {
-        //            iPadded = i;
-        //            currPadded = currColor;
-        //        }
-        //        else if (pageNum==1)
-        //        {
-        //            iPadded = i-lineBegin;
-        //            currPadded = currColor+lineBegin;
-        //        }
-
-        if (pageNum == 0)
+    if (SHOW_debugText)
+    {
+        for (int i = lineBegin; i <= lineEnd; i++)
         {
-            iPadded = i;
-//            currPadded = currColor;
-        }
-        else//TODO: must make..
-        {
-            //            iPadded = i - lineBegin;//TODO: must make..
-            //            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
+            line = i;
+            string str;
 
-            iPadded = i - lineBegin; //TODO: must make..
-//            currPadded = currColor+lineBegin+pageNum;//TODO: must make..
-//            currPadded = currColor-lineBegin;
-        }
+            if (colors_STRUCT.size() > 0)
+                str = colors_STRUCT[line].name;
 
-        // mark names
-        if (i == currColor)
-            //        if (line==currPadded)
-        {
-            ofColor c;
-//            c = colors_STRUCT[i].color;
-            c = ofColor::white;
-            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::black);
-        }
-        else
-        {
-            ofColor c;
-//            c = colors_STRUCT[i].color;
-            c = ofColor::black;
-            ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
+            if (pageNum == 0)
+            {
+                iPadded = i;
+            }
+            else
+            {
+                iPadded = i - lineBegin;
+            }
+
+            // mark names
+            if (i == currColor)
+            {
+                ofColor c;
+                if (bColorizeLabel)
+                    c = colors_STRUCT[i].color;
+                else
+                    c = ofColor::white;
+                ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::black);
+            }
+            else
+            {
+                ofColor c;
+                if (bColorizeLabel)
+                    c = colors_STRUCT[i].color;
+                else
+                    c = ofColor::black;
+                ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
+            }
         }
     }
 
@@ -763,17 +578,19 @@ for (int i = lineBegin; i <= lineEnd; i++)
 
     // 2. MONITOR COLOR SELECTED: name & position in vector
 
+    if (SHOW_debugText)
+    {
         int i = 0;
         int x = position.x + 5;
         int y = 25;
 
         ofDrawBitmapStringHighlight("name: " + currName, x, y + (i++) * 20, ofColor::black, ofColor::white);
-//        ofDrawBitmapStringHighlight("position: " + ofToString(currColor), x, y + (i++) * 20, ofColor::black, ofColor::white);
-        string str = "number: " + ofToString(currColor_OriginalPos) + "/" + ofToString(colors_STRUCT.size()-1);
+        string str = "number: " + ofToString(currColor_OriginalPos) + "/" + ofToString(colors_STRUCT.size() - 1);
         ofDrawBitmapStringHighlight(str, x, y + (i++) * 20, ofColor::black, ofColor::white);
-    ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
         ofDrawBitmapStringHighlight("cardSize: " + ofToString(cardSize), x, y + (i++) * 20, ofColor::black, ofColor::white);
         ofDrawBitmapStringHighlight("cardsPerRow: " + ofToString(cardsPerRow), x, y + (i++) * 20, ofColor::black, ofColor::white);
+    }
 
     //-
 
@@ -919,21 +736,18 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         MODE_COLOR++;
         MODE_COLOR = MODE_COLOR % 3;
 
-        //        switch (MODE_COLOR)
-        //        {
-        //            case OFX_COLOR_NATIVE:
-        //                break;
-        //
-        //        }
-        //
-        ////        if (MODE_COLOR == OFX_COLOR_NATIVE)
-        ////            MODE_COLOR = OFX_OPEN_COLOR;
-        ////
-        ////        else if (MODE_COLOR == OFX_COLOR_NATIVE)
-        ////            MODE_COLOR = OFX_OPEN_COLOR;
-        ////
-        ////        else if (MODE_COLOR = OFX_OPEN_COLOR)
-        ////            MODE_COLOR = OFX_COLOR_NATIVE;
+        switch (MODE_COLOR)
+        {
+            case OFX_PANTONE_COLORS:
+                ofLogNotice("ofxColorsBrowser") << "OFX_PANTONE_COLORS";
+                break;
+            case OFX_OPEN_COLOR:
+                ofLogNotice("ofxColorsBrowser") << "OFX_OPEN_COLOR";
+                break;
+            case OFX_COLOR_NATIVE:
+                ofLogNotice("ofxColorsBrowser") << "OFX_COLOR_NATIVE";
+                break;
+        }
 
         grid_clear();
         grid_generate();
@@ -946,7 +760,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         if (MODE_SORTING != 0)
         {
             MODE_SORTING = 0;
-            //            ofSort(colors_STRUCT, comparePosition);
+            ofSort(colors_STRUCT, comparePosition);
             grid_clear();
             grid_create_boxes();
         }
@@ -956,7 +770,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         if (MODE_SORTING != 1)
         {
             MODE_SORTING = 1;
-//            ofSort(colors_STRUCT, compareName);
+            ofSort(colors_STRUCT, compareName);
             grid_clear();
             grid_create_boxes();
         }
@@ -966,7 +780,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         if (MODE_SORTING != 2)
         {
             MODE_SORTING = 2;
-            //            ofSort(colors_STRUCT, compareHue);
+            ofSort(colors_STRUCT, compareHue);
             grid_clear();
             grid_create_boxes();
         }
@@ -976,7 +790,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         if (MODE_SORTING != 3)
         {
             MODE_SORTING = 3;
-            //            ofSort(colors_STRUCT, compareBrightness);
+            ofSort(colors_STRUCT, compareBrightness);
             grid_clear();
             grid_create_boxes();
         }
@@ -986,7 +800,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         if (MODE_SORTING != 4)
         {
             MODE_SORTING = 4;
-            //            ofSort(colors_STRUCT, compareSaturation);
+            ofSort(colors_STRUCT, compareSaturation);
             grid_clear();
             grid_create_boxes();
         }
@@ -1007,41 +821,42 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
     //---
 
-    // debug ofxRectangle handling
+    // debug ofxRectangle handling:
+    // some tools to rectangles sorting and align
 
     if (bShowDebug)
     {
 
         //    if (key == OF_KEY_UP) {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->vAlign = OF_ALIGN_VERT_TOP;
         //        }
         //    } else if (key == OF_KEY_DOWN) {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->vAlign = OF_ALIGN_VERT_BOTTOM;
         //        }
         //    } else if (key == OF_KEY_LEFT) {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_LEFT;
         //        }
         //    } else if (key == OF_KEY_RIGHT) {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_RIGHT;
         //        }
         //    } else if (key == 'c') {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_CENTER;
         //        }
         //    } else if (key == 'C') {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->vAlign = OF_ALIGN_VERT_CENTER;
         //        }
         //    } else if (key == 'i') {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_IGNORE;
         //        }
         //    } else if (key == 'I') {
-        //        for(size_t i = 0; i < selectedRects.size(); i++) {
+        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
         //            selectedRects[i]->vAlign = OF_ALIGN_VERT_IGNORE;
         //        }
         //
@@ -1119,13 +934,10 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         }
         else if (key == 'p')
         {
-
             RectangleUtils::pack(selectedRects, ofRectangle(0,
                 0,
                 ofGetWidth(),
                 ofGetHeight()));
-
-
         }
         else if (key == ' ')
         {
@@ -1137,13 +949,9 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 //--------------------------------------------------------------
 void ofxColorsBrowser::grid_clear()
 {
-    // TODO: this is not require since swap from ofXInterface to ofxrectangleUtils
     ofLogNotice("ofxColorsBrowser") << "grid_clear";
 
     //    colors_STRUCT.clear();
-
-    //-
-
     rectangles.clear();
 }
 
@@ -1275,8 +1083,8 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 
                         // apply color pointer back
                         color_BACK = ofColor(cRect);
-                        //                        ofColor c = colors_STRUCT[currColor].color;
-                        //                        color_BACK = ofColor( c );
+                        // ofColor c = colors_STRUCT[currColor].color;
+                        // color_BACK = ofColor( c );
 
                         //-
 
@@ -1317,7 +1125,8 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 //--------------------------------------------------------------
 void ofxColorsBrowser::refresh_Clicks()
 {
-    ofLogNotice("ofxColorsBrowser") << "refresh_Clicks: make clicked box by keys following currColor: [" << currColor << "]";
+    ofLogNotice("ofxColorsBrowser") << "refresh_Clicks: make clicked box by keys following currColor: [" << currColor
+                                    << "]";
 
     //-
 
@@ -1331,7 +1140,7 @@ void ofxColorsBrowser::refresh_Clicks()
         rectangles[i].isSelected = false; // assume none
     }
 
-    if (currColor < rectangles.size() )
+    if (currColor < rectangles.size())
     {
         // select current color
         rectangles[currColor].isSelected = true;
@@ -1339,18 +1148,18 @@ void ofxColorsBrowser::refresh_Clicks()
 
     //-
 
-    if (currColor < colors_STRUCT.size() )
+    if (currColor < colors_STRUCT.size())
     {
-    ofColor c = colors_STRUCT[currColor].color;
-    color_BACK = ofColor(c);
+        ofColor c = colors_STRUCT[currColor].color;
+        color_BACK = ofColor(c);
 
-    ofLogNotice("ofxColorsBrowser") << "currColor is [" << currColor << "]";
+        ofLogNotice("ofxColorsBrowser") << "currColor is [" << currColor << "]";
 
-    currName = colors_STRUCT[currColor].name;
-    ofLogNotice("ofxColorsBrowser") << "currName is [" << currName << "]";
+        currName = colors_STRUCT[currColor].name;
+        ofLogNotice("ofxColorsBrowser") << "currName is [" << currName << "]";
 
-    currColor_OriginalPos = colors_STRUCT[currColor].position;
-    ofLogNotice("ofxColorsBrowser") << "originalPos was [" << currColor_OriginalPos << "]";
+        currColor_OriginalPos = colors_STRUCT[currColor].position;
+        ofLogNotice("ofxColorsBrowser") << "originalPos was [" << currColor_OriginalPos << "]";
     }
 }
 
@@ -1392,10 +1201,9 @@ void ofxColorsBrowser::removeMouseListeners()
 //--------------------------------------------------------------
 void ofxColorsBrowser::exit()
 {
-    //    ColourLoversHelper.exit();
-
     removeKeysListeners();
     removeMouseListeners();
+    //set_ENABLE_clicks(false);
 }
 
 
@@ -1410,7 +1218,6 @@ ofxColorsBrowser::~ofxColorsBrowser()
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
 {
-    //    colorBack_DEFINED = true;
     //    color_BACK = c;
     color_BACK_OFAPP = &c;
 }
@@ -1426,7 +1233,7 @@ void ofxColorsBrowser::setPosition(glm::vec2 p)
 //--------------------------------------------------------------
 void ofxColorsBrowser::setBoxSize(float _size)
 {
-    size = _size;
+    boxSize = _size;
 }
 
 
@@ -1461,36 +1268,30 @@ void ofxColorsBrowser::switch_palette_Type()
 void ofxColorsBrowser::switch_sorted_Type()
 {
     MODE_SORTING++;
-    MODE_SORTING = MODE_SORTING % 6;
-
-    //    MODE_SORTING++;
-    ////    MODE_SORTING = MODE_SORTING%5;
-    //    if (MODE_SORTING == 5)
-    //        MODE_SORTING = 1;
+    MODE_SORTING = MODE_SORTING % 5;
 
     ofLogNotice("ofxColorsBrowser") << "switch_sorted_Type: " << MODE_SORTING;
 
     switch (MODE_SORTING)
     {
         case 0:
-//                        ofSort(colors_STRUCT, comparePosition);
+            ofSort(colors_STRUCT, comparePosition);
             break;
         case 1:
-//                        ofSort(colors_STRUCT, compareName);
+            ofSort(colors_STRUCT, compareName);
             break;
         case 2:
-//                        ofSort(colors_STRUCT, compareHue);
+            ofSort(colors_STRUCT, compareHue);
             break;
         case 3:
-//                        ofSort(colors_STRUCT, compareBrightness);
+            ofSort(colors_STRUCT, compareBrightness);
             break;
         case 4:
-//                        ofSort(colors_STRUCT, compareSaturation);
+            ofSort(colors_STRUCT, compareSaturation);
             break;
     }
 
     if (MODE_SORTING >= 0 && MODE_SORTING <= 4)
-        //    if (MODE_SORTING >= 1 && MODE_SORTING<=4)
     {
         grid_clear();
         grid_create_boxes();
@@ -1517,24 +1318,23 @@ void ofxColorsBrowser::set_sorted_Type(int p)
     switch (MODE_SORTING)
     {
         case 0:
-            //            ofSort(colors_STRUCT, comparePosition);
+            ofSort(colors_STRUCT, comparePosition);
             break;
         case 1:
-            //            ofSort(colors_STRUCT, compareName);
+            ofSort(colors_STRUCT, compareName);
             break;
         case 2:
-            //            ofSort(colors_STRUCT, compareHue);
+            ofSort(colors_STRUCT, compareHue);
             break;
         case 3:
-            //            ofSort(colors_STRUCT, compareBrightness);
+            ofSort(colors_STRUCT, compareBrightness);
             break;
         case 4:
-            //            ofSort(colors_STRUCT, compareSaturation);
+            ofSort(colors_STRUCT, compareSaturation);
             break;
     }
 
     if (p >= 0 && p <= 4)
-        //    if (p>=1  && p<=4)
     {
         grid_clear();
         grid_create_boxes();
@@ -1569,10 +1369,8 @@ void ofxColorsBrowser::rectangles_update()
             // grow the slection box
             if (rectangles[i].isSelected)
             {
-
                 if (draggingRectPtr == NULL)
                 {
-
                     if (!hasFirstSelection)
                     {
                         selectedRectsBoundingBox = rectangles[i];
@@ -1606,7 +1404,6 @@ void ofxColorsBrowser::rectangles_update()
             }
         }
 
-
         if (isSelecting)
         {
             selectionRect.set(glm::vec3(dragStart.x, dragStart.y, 0), mouse);
@@ -1628,49 +1425,42 @@ void ofxColorsBrowser::rectangles_draw()
         ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12, 16);
     }
 
-//    if (ENABLE_oneCard_MODE)
-//    {
-//        // draw all of our rectangles
-//        for (size_t i = 0; i < rectangles.size(); ++i)
-//        {
-//            ofRectangle *rect = (ofRectangle *) &rectangles[i];
-//            unsigned int selectionIndex = ofFind(selectedRects, rect);
-//            rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
-//        }
-//    }
-//    else
-//    {
+    //TODO
+    //    if (ENABLE_oneCard_MODE)
+    //    {
+    //        // draw all of our rectangles
+    //        for (size_t i = 0; i < rectangles.boxSize(); ++i)
+    //        {
+    //            ofRectangle *rect = (ofRectangle *) &rectangles[i];
+    //            unsigned int selectionIndex = ofFind(selectedRects, rect);
+    //            rectangles[i].draw(i, selectionIndex == selectedRects.boxSize() ? -1 : selectionIndex);
+    //        }
+    //    }
+    //    else
+    //    {
 
-    // draw all of our rectangles
+    // 1. draw all of our rectangles
     for (size_t i = 0; i < rectangles.size(); ++i)
     {
         ofRectangle *rect = (ofRectangle *) &rectangles[i];
         unsigned int selectionIndex = ofFind(selectedRects, rect);
         rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
     }
-//    }
+    //    }
 
-    // clicked color border
+    // 2. draw border on color
     // draw our bounding box rectangle
     if (!isSelecting && !selectedRects.empty())
     {
-        //        ofFill();
-        ////        ofSetColor(255,20);
-        //        ofSetColor(0,200);
-        //        ofDrawRectangle(selectedRectsBoundingBox);
-
         ofNoFill();
-        //        ofSetColor(255,80);
-        //        ofSetColor(0,64);
         ofSetColor(0, 255);//full black
         ofDrawRectangle(selectedRectsBoundingBox);
     }
 
-    // draw our selection rectangle
+    // 3. draw border on selected color box
     if (isSelecting && bShowDebug)
     {
         ofNoFill();
-        //        ofSetColor(255,255,0,200);
         ofSetColor(ofColor(ofColor::black, 200));
         ofDrawRectangle(selectionRect);
     }
@@ -1759,8 +1549,8 @@ vector<ofColor> ofxColorsBrowser::getPalette()
 
     for (int i = 0; i < colors_STRUCT.size(); i++)
     {
-        //ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
         _palette[i] = colors_STRUCT[i].color;
+        //ofLogNotice("ofxColorsBrowser") << "color: "+ofToString(i)+"_"+ofToString( _palette[i] );
     }
 
     return _palette;
