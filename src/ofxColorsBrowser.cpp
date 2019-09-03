@@ -201,7 +201,7 @@ void ofxColorsBrowser::grid_generate()
         // dessired distribution for this palette
         cardSize = 12;
         cardsPerRow = 1;
-        boxSize = 50;
+        boxSize = 40;
         boxPad = 2;
 
         // build a map from name to ofColor of all the named OF colors;
@@ -508,6 +508,8 @@ void ofxColorsBrowser::update()
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
+    //TODO: add more pages...
+
     ofPushMatrix();
     ofPushStyle();
 
@@ -516,8 +518,8 @@ void ofxColorsBrowser::draw()
     // 1. ALL THE COLORS NAMES
 
     int maxLinesThatFitsScreen = 42;
-    bool bColorizeLabel = true;
-
+    bool bColorizeLabel = false;
+    
     int lineBegin;
     int lineEnd;
     int maxCards = maxLinesThatFitsScreen / cardSize;
@@ -528,8 +530,6 @@ void ofxColorsBrowser::draw()
     lineEnd = lineBegin + linesPage - 1;//-1
     int iPadded;
     int line;
-
-    //TODO: add more pages...
 
     // draw all color names marking the one selected
 
