@@ -53,6 +53,8 @@ void ofxColorsBrowser::grid_generate()
     //-
 
     cardPos = glm::vec2(220, 150);
+    cardNum = 0;
+    currColor = 0;
 
     //--
 
@@ -70,6 +72,8 @@ void ofxColorsBrowser::grid_generate()
 
         cardColor_size = 100;
         cardColor_pad = 20;
+
+        //-
 
         string name;
         ofColor c;
@@ -111,8 +115,8 @@ void ofxColorsBrowser::grid_generate()
         boxSize = 30;
         boxPad = 1;
 
-        cardColor_size = 70;
-        cardColor_pad = 10;
+        cardColor_size = 65;
+        cardColor_pad = 5;
 
         bool flipOrder = true;
         int iFlip;
@@ -120,7 +124,7 @@ void ofxColorsBrowser::grid_generate()
 
         for (int i = 0; i < NUM_COLORS_ROW; i++)
         {
-            //flip order: iFlip
+            // flip order: iFlip
             if (flipOrder)
                 iFlip = (NUM_COLORS_ROW - 1) - i;
             else
@@ -169,6 +173,7 @@ void ofxColorsBrowser::grid_generate()
             colorLIME.name = "LIME " + ofToString(i);
             colorYELLOW.name = "YELLOW " + ofToString(i);
             colorORANGE.name = "ORANGE " + ofToString(i);
+
             colorGREY.color = oc_gray_[iFlip];
             colorRED.color = oc_red_[iFlip];
             colorPINK.color = oc_pink_[iFlip];
@@ -182,6 +187,7 @@ void ofxColorsBrowser::grid_generate()
             colorLIME.color = oc_lime_[iFlip];
             colorYELLOW.color = oc_yellow_[iFlip];
             colorORANGE.color = oc_orange_[iFlip];
+
             colorGREY.position = pos++;
             colorRED.position = pos++;
             colorPINK.position = pos++;
