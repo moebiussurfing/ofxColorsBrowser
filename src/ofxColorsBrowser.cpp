@@ -47,7 +47,12 @@ void ofxColorsBrowser::grid_generate()
     ofLogNotice("ofxColorsBrowser") << "grid_generate";
 
     colors_STRUCT.clear();
-    colorNameMap.clear();//TODO: seems is not erasing last name colors..
+    colorNameMap.clear();
+    //TODO: seems is not erasing last name colors..
+
+    //-
+
+    cardPos = glm::vec2(220, 150);
 
     //--
 
@@ -62,6 +67,9 @@ void ofxColorsBrowser::grid_generate()
         cardsPerRow = 10;
         boxSize = 15;
         boxPad = 1;
+
+        cardColor_size = 100;
+        cardColor_pad = 20;
 
         string name;
         ofColor c;
@@ -102,6 +110,9 @@ void ofxColorsBrowser::grid_generate()
         cardsPerRow = 1;
         boxSize = 30;
         boxPad = 1;
+
+        cardColor_size = 70;
+        cardColor_pad = 10;
 
         bool flipOrder = true;
         int iFlip;
@@ -212,6 +223,9 @@ void ofxColorsBrowser::grid_generate()
         cardsPerRow = 1;
         boxSize = 40;
         boxPad = 2;
+
+        cardColor_size = 70;
+        cardColor_pad = 10;
 
         // build a map from name to ofColor of all the named OF colors;
         colorNameMap["white"] = ofColor::white;
@@ -695,11 +709,11 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
     const int &key = eventArgs.key;
     //    ofLogNotice("ofxColorsBrowser") << "key: " << key;
 
-    // card selector
+    // 0. card selector
     if (key == ' ')
     {
         cardNum++;
-        if (cardSize * cardNum > colors_STRUCT.size())
+        if (cardSize * cardNum + cardSize > colors_STRUCT.size())
             cardNum = 0;
 
         currColor = cardSize * cardNum;
@@ -1467,10 +1481,6 @@ void ofxColorsBrowser::rectangles_draw()
         {
             ofPushStyle();
 
-            int cardColor_size = 100;
-            glm::vec2 cardPos;
-            cardPos = glm::vec2(220, 150);
-
             int colorBegin = cardSize * cardNum;
             int colorEnd = colorBegin + cardSize;
 
@@ -1480,7 +1490,7 @@ void ofxColorsBrowser::rectangles_draw()
                 ofSetColor(colors_STRUCT[iPad].color);
                 ofFill();
                 ofDrawRectangle(
-                    cardPos.x + i * (cardColor_size + 20),
+                    cardPos.x + i * (cardColor_size + cardColor_pad),
                     cardPos.y,
                     cardColor_size,
                     cardColor_size);
@@ -1488,7 +1498,7 @@ void ofxColorsBrowser::rectangles_draw()
                 ofNoFill();
                 ofDrawBitmapStringHighlight(
                     colors_STRUCT[iPad].name,
-                    cardPos.x + i * (cardColor_size + 20) + 4,
+                    cardPos.x + i * (cardColor_size + cardColor_pad) + 4,
                     cardPos.y + cardColor_size - 6);
             }
 

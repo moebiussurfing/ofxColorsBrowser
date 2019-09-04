@@ -126,6 +126,9 @@ private:
     int perRow = 10;
 
     int cardNum = 0;
+    int cardColor_size = 100;
+    int cardColor_pad = 20;
+    glm::vec2 cardPos;
 
     //--
 
