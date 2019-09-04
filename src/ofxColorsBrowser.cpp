@@ -1,5 +1,7 @@
 #include "ofxColorsBrowser.h"
 
+
+//--------------------------------------------------------------
 // comparing colors to sorting methods
 bool compareName(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
 {
@@ -45,7 +47,7 @@ void ofxColorsBrowser::grid_generate()
     ofLogNotice("ofxColorsBrowser") << "grid_generate";
 
     colors_STRUCT.clear();
-    colorNameMap.clear();
+    colorNameMap.clear();//TODO: seems is not erasing last name colors..
 
     //--
 
@@ -61,19 +63,24 @@ void ofxColorsBrowser::grid_generate()
         boxSize = 15;
         boxPad = 1;
 
+        string name;
+        ofColor c;
+
         for (int i = 0; i < pantoneNames.size(); i++)
         {
-            string name = pantoneNames[i];
-            ofColor c = pantoneColors[i];
+            name = pantoneNames[i];
+            c = pantoneColors[i];
 
-            // 1. map
+            // 1. names map
             colorNameMap[name] = c;
 
-            // 2. vector
+            // 2. struct
             colorMapping_STRUCT myColor;
             myColor.name = name;
             myColor.color = c;
             myColor.position = i;
+
+            // 3. add color to vector
             colors_STRUCT.push_back(myColor);
         }
         ofLogNotice("ofxColorsBrowser");
@@ -87,7 +94,8 @@ void ofxColorsBrowser::grid_generate()
     {
         ofLogNotice("ofxColorsBrowser") << "OFX_OPEN_COLOR";
 
-#define NUM_COLORS_ROW 10//that's also the ideal distribution for open color palette
+#define NUM_COLORS_ROW 10
+        //that's the ideal distribution for open color palette
 
         // dessired distribution for this palette
         cardSize = 13;
@@ -357,10 +365,10 @@ void ofxColorsBrowser::grid_generate()
         int i = 0;
         for (auto const &x : colorNameMap)
         {
-            //            std::cout << x.first  // string (key)
-            //            << ':'
-            //            << x.second // string's value
-            //            << std::endl ;
+            // std::cout << x.first  // string (key)
+            // << ':'
+            // << x.second // string's value
+            // << std::endl ;
 
             colorMapping_STRUCT myColor;
             myColor.name = x.first;
@@ -686,6 +694,12 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 {
     const int &key = eventArgs.key;
     //    ofLogNotice("ofxColorsBrowser") << "key: " << key;
+
+    // card selector
+    if (key == ' ')
+    {
+        cardNum++;
+    }
 
     //-
 
@@ -1424,7 +1438,7 @@ void ofxColorsBrowser::rectangles_draw()
 {
     // 0. debug rectangles manager
 
-    ofPoint mouse(ofGetMouseX(), ofGetMouseY());
+    //ofPoint mouse(ofGetMouseX(), ofGetMouseY());
 
     if (bShowDebug)
     {
@@ -1437,20 +1451,44 @@ void ofxColorsBrowser::rectangles_draw()
 
     //TODO
 
-    // 1. draw rectangles
+    // 1. draw card rectangles
     if (ENABLE_oneCard_MODE)
     {
-        // 1.1 draw one card of rectangles
-        for (size_t i = 0; i < rectangles.size(); ++i)
+        if (colors_STRUCT.size() > 0)
         {
-            ofRectangle *rect = (ofRectangle *) &rectangles[i];
-            unsigned int selectionIndex = ofFind(selectedRects, rect);
-            rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+            ofPushStyle();
+
+            int cardColor_size = 50;
+            glm::vec2 cardPos;
+            cardPos = glm::vec2(400, 100);
+
+            int colorBegin = cardSize * cardNum;
+            int colorEnd = colorBegin + cardSize;
+
+            for (int i = colorBegin; i < colorEnd; i++)
+            {
+                ofSetColor(colors_STRUCT[i].color);
+                ofFill();
+                ofDrawRectangle(
+                    cardPos.x + i * cardColor_size,
+                    cardPos.y,
+                    cardColor_size,
+                    cardColor_size);
+
+                ofNoFill();
+                ofDrawBitmapStringHighlight(
+                    colors_STRUCT[i].name,
+                    cardPos.x + i * cardColor_size,
+                    cardPos.y + cardColor_size);
+            }
+
+            ofPopStyle();
         }
     }
+
+        // 1.2 draw all of our rectangles
     else if (!ENABLE_oneCard_MODE)
     {
-        // 1.2 draw all of our rectangles
         for (size_t i = 0; i < rectangles.size(); ++i)
         {
             ofRectangle *rect = (ofRectangle *) &rectangles[i];
@@ -1458,6 +1496,10 @@ void ofxColorsBrowser::rectangles_draw()
             rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
         }
     }
+
+    //--
+
+    // rectangles management ?
 
     // 2. draw border on color
     // draw our bounding box rectangle
@@ -1475,6 +1517,8 @@ void ofxColorsBrowser::rectangles_draw()
         ofSetColor(ofColor(ofColor::black, 200));
         ofDrawRectangle(selectionRect);
     }
+
+    //--
 
     // 4. rectangles management debug
     if (bShowDebug)
