@@ -136,6 +136,7 @@ void ofxColorsBrowser::grid_generate()
             colorMapping_STRUCT colorLIME;
             colorMapping_STRUCT colorYELLOW;
             colorMapping_STRUCT colorORANGE;
+
             colorGREY.name = "GREY " + ofToString(i);
             colorRED.name = "RED " + ofToString(i);
             colorPINK.name = "PINK " + ofToString(i);
@@ -502,7 +503,7 @@ void ofxColorsBrowser::update()
 
     rectangles_update();
 
-    //--
+    //-
 }
 
 //--------------------------------------------------------------
@@ -530,6 +531,8 @@ void ofxColorsBrowser::draw()
     pageNum = (int) currColor / linesPage;
     lineBegin = pageNum * linesPage;
     lineEnd = lineBegin + linesPage - 1;//-1
+    string str;
+    ofColor c;
 
     // draw all color names marking the one selected
 
@@ -538,7 +541,6 @@ void ofxColorsBrowser::draw()
         for (int i = lineBegin; i <= lineEnd; i++)
         {
             line = i;
-            string str;
 
             if (colors_STRUCT.size() > 0)
                 str = colors_STRUCT[line].name;
@@ -555,7 +557,6 @@ void ofxColorsBrowser::draw()
             // mark names
             if (i == currColor)
             {
-                ofColor c;
                 if (bColorizeLabel)
                     c = colors_STRUCT[i].color;
                 else
@@ -564,7 +565,6 @@ void ofxColorsBrowser::draw()
             }
             else
             {
-                ofColor c;
                 if (bColorizeLabel)
                     c = colors_STRUCT[i].color;
                 else
@@ -590,6 +590,8 @@ void ofxColorsBrowser::draw()
         ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
         ofDrawBitmapStringHighlight("cardSize: " + ofToString(cardSize), x, y + (i++) * 20, ofColor::black, ofColor::white);
         ofDrawBitmapStringHighlight("cardsPerRow: " + ofToString(cardsPerRow), x, y + (i++) * 20, ofColor::black, ofColor::white);
+        ofDrawBitmapStringHighlight("cardNum: " + ofToString(cardNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
+
     }
 
     //-
@@ -687,7 +689,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
     //-
 
-    // change colors
+    // 1. slelect colors of palette
     if (key == OF_KEY_RIGHT)
     {
         currColor++;
@@ -721,18 +723,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
     //-
 
-    // show debug
-    if (key == 'd')
-    {
-        bShowDebug = !bShowDebug;
-
-        for (int i = 0; i < rectangles.size(); i++)
-        {
-            rectangles[i].setDebug(bShowDebug);
-        }
-    }
-
-    // change to next palette
+    // 2. change to next palette
     if (key == OF_KEY_BACKSPACE)
     {
         MODE_COLOR++;
@@ -756,7 +747,9 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         grid_create_boxes();
     }
 
-    // select sorting
+    //-
+
+    // 3. select sorting
     if (key == '0')
     {
         if (MODE_SORTING != 0)
@@ -812,6 +805,22 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         switch_sorted_Type();
     }
 
+    //--
+
+    // rectangles manager
+
+    // some tools to rectangles sorting and align
+
+    // show debug
+    if (key == 'd')
+    {
+        bShowDebug = !bShowDebug;
+
+        for (int i = 0; i < rectangles.size(); i++)
+        {
+            rectangles[i].setDebug(bShowDebug);
+        }
+    }
 
     else if (key == 'p')
     {
@@ -821,11 +830,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
             ofRandom(500)));
     }
 
-    //---
-
-    // debug ofxRectangle handling:
-    // some tools to rectangles sorting and align
-
+    // debug ofxRectangle handling
     if (bShowDebug)
     {
 
@@ -1417,9 +1422,10 @@ void ofxColorsBrowser::rectangles_update()
 //--------------------------------------------------------------
 void ofxColorsBrowser::rectangles_draw()
 {
+    // 0. debug rectangles manager
+
     ofPoint mouse(ofGetMouseX(), ofGetMouseY());
 
-    // debug rectangles manager
     if (bShowDebug)
     {
         ofFill();
@@ -1427,28 +1433,31 @@ void ofxColorsBrowser::rectangles_draw()
         ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12, 16);
     }
 
-    //TODO
-    //    if (ENABLE_oneCard_MODE)
-    //    {
-    //        // draw all of our rectangles
-    //        for (size_t i = 0; i < rectangles.boxSize(); ++i)
-    //        {
-    //            ofRectangle *rect = (ofRectangle *) &rectangles[i];
-    //            unsigned int selectionIndex = ofFind(selectedRects, rect);
-    //            rectangles[i].draw(i, selectionIndex == selectedRects.boxSize() ? -1 : selectionIndex);
-    //        }
-    //    }
-    //    else
-    //    {
+    //--
 
-    // 1. draw all of our rectangles
-    for (size_t i = 0; i < rectangles.size(); ++i)
+    //TODO
+
+    // 1. draw rectangles
+    if (ENABLE_oneCard_MODE)
     {
-        ofRectangle *rect = (ofRectangle *) &rectangles[i];
-        unsigned int selectionIndex = ofFind(selectedRects, rect);
-        rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+        // 1.1 draw one card of rectangles
+        for (size_t i = 0; i < rectangles.size(); ++i)
+        {
+            ofRectangle *rect = (ofRectangle *) &rectangles[i];
+            unsigned int selectionIndex = ofFind(selectedRects, rect);
+            rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+        }
     }
-    //    }
+    else if (!ENABLE_oneCard_MODE)
+    {
+        // 1.2 draw all of our rectangles
+        for (size_t i = 0; i < rectangles.size(); ++i)
+        {
+            ofRectangle *rect = (ofRectangle *) &rectangles[i];
+            unsigned int selectionIndex = ofFind(selectedRects, rect);
+            rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+        }
+    }
 
     // 2. draw border on color
     // draw our bounding box rectangle
@@ -1467,6 +1476,7 @@ void ofxColorsBrowser::rectangles_draw()
         ofDrawRectangle(selectionRect);
     }
 
+    // 4. rectangles management debug
     if (bShowDebug)
     {
         stringstream ss;
@@ -1535,6 +1545,8 @@ void ofxColorsBrowser::rectangles_draw()
     {
         ofDrawRectangle(packedRects[i]);
     }
+
+    //-
 }
 
 

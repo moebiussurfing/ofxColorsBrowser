@@ -48,7 +48,7 @@ void ofApp::keyPressed(int key){
     if (key == 'g')
     {
         SHOW_ColorBrowser =!SHOW_ColorBrowser;
-        
+
         ColorBrowser.setVisible(SHOW_ColorBrowser);
         ColorBrowser.setVisible_debugText(SHOW_ColorBrowser);
     }

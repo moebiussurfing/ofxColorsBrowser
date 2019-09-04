@@ -11,6 +11,7 @@ using namespace ofx;
 // internal shorcuts no add listeners or remove
 #define KEY_SHORTCUTS_ENABLE
 
+// sortings
 enum
 {
     SORTING_ORIGINAL,
@@ -20,6 +21,7 @@ enum
     SORTING_SATURATION
 };
 
+// palettes
 enum
 {
     OFX_PANTONE_COLORS,
@@ -27,12 +29,15 @@ enum
     OFX_OPEN_COLOR
 };
 
+// color struct
 typedef struct
 {
     string name;
     ofColor color;
     int position;//original position
 } colorMapping_STRUCT;
+
+//--
 
 class ofxColorsBrowser
 {
@@ -64,11 +69,8 @@ public:
     void set_palette_Type(int p);
     void set_sorted_Type(int p);
 
-    vector<ofColor> getPalette();
-
     // TODO: resize buttons to fit..
     void setSize(glm::vec2 size);
-
     void setRowsSize(int rows);
     void setBoxSize(float size);
 
@@ -99,20 +101,31 @@ public:
             removeKeysListeners();
     }
 
+    // pointer back
     void setup_colorBACK(ofFloatColor &c);
+
+    // main palette getter
+    vector<ofColor> getPalette();
+
+    //--
 
 private:
 
+    // path for json colors file
     string path = "colorsBrowser/pantone-colors.json";
 
-    int perRow = 10;
+    //-
+
+    // SETTINGS
+
     ofParameter<float> boxSize{"BOX SIZE", 15, 10, 100};//boxes
     ofParameter<float> boxPad{"PAD", 1, 0, 10};
     ofParameter<int> cardSize{"CARD SIZE", 7, 2, 100};// minimal card of colors
     ofParameter<int> cardsPerRow{"CARDS PER ROW", 4, 2, 100};
     ofParameter<bool> ENABLE_oneCard_MODE{"ONE CARD MODE", true};
+    int perRow = 10;
 
-    void refresh_Clicks();// to browsing by keys
+    int cardNum = 0;
 
     //--
 
@@ -129,7 +142,10 @@ private:
     vector<ofColor> pantoneColors;
     vector<std::string> pantoneNames;
 
-    // OFXRECTANGLE MODE
+    //-
+
+    // RECTANGLE MANAGER SYSTEM - OFXRECTANGLE
+    //draggable, sortable, align...
     std::vector<ofxRectangle> rectangles;
     std::vector<ofRectangle *> selectedRects;
     ofxRectangle selectedRectsBoundingBox;
@@ -146,6 +162,9 @@ private:
     void rectangles_update();
     void rectangles_draw();
 
+    //-
+
+    // color converters
     // These string to hex conversions aren't trivial.
     static int stringToHex(string hex)
     {
@@ -165,6 +184,8 @@ private:
         col.set(ri, gi, bi);
     }
 
+    //-
+
     void keyPressed(ofKeyEventArgs &eventArgs);
     void keyReleased(ofKeyEventArgs &eventArgs);
     void addKeysListeners();
@@ -178,35 +199,44 @@ private:
 
     //-
 
+    // modes and states
+
     bool SHOW_debugText = false;
     bool SHOW_ColorsBrowse = true;
     bool ENABLE_clicks = true;
     bool ENABLE_keys = false;
 
+    bool bShowDebug = false;//for rectangle manager
+
     //-
 
-    // pointer back
+    // pointers back
+
     ofFloatColor color_BACK;
     ofFloatColor color_BACK_PRE;
     ofFloatColor *color_BACK_OFAPP;
 
     //-
 
+    void refresh_Clicks();// to browsing by keys
     void grid_generate();
     void grid_create_boxes();
     void grid_clear();
-    bool bShowDebug = false;
 
     //-
 
+    // grid position
     glm::vec2 position;
+    // text debug positions
     glm::vec2 positionHelper;
 
-    // 0: PANTONE COLORS 1: OFX_COLOR_NATIVE, 2: OFX_OPEN_COLOR
+    // 0:PANTONE COLORS 1:OFX_COLOR_NATIVE, 2:OFX_OPEN_COLOR
     int MODE_COLOR;
+
+    // 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
     int MODE_SORTING;
 
-    //last clicked color box
+    // last clicked color box
     string currName = "";
     int currColor = -1;
     int currColor_OriginalPos = -1;
