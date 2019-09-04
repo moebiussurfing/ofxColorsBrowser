@@ -699,6 +699,11 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
     if (key == ' ')
     {
         cardNum++;
+        if (cardSize * cardNum > colors_STRUCT.size())
+            cardNum = 0;
+
+        currColor = cardSize * cardNum;
+        refresh_Clicks();
     }
 
     //-
@@ -710,6 +715,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         int sizeCols = colors_STRUCT.size();
         if (currColor > sizeCols - 1)
             currColor = 0;
+        cardNum = currColor / cardSize;
         refresh_Clicks();
     }
     else if (key == OF_KEY_LEFT)
@@ -717,6 +723,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         currColor--;
         if (currColor < 0)
             currColor = colors_STRUCT.size() - 1;
+        cardNum = currColor / cardSize;
         refresh_Clicks();
     }
     else if (key == OF_KEY_DOWN)
@@ -725,6 +732,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         int sizeCols = colors_STRUCT.size();
         if (currColor > sizeCols - 1)
             currColor = sizeCols - 1;
+        cardNum = currColor / cardSize;
         refresh_Clicks();
     }
     else if (key == OF_KEY_UP)
@@ -732,6 +740,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         currColor = currColor - perRow;
         if (currColor < 0)
             currColor = 0;
+        cardNum = currColor / cardSize;
         refresh_Clicks();
     }
 
@@ -1458,36 +1467,37 @@ void ofxColorsBrowser::rectangles_draw()
         {
             ofPushStyle();
 
-            int cardColor_size = 50;
+            int cardColor_size = 100;
             glm::vec2 cardPos;
-            cardPos = glm::vec2(400, 100);
+            cardPos = glm::vec2(220, 150);
 
             int colorBegin = cardSize * cardNum;
             int colorEnd = colorBegin + cardSize;
 
-            for (int i = colorBegin; i < colorEnd; i++)
+            for (int i = 0; i < cardSize; i++)
             {
-                ofSetColor(colors_STRUCT[i].color);
+                int iPad = i + colorBegin;
+                ofSetColor(colors_STRUCT[iPad].color);
                 ofFill();
                 ofDrawRectangle(
-                    cardPos.x + i * cardColor_size,
+                    cardPos.x + i * (cardColor_size + 20),
                     cardPos.y,
                     cardColor_size,
                     cardColor_size);
 
                 ofNoFill();
                 ofDrawBitmapStringHighlight(
-                    colors_STRUCT[i].name,
-                    cardPos.x + i * cardColor_size,
-                    cardPos.y + cardColor_size);
+                    colors_STRUCT[iPad].name,
+                    cardPos.x + i * (cardColor_size + 20) + 4,
+                    cardPos.y + cardColor_size - 6);
             }
 
             ofPopStyle();
         }
     }
 
-        // 1.2 draw all of our rectangles
-    else if (!ENABLE_oneCard_MODE)
+    // 1.2 draw all of our rectangles
+    //else if (!ENABLE_oneCard_MODE)
     {
         for (size_t i = 0; i < rectangles.size(); ++i)
         {
