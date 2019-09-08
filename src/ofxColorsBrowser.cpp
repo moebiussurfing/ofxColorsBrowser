@@ -38,6 +38,7 @@ ofxColorsBrowser::ofxColorsBrowser()
 #else
     set_ENABLE_keys(false);
 #endif
+
 }
 
 
@@ -449,6 +450,10 @@ void ofxColorsBrowser::load_Pantone_JSON()
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup()
 {
+    font.setup("assets/fonts/Kazesawa-Extrabold.ttf", 1.0, 1024, false, 8, 1.5);
+    //font.addFont("assets/fonts/Kazesawa-Extrabold.ttf");
+    font.setCharacterSpacing(0);
+
     //--
 
     // PANTONE COLORS
@@ -582,27 +587,69 @@ void ofxColorsBrowser::draw()
                 iPadded = i - lineBegin;
             }
 
-            // mark names
+            // all marked names
+            float fontSize = 20;
+            float fontMargin = 10;
+            float x = 10;
+            float y = 20 + iPadded * 20;
+            float rectWidth = 200;
+            int margin = 6;
+
+            //-
+
+            // 1. selected color
             if (i == currColor)
             {
+                ofSetColor(0);//black
+                ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
                 if (bColorizeLabel)
                     c = colors_STRUCT[i].color;
                 else
                     c = ofColor::white;
-                ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::black);
+
+                // A
+
+                ofSetColor(c);
+                font.draw(
+                    str,
+                    fontSize,
+                    x + margin,
+                    y
+                );
+
+                // B
+                //ofDrawBitmapStringHighlight(str, x, y, c, ofColor::black);
             }
+
+                // 2. all color not selected
             else
             {
+                // back light
+                ofSetColor(255);//white
+                ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
                 if (bColorizeLabel)
                     c = colors_STRUCT[i].color;
                 else
                     c = ofColor::black;
-                ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
+
+                //A
+                //ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
+
+                //B
+                ofSetColor(c);
+                font.draw(
+                    str,
+                    fontSize,
+                    x + margin,
+                    y
+                );
             }
         }
     }
 
-    //-
+    //--
 
     // 2. MONITOR COLOR SELECTED: name & position in vector
 
@@ -1487,30 +1534,119 @@ void ofxColorsBrowser::rectangles_draw()
         {
             ofPushStyle();
 
+            // 1. white background
+
+            int padding = 30;
+            ofSetColor(225);//grey
+
+            ofDrawRectRounded(
+                glm::vec2(
+                    cardPos.x - padding,
+                    cardPos.y - padding),
+                (cardColor_size + cardColor_pad) * (cardSize) + 2 * padding,
+                (cardColor_size * 1.1 + cardColor_pad) + 2 * padding + 25,
+                5,
+                5,
+                5,
+                5
+            );
+
+            //-
+
+            // 2. each color in card
+
             int colorBegin = cardSize * cardNum;
             int colorEnd = colorBegin + cardSize;
+
+            float x;
+            float y;
+            int letterPad = 15;
+            float fontSize = 15;
+            float fontPad = 10;
 
             for (int i = 0; i < cardSize; i++)
             {
                 int iPad = i + colorBegin;
                 ofSetColor(colors_STRUCT[iPad].color);
                 ofFill();
-                ofDrawRectangle(
-                    cardPos.x + i * (cardColor_size + cardColor_pad),
-                    cardPos.y,
-                    cardColor_size,
-                    cardColor_size);
 
-                ofNoFill();
-                ofDrawBitmapStringHighlight(
-                    colors_STRUCT[iPad].name,
-                    cardPos.x + i * (cardColor_size + cardColor_pad) + 4,
-                    cardPos.y + cardColor_size - 6);
+                // 2.1 color box
+
+                //ofDrawRectangle(
+                //    cardPos.x + i * (cardColor_size + cardColor_pad),
+                //    cardPos.y,
+                //    cardColor_size,
+                //    cardColor_size);
+
+                ofDrawRectRounded(
+                    glm::vec2(cardPos.x + i * (cardColor_size + cardColor_pad),
+                        cardPos.y),
+                    cardColor_size,
+                    cardColor_size,
+                    2.5,
+                    2.5,
+                    0.0,
+                    0.0
+                );
+
+                //ofDrawRectangle(
+                //    cardPos.x + i * (cardColor_size + cardColor_pad),
+                //    cardPos.y,
+                //    cardColor_size,
+                //    cardColor_size*1.1);
+
+                //-
+
+                // 2.2. text box
+
+                // 2.2.1 text background
+                ofSetColor(255);//white
+                ofDrawRectangle(
+                    glm::vec2(cardPos.x + i * (cardColor_size + cardColor_pad),
+                        cardPos.y + cardColor_size),
+                    cardColor_size,
+                    50
+                );
+
+                // 2.2.2 text font
+                //ofNoFill();
+
+                // A.
+                //x = cardPos.x + i * (cardColor_size + cardColor_pad) + 4;
+                //y = cardPos.y + cardColor_size - 6;
+
+                // B.
+                x = cardPos.x + i * (cardColor_size + cardColor_pad) + 3;
+                y = cardPos.y + cardColor_size * 1.1 + letterPad;
+
+                // A.
+                //ofDrawBitmapStringHighlight(
+                //    colors_STRUCT[iPad].name,
+                //    x,
+                //    y);
+
+                // B.
+                //ofColor c = colors_STRUCT[iPad].color;
+                ofColor c = 0;//black
+                ofSetColor(c);
+                string str;
+                str = "PANTONE";
+                str += "\n";
+                str += colors_STRUCT[iPad].name;
+                font.drawMultiLine(
+                    ofToUpper(str),
+                    fontSize,
+                    x + fontPad,
+                    y
+                );
+
             }
 
             ofPopStyle();
         }
     }
+
+    //--
 
     // 1.2 draw all of our rectangles
     //else if (!ENABLE_oneCard_MODE)

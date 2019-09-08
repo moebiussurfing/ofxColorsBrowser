@@ -5,6 +5,7 @@
 #include "ofxOpenColor.h"
 #include "ofxRectangleUtils.h"
 #include "ofxRectangle.h"
+#include "ofxFontStash.h"
 
 using namespace ofx;
 
@@ -43,6 +44,8 @@ class ofxColorsBrowser
 {
 
 public:
+
+    ofxFontStash font;
 
     ofxColorsBrowser();
     ~ofxColorsBrowser();
@@ -107,6 +110,8 @@ public:
     // main palette getter
     vector<ofColor> getPalette();
 
+    vector<std::string> pantoneNames;
+
     //--
 
 private:
@@ -143,7 +148,7 @@ private:
 
     ofJson js;
     vector<ofColor> pantoneColors;
-    vector<std::string> pantoneNames;
+
 
     //-
 
