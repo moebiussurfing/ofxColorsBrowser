@@ -53,7 +53,7 @@ void ofxColorsBrowser::grid_generate()
 
     //-
 
-    cardPos = glm::vec2(230, 150);
+    cardPos = glm::vec2(235, 155);
     cardNum = 0;
     currColor = 0;
 
@@ -771,8 +771,11 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
     const int &key = eventArgs.key;
     //    ofLogNotice("ofxColorsBrowser") << "key: " << key;
 
+    //-
+
     // 0. card selector
-    if (key == ' ')
+
+    if (key == OF_KEY_RIGHT_SHIFT)
     {
         cardNum++;
         if (cardSize * cardNum + cardSize > colors_STRUCT.size())
@@ -781,11 +784,20 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         currColor = cardSize * cardNum;
         refresh_Clicks();
     }
+    else if (key == OF_KEY_LEFT_SHIFT)
+    {
+        cardNum--;
+        if (cardNum < 0)
+            cardNum = colors_STRUCT.size() - 1;
+
+        currColor = cardSize * cardNum;
+        refresh_Clicks();
+    }
 
     //-
 
     // 1. slelect colors of palette
-    if (key == OF_KEY_RIGHT)
+    else if (key == OF_KEY_RIGHT)
     {
         currColor++;
         int sizeCols = colors_STRUCT.size();
@@ -823,7 +835,8 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
     //-
 
     // 2. change to next palette
-    if (key == OF_KEY_BACKSPACE)
+
+    else if (key == OF_KEY_BACKSPACE)
     {
         MODE_COLOR++;
         MODE_COLOR = MODE_COLOR % 3;
@@ -851,7 +864,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
     //-
 
     // 3. select sorting
-    if (key == '0')
+    else if (key == '0')
     {
         if (MODE_SORTING != 0)
         {
@@ -913,7 +926,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
     // some tools to rectangles sorting and align
 
     // show debug
-    if (key == 'd')
+    else if (key == 'd')
     {
         bShowDebug = !bShowDebug;
 
@@ -932,7 +945,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
     }
 
     // debug ofxRectangle handling
-    if (bShowDebug)
+    else if (bShowDebug)
     {
 
         //    if (key == OF_KEY_UP) {
@@ -1110,7 +1123,6 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs)
                     }
                 }
             }
-
         }
     }
 }
