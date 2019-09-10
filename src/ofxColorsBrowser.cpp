@@ -69,7 +69,7 @@ void ofxColorsBrowser::grid_generate()
         cardSize = 7;
         cardsPerRow = 10;
         boxSize = 15;
-        boxPad = 1;
+        boxPad = 0.5;
 
         cardColor_size = 100;
         cardColor_pad = 20;
@@ -451,7 +451,6 @@ void ofxColorsBrowser::load_Pantone_JSON()
 void ofxColorsBrowser::setup()
 {
     font.setup("assets/fonts/Kazesawa-Extrabold.ttf", 1.0, 1024, false, 8, 1.5);
-    //font.addFont("assets/fonts/Kazesawa-Extrabold.ttf");
     font.setCharacterSpacing(0);
 
     //--
@@ -650,10 +649,11 @@ void ofxColorsBrowser::draw()
             // line to mark first color on each card
             if (i % cardSize == 0)
             {
-                int pad = 5;
+                int lineSize = 3;
+                int px = x + 2;
                 int py = y - 4;
                 ofSetLineWidth(2.0);
-                ofDrawLine(x, py, x + 5, py);
+                ofDrawLine(px, py, px + lineSize, py);
             }
         }
     }
@@ -690,7 +690,7 @@ void ofxColorsBrowser::draw()
 
             //-
 
-            str = "PALETTE NAME: ";
+            str = "PALETTE: ";
             switch (MODE_COLOR)
             {
                 case OFX_PANTONE_COLORS:
@@ -707,7 +707,7 @@ void ofxColorsBrowser::draw()
 
             //-
 
-            str = "SORTING MODE: ";
+            str = "SORTING: ";
             switch (MODE_SORTING)
             {
                 case 0:
@@ -775,7 +775,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
     // 0. card selector
 
-    if (key == OF_KEY_RIGHT_SHIFT)
+    if (key == OF_KEY_RIGHT_SHIFT || key == 'd')//prev card
     {
         cardNum++;
         if (cardSize * cardNum + cardSize > colors_STRUCT.size())
@@ -784,19 +784,24 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         currColor = cardSize * cardNum;
         refresh_Clicks();
     }
-    else if (key == OF_KEY_LEFT_SHIFT)
+    else if (key == OF_KEY_LEFT_SHIFT || key == 'a')//next card
     {
         cardNum--;
         if (cardNum < 0)
-            cardNum = colors_STRUCT.size() - 1;
+            cardNum = (colors_STRUCT.size() - 1) / cardSize;
 
         currColor = cardSize * cardNum;
         refresh_Clicks();
     }
+    else if (key == 'r')//random to one card
+    {
+        cardNum = (int) ofRandom( (colors_STRUCT.size()) / cardSize);
+        currColor = cardSize * cardNum;
+        refresh_Clicks();
+    }
+        //-
 
-    //-
-
-    // 1. slelect colors of palette
+        // 1. slelect colors of palette
     else if (key == OF_KEY_RIGHT)
     {
         currColor++;
@@ -832,9 +837,9 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         refresh_Clicks();
     }
 
-    //-
+        //-
 
-    // 2. change to next palette
+        // 2. change to next palette
 
     else if (key == OF_KEY_BACKSPACE)
     {
@@ -861,9 +866,9 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         grid_create_boxes();
     }
 
-    //-
+        //-
 
-    // 3. select sorting
+        // 3. select sorting
     else if (key == '0')
     {
         if (MODE_SORTING != 0)
@@ -919,152 +924,152 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         switch_sorted_Type();
     }
 
-    //--
+        //--
 
-    // rectangles manager
-
-    // some tools to rectangles sorting and align
-
-    // show debug
-    else if (key == 'd')
-    {
-        bShowDebug = !bShowDebug;
-
-        for (int i = 0; i < rectangles.size(); i++)
-        {
-            rectangles[i].setDebug(bShowDebug);
-        }
-    }
-
-    else if (key == 'p')
-    {
-        RectangleUtils::pack(selectedRects, ofRectangle(0,
-            0,
-            ofRandom(500),
-            ofRandom(500)));
-    }
-
-    // debug ofxRectangle handling
-    else if (bShowDebug)
-    {
-
-        //    if (key == OF_KEY_UP) {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->vAlign = OF_ALIGN_VERT_TOP;
-        //        }
-        //    } else if (key == OF_KEY_DOWN) {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->vAlign = OF_ALIGN_VERT_BOTTOM;
-        //        }
-        //    } else if (key == OF_KEY_LEFT) {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_LEFT;
-        //        }
-        //    } else if (key == OF_KEY_RIGHT) {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_RIGHT;
-        //        }
-        //    } else if (key == 'c') {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_CENTER;
-        //        }
-        //    } else if (key == 'C') {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->vAlign = OF_ALIGN_VERT_CENTER;
-        //        }
-        //    } else if (key == 'i') {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_IGNORE;
-        //        }
-        //    } else if (key == 'I') {
-        //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-        //            selectedRects[i]->vAlign = OF_ALIGN_VERT_IGNORE;
-        //        }
-        //
-        /*} else */ if (key == 'a')
-        {
-            if (hAlign == OF_ALIGN_HORZ_LEFT)
-            {
-                hAlign = OF_ALIGN_HORZ_CENTER;
-            }
-            else if (hAlign == OF_ALIGN_HORZ_CENTER)
-            {
-                hAlign = OF_ALIGN_HORZ_RIGHT;
-            }
-            else if (hAlign == OF_ALIGN_HORZ_RIGHT)
-            {
-                hAlign = OF_ALIGN_HORZ_IGNORE;
-            }
-            else if (hAlign == OF_ALIGN_HORZ_IGNORE)
-            {
-                hAlign = OF_ALIGN_HORZ_LEFT;
-            }
-        }
-        else if (key == 'A')
-        {
-            if (vAlign == OF_ALIGN_VERT_TOP)
-            {
-                vAlign = OF_ALIGN_VERT_CENTER;
-            }
-            else if (vAlign == OF_ALIGN_VERT_CENTER)
-            {
-                vAlign = OF_ALIGN_VERT_BOTTOM;
-            }
-            else if (vAlign == OF_ALIGN_VERT_BOTTOM)
-            {
-                vAlign = OF_ALIGN_VERT_IGNORE;
-            }
-            else if (vAlign == OF_ALIGN_VERT_IGNORE)
-            {
-                vAlign = OF_ALIGN_VERT_TOP;
-            }
-        }
-        else if (key == 'W')
-        {
-            RectangleUtils::sortByAbsWidth(selectedRects);
-        }
-        else if (key == 'A')
-        {
-            RectangleUtils::sortByArea(selectedRects);
-        }
-        else if (key == 'H')
-        {
-            RectangleUtils::sortByAbsHeight(selectedRects);
-        }
-        else if (key == 'c')
-        {
-            RectangleUtils::cascade(selectedRects, ofRectangle(0, 0, ofGetWidth(), ofGetHeight()), glm::vec2(30, 30));
-        }
-        else if (key == 'v')
-        {
-            RectangleUtils::alignVert(selectedRects, vAlign);
-        }
-        else if (key == 'h')
-        {
-            // horizontal align selection
-            RectangleUtils::alignHorz(selectedRects, hAlign);
-        }
-        else if (key == 'x')
-        {
-            // distribute in x
-            RectangleUtils::distributeHorz(selectedRects, hAlign);
-        }
-        else if (key == 'y')
-        {
-            RectangleUtils::distributeVert(selectedRects, vAlign);
-        }
-        else if (key == 'p')
-        {
-            RectangleUtils::pack(selectedRects, ofRectangle(0,
-                0,
-                ofGetWidth(),
-                ofGetHeight()));
-        }
-        else if (key == ' ')
-        {
-            showKeyboardCommands = !showKeyboardCommands;
-        }
-    }
+    //    // rectangles manager
+    //
+    //    // some tools to rectangles sorting and align
+    //
+    ////    // show debug
+    ////else if (key == 'd')
+    ////{
+    ////    bShowDebug = !bShowDebug;
+    ////
+    ////    for (int i = 0; i < rectangles.size(); i++)
+    ////    {
+    ////        rectangles[i].setDebug(bShowDebug);
+    ////    }
+    ////}
+    ////
+    ////else if (key == 'p')
+    ////{
+    ////    RectangleUtils::pack(selectedRects, ofRectangle(0,
+    ////        0,
+    ////        ofRandom(500),
+    ////        ofRandom(500)));
+    ////}
+    //
+    //    // debug ofxRectangle handling
+    //else if (bShowDebug)
+    //{
+    //
+    //    //    if (key == OF_KEY_UP) {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_TOP;
+    //    //        }
+    //    //    } else if (key == OF_KEY_DOWN) {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_BOTTOM;
+    //    //        }
+    //    //    } else if (key == OF_KEY_LEFT) {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_LEFT;
+    //    //        }
+    //    //    } else if (key == OF_KEY_RIGHT) {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_RIGHT;
+    //    //        }
+    //    //    } else if (key == 'c') {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_CENTER;
+    //    //        }
+    //    //    } else if (key == 'C') {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_CENTER;
+    //    //        }
+    //    //    } else if (key == 'i') {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_IGNORE;
+    //    //        }
+    //    //    } else if (key == 'I') {
+    //    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
+    //    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_IGNORE;
+    //    //        }
+    //    //
+    //    /*} else */ if (key == 'a')
+    //    {
+    //        if (hAlign == OF_ALIGN_HORZ_LEFT)
+    //        {
+    //            hAlign = OF_ALIGN_HORZ_CENTER;
+    //        }
+    //        else if (hAlign == OF_ALIGN_HORZ_CENTER)
+    //        {
+    //            hAlign = OF_ALIGN_HORZ_RIGHT;
+    //        }
+    //        else if (hAlign == OF_ALIGN_HORZ_RIGHT)
+    //        {
+    //            hAlign = OF_ALIGN_HORZ_IGNORE;
+    //        }
+    //        else if (hAlign == OF_ALIGN_HORZ_IGNORE)
+    //        {
+    //            hAlign = OF_ALIGN_HORZ_LEFT;
+    //        }
+    //    }
+    //    else if (key == 'A')
+    //    {
+    //        if (vAlign == OF_ALIGN_VERT_TOP)
+    //        {
+    //            vAlign = OF_ALIGN_VERT_CENTER;
+    //        }
+    //        else if (vAlign == OF_ALIGN_VERT_CENTER)
+    //        {
+    //            vAlign = OF_ALIGN_VERT_BOTTOM;
+    //        }
+    //        else if (vAlign == OF_ALIGN_VERT_BOTTOM)
+    //        {
+    //            vAlign = OF_ALIGN_VERT_IGNORE;
+    //        }
+    //        else if (vAlign == OF_ALIGN_VERT_IGNORE)
+    //        {
+    //            vAlign = OF_ALIGN_VERT_TOP;
+    //        }
+    //    }
+    //    else if (key == 'W')
+    //    {
+    //        RectangleUtils::sortByAbsWidth(selectedRects);
+    //    }
+    //    else if (key == 'A')
+    //    {
+    //        RectangleUtils::sortByArea(selectedRects);
+    //    }
+    //    else if (key == 'H')
+    //    {
+    //        RectangleUtils::sortByAbsHeight(selectedRects);
+    //    }
+    //    else if (key == 'c')
+    //    {
+    //        RectangleUtils::cascade(selectedRects, ofRectangle(0, 0, ofGetWidth(), ofGetHeight()), glm::vec2(30, 30));
+    //    }
+    //    else if (key == 'v')
+    //    {
+    //        RectangleUtils::alignVert(selectedRects, vAlign);
+    //    }
+    //    else if (key == 'h')
+    //    {
+    //        // horizontal align selection
+    //        RectangleUtils::alignHorz(selectedRects, hAlign);
+    //    }
+    //    else if (key == 'x')
+    //    {
+    //        // distribute in x
+    //        RectangleUtils::distributeHorz(selectedRects, hAlign);
+    //    }
+    //    else if (key == 'y')
+    //    {
+    //        RectangleUtils::distributeVert(selectedRects, vAlign);
+    //    }
+    //    else if (key == 'p')
+    //    {
+    //        RectangleUtils::pack(selectedRects, ofRectangle(0,
+    //            0,
+    //            ofGetWidth(),
+    //            ofGetHeight()));
+    //    }
+    //    else if (key == ' ')
+    //    {
+    //        showKeyboardCommands = !showKeyboardCommands;
+    //    }
+    //}
 }
 
 //--------------------------------------------------------------
