@@ -841,6 +841,8 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
                 break;
         }
 
+        //-
+
         grid_clear();
         grid_generate();
         grid_create_boxes();
@@ -1122,33 +1124,36 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
     const int &button = eventArgs.button;
     //    ofLogNotice("ofxColorsBrowser") << "mousePressed " <<  x << ", " << y << ", " << button;
 
+    //-
+
+    // 1. rectangles system
+
     if (ENABLE_clicks)
     {
         dragStart = glm::vec2(x, y);  // set a new drag start point
 
+        // SHORTCUT MODE
+
         if (!ofGetKeyPressed('A'))
         {
-
             bool foundAClickTarget = false;
 
             // first check to see if we are in the bounding box
             if (!selectedRects.empty() &&
                 selectedRectsBoundingBox.inside(dragStart))
             {
-
                 if (bShowDebug)
                 {
                     draggingRectPtr = &selectedRectsBoundingBox;
-                    //            selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
+                    //selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
                     selectedRectsBoundingBox.dragOffset.x = dragStart.x - selectedRectsBoundingBox.getPosition().x;
                     selectedRectsBoundingBox.dragOffset.y = dragStart.y - selectedRectsBoundingBox.getPosition().y;
-
 
                     for (std::size_t i = 0; i < rectangles.size(); i++)
                     {
                         if (rectangles[i].isSelected)
                         {
-                            //                    rectangles[i].dragOffset = dragStart - rectangles[i].getPosition().xy;
+                            //rectangles[i].dragOffset = dragStart - rectangles[i].getPosition().xy;
                             rectangles[i].dragOffset.x = dragStart.x - rectangles[i].getPosition().x;
                             rectangles[i].dragOffset.y = dragStart.y - rectangles[i].getPosition().y;
                         }
@@ -1157,9 +1162,10 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
                 }
             }
 
+
+                // RECTANGLE COLOR CLICKED
             else
             {
-                // RECTANGLE COLOR CLICKED
 
                 selectedRects.clear();
                 // otherwise, go through all of the rects and see if we can drag one
@@ -1184,27 +1190,36 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 
                         //-
 
-                        // get rectangle clicked color
+                        // 1. get rectangle clicked color
+
                         ofColor cRect = rectangles[i].color;
 
-                        // apply color pointer back
+                        //-
+
+                        // 2. apply color pointer back
+
                         color_BACK = ofColor(cRect);
                         // ofColor c = colors_STRUCT[currColor].color;
                         // color_BACK = ofColor( c );
 
                         //-
 
-                        // update browsing grid
+                        // 3. update browsing grid
 
                         currColor = i;
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor    [" << currColor << "]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor [" << currColor << "]";
 
                         currName = colors_STRUCT[currColor].name;
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currName     [" << currName << "]";
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "currName [" << currName << "]";
 
                         currColor_OriginalPos = colors_STRUCT[currColor].position;
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos  [" << currColor_OriginalPos
+                        ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos[" << currColor_OriginalPos
                                                                      << "]";
+                        //-
+
+                        // 4. update selected card
+                        cardNum = currColor / cardSize;
+                        //refresh_Clicks();
                     }
                 }
             }
@@ -1229,7 +1244,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::refresh_Clicks()
+void ofxColorsBrowser::refresh_Clicks()//over rectangles
 {
     ofLogNotice("ofxColorsBrowser") << "refresh_Clicks: make clicked box by keys following currColor: [" << currColor
                                     << "]";
@@ -1550,13 +1565,15 @@ void ofxColorsBrowser::rectangles_draw()
         float x;
         float y;
 
+        ofColor colorBgCards = ofColor(250);
+
         if (colors_STRUCT.size() > 0)
         {
             ofPushStyle();
 
             // 1. white background
 
-            ofSetColor(255);
+            ofSetColor(colorBgCards);
 
             ofDrawRectangle(
                 glm::vec2(
@@ -1631,8 +1648,9 @@ void ofxColorsBrowser::rectangles_draw()
                     50
                 );
 
+                //-
+
                 // 2.2.2 text font
-                //ofNoFill();
 
                 // A.
                 //x = cardPos.x + i * (cardColor_size + cardColor_pad) + 4;
@@ -1652,11 +1670,12 @@ void ofxColorsBrowser::rectangles_draw()
                 //ofColor c = colors_STRUCT[iPad].color;
                 ofColor c = 0;//black
                 ofSetColor(c);
+
                 string str;
                 if (MODE_COLOR == OFX_PANTONE_COLORS)
                     str += "PANTONE\n";
                 str += colors_STRUCT[iPad].name;
-                
+
                 font.drawMultiLine(
                     ofToUpper(str),
                     fontSize,
