@@ -53,7 +53,7 @@ void ofxColorsBrowser::grid_generate()
 
     //-
 
-    cardPos = glm::vec2(220, 150);
+    cardPos = glm::vec2(230, 150);
     cardNum = 0;
     currColor = 0;
 
@@ -561,6 +561,7 @@ void ofxColorsBrowser::draw()
     int maxCards = maxLinesThatFitsScreen / cardSize;
     int linesPage = cardSize * maxCards;
     int pageNum;
+
     pageNum = (int) currColor / linesPage;
     lineBegin = pageNum * linesPage;
     lineEnd = lineBegin + linesPage - 1;//-1
@@ -609,7 +610,6 @@ void ofxColorsBrowser::draw()
                     c = ofColor::white;
 
                 // A
-
                 ofSetColor(c);
                 font.draw(
                     str,
@@ -645,6 +645,15 @@ void ofxColorsBrowser::draw()
                     x + margin,
                     y
                 );
+            }
+
+            // line to mark first color on each card
+            if (i % cardSize == 0)
+            {
+                int pad = 5;
+                int py = y - 4;
+                ofSetLineWidth(2.0);
+                ofDrawLine(x, py, x + 5, py);
             }
         }
     }
@@ -1525,31 +1534,49 @@ void ofxColorsBrowser::rectangles_draw()
 
     //--
 
-    //TODO
+    // CARD MODE:
 
     // 1. draw card rectangles
+
     if (ENABLE_oneCard_MODE)
     {
+        int padding = 15;
+        int labelSize = 25;
+
+        int letterPad = 15;
+        float fontSize = 12;
+        float fontPad = 5;
+
+        float x;
+        float y;
+
         if (colors_STRUCT.size() > 0)
         {
             ofPushStyle();
 
             // 1. white background
 
-            int padding = 30;
-            ofSetColor(225);//grey
+            ofSetColor(255);
 
-            ofDrawRectRounded(
+            ofDrawRectangle(
                 glm::vec2(
                     cardPos.x - padding,
                     cardPos.y - padding),
-                (cardColor_size + cardColor_pad) * (cardSize) + 2 * padding,
-                (cardColor_size * 1.1 + cardColor_pad) + 2 * padding + 25,
-                5,
-                5,
-                5,
-                5
+                (cardColor_size + cardColor_pad) * (cardSize) + padding,
+                (cardColor_size + cardColor_pad) + 2 * padding + labelSize
             );
+
+            //ofDrawRectRounded(
+            //    glm::vec2(
+            //        cardPos.x - padding,
+            //        cardPos.y - padding),
+            //    (cardColor_size + cardColor_pad) * (cardSize) + 2 * padding,
+            //    (cardColor_size * 1.1 + cardColor_pad) + 2 * padding + 25,
+            //    5,
+            //    5,
+            //    5,
+            //    5
+            //);
 
             //-
 
@@ -1557,12 +1584,6 @@ void ofxColorsBrowser::rectangles_draw()
 
             int colorBegin = cardSize * cardNum;
             int colorEnd = colorBegin + cardSize;
-
-            float x;
-            float y;
-            int letterPad = 15;
-            float fontSize = 15;
-            float fontPad = 10;
 
             for (int i = 0; i < cardSize; i++)
             {
@@ -1579,7 +1600,8 @@ void ofxColorsBrowser::rectangles_draw()
                 //    cardColor_size);
 
                 ofDrawRectRounded(
-                    glm::vec2(cardPos.x + i * (cardColor_size + cardColor_pad),
+                    glm::vec2(
+                        cardPos.x + i * (cardColor_size + cardColor_pad),
                         cardPos.y),
                     cardColor_size,
                     cardColor_size,
@@ -1597,12 +1619,13 @@ void ofxColorsBrowser::rectangles_draw()
 
                 //-
 
-                // 2.2. text box
+                // 2.2. background text box
 
                 // 2.2.1 text background
                 ofSetColor(255);//white
                 ofDrawRectangle(
-                    glm::vec2(cardPos.x + i * (cardColor_size + cardColor_pad),
+                    glm::vec2(
+                        cardPos.x + i * (cardColor_size + cardColor_pad),
                         cardPos.y + cardColor_size),
                     cardColor_size,
                     50
@@ -1617,7 +1640,7 @@ void ofxColorsBrowser::rectangles_draw()
 
                 // B.
                 x = cardPos.x + i * (cardColor_size + cardColor_pad) + 3;
-                y = cardPos.y + cardColor_size * 1.1 + letterPad;
+                y = cardPos.y + cardColor_size + letterPad;
 
                 // A.
                 //ofDrawBitmapStringHighlight(
@@ -1630,9 +1653,10 @@ void ofxColorsBrowser::rectangles_draw()
                 ofColor c = 0;//black
                 ofSetColor(c);
                 string str;
-                str = "PANTONE";
-                str += "\n";
+                if (MODE_COLOR == OFX_PANTONE_COLORS)
+                    str += "PANTONE\n";
                 str += colors_STRUCT[iPad].name;
+                
                 font.drawMultiLine(
                     ofToUpper(str),
                     fontSize,
@@ -1648,7 +1672,8 @@ void ofxColorsBrowser::rectangles_draw()
 
     //--
 
-    // 1.2 draw all of our rectangles
+    // 1.2 draw all of our rectangles system
+
     //else if (!ENABLE_oneCard_MODE)
     {
         for (size_t i = 0; i < rectangles.size(); ++i)
