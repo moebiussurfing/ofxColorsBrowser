@@ -482,6 +482,10 @@ void ofxColorsBrowser::setup()
     set_ENABLE_clicks(true);
     setVisible_debugText(false);
 
+    //currColor = 0;
+    //cardNum = 0;
+    //refresh_Clicks();
+
     //--
 }
 
@@ -519,6 +523,11 @@ void ofxColorsBrowser::grid_create_boxes()
     vAlign = OF_ALIGN_VERT_TOP;
     anchorRect = NULL;
     showKeyboardCommands = false;
+
+    // startup
+    currColor = 0;
+    cardNum = 0;
+    refresh_Clicks();
 }
 
 
@@ -552,6 +561,7 @@ void ofxColorsBrowser::draw()
 
     int maxLinesThatFitsScreen = 42;
     bool bColorizeLabel = false;
+    bool bColorizeBg = true;
 
     int iPadded;
     int line;
@@ -600,8 +610,14 @@ void ofxColorsBrowser::draw()
             // 1. selected color
             if (i == currColor)
             {
-                ofSetColor(0);//black
+                // rectangle
+                if (!bColorizeBg)
+                    ofSetColor(0);//black
+                else
+                    ofSetColor(colors_STRUCT[i].color);
                 ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
+                // text
 
                 if (bColorizeLabel)
                     c = colors_STRUCT[i].color;
@@ -793,9 +809,26 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         currColor = cardSize * cardNum;
         refresh_Clicks();
     }
+    else if (key == 's')//prev card
+    {
+        currColor += cardsPerRow * cardSize;
+        if (currColor > colors_STRUCT.size() - 1)
+            currColor = 0;
+        cardNum = currColor / cardSize;
+        refresh_Clicks();
+    }
+    else if (key == 'w')//prev card
+    {
+        currColor -= cardsPerRow * cardSize;
+        if (currColor < 0)
+            currColor = colors_STRUCT.size() - 1 - cardSize;
+        cardNum = currColor / cardSize;
+        refresh_Clicks();
+    }
+
     else if (key == 'r')//random to one card
     {
-        cardNum = (int) ofRandom( (colors_STRUCT.size()) / cardSize);
+        cardNum = (int) ofRandom((colors_STRUCT.size()) / cardSize);
         currColor = cardSize * cardNum;
         refresh_Clicks();
     }
@@ -919,12 +952,12 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
             grid_create_boxes();
         }
     }
-    else if (key == '5')
+    else if (key == '5' || key == OF_KEY_TAB)
     {
         switch_sorted_Type();
     }
 
-        //--
+    //--
 
     //    // rectangles manager
     //
@@ -1179,7 +1212,6 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
                 }
             }
 
-
                 // RECTANGLE COLOR CLICKED
             else
             {
@@ -1200,9 +1232,9 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
                         //-
 
                         // TEST
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box clicked  [" << i << "]";
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box name     [" << rectangles[i].name << "]";
-                        ofLogNotice("ofxColorsBrowser:mousePressed") << "box position ["
+                        ofLogNotice("ofxColorsBrowser") << "mousePressed box clicked  [" << i << "]";
+                        ofLogNotice("ofxColorsBrowser") << "mousePressed box name     [" << rectangles[i].name << "]";
+                        ofLogNotice("ofxColorsBrowser") << "mousePressed box position ["
                                                                      << rectangles[i].position_inVector << "]";
 
                         //-
