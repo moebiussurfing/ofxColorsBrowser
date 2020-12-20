@@ -1,8 +1,0 @@
-ofxColorsBrowser
-ofxFontStash
-ofxHttpUtils
-ofxOpenColor
-ofxPoco
-ofxRectangleUtils
-ofxUI
-ofxXmlSettings

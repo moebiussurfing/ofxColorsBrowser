@@ -902,6 +902,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
         //-
 
         // 3. select sorting
+
     else if (key == '0')
     {
         if (MODE_SORTING != 0)
