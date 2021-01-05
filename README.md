@@ -9,7 +9,7 @@ ofxColorsBrowser
 
 ## Features
 * Three included libraries.
-  * Pantone (>3000 colors from a JSON file).
+  * Pantone (>2000 colors from a JSON file).
   * Open Color.
   * OF Native named colors
 * Gui with clickable colored boxes. 
@@ -50,8 +50,10 @@ ofApp::draw(){
  * ofxSurfingHelpers
 
  Already included into ```/libs```:  
-* ofxOpenColor
-* ofxRectangleUtils
+* ofxOpenColor (*from @pd-andy*)
+https://github.com/pd-andy/ofxOpenColor
+* ofxRectangleUtils (*from @bakercp*)
+https://github.com/bakercp/ofxRectangleUtils
 
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**
