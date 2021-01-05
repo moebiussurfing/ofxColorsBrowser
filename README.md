@@ -13,7 +13,7 @@ ofxColorsBrowser
   * Open Color.
   * OF Native named colors
 * Gui with clickable colored boxes. 
-  * Can be completely disabled to simplify.
+  * Can be completely disabled to simplify. (Having access to the raw colors)
 * Key commands
 * Basic parameters and app modes.
 * Store/Recall settings.
