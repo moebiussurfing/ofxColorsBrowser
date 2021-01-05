@@ -9,10 +9,11 @@ ofxColorsBrowser
 
 ## Features
 * Three included libraries.
-  * Pantone (3000 colors readed from a JSON file)
-  * Open Color
+  * Pantone (>3000 colors from a JSON file).
+  * Open Color.
   * OF Native named colors
-* Gui with clickable colored boxes
+* Gui with clickable colored boxes. 
+  * Can be completely disabled to simplify.
 * Key commands
 * Basic parameters and app modes.
 * Store/Recall settings.
