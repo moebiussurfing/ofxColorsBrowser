@@ -1,13 +1,21 @@
 #pragma once
-
 #include "ofMain.h"
 
+//-
+
+//#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
+
+//-
+
 #include "ofxOpenColor.h"
+#include "ofxSurfingHelpers.h"
+
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 #include "ofxRectangleUtils.h"
 #include "ofxRectangle.h"
 #include "ofxFontStash.h"
-
 using namespace ofx;
+#endif
 
 // internal shorcuts no add listeners or remove
 #define KEY_SHORTCUTS_ENABLE
@@ -15,27 +23,27 @@ using namespace ofx;
 // sortings
 enum
 {
-    SORTING_ORIGINAL,
-    SORTING_NAME,
-    SORTING_HUE,
-    SORTING_BRIGHTNESS,
-    SORTING_SATURATION
+	SORTING_ORIGINAL,
+	SORTING_NAME,
+	SORTING_HUE,
+	SORTING_BRIGHTNESS,
+	SORTING_SATURATION
 };
 
 // palettes
 enum
 {
-    OFX_PANTONE_COLORS,
-    OFX_COLOR_NATIVE,
-    OFX_OPEN_COLOR
+	OFX_PANTONE_COLORS,
+	OFX_COLOR_NATIVE,
+	OFX_OPEN_COLOR
 };
 
 // color struct
 typedef struct
 {
-    string name;
-    ofColor color;
-    int position;//original position
+	std::string name;
+	ofColor color;
+	int position;//original position
 } colorMapping_STRUCT;
 
 //--
@@ -43,209 +51,260 @@ typedef struct
 class ofxColorsBrowser
 {
 
+private:
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+	ofxFontStash font;
+#endif
+
+	//-
+
 public:
+	ofxColorsBrowser();
+	~ofxColorsBrowser();
 
-    ofxFontStash font;
+	void setup();
+	void update();
+	void draw();
+	void exit();
 
-    ofxColorsBrowser();
-    ~ofxColorsBrowser();
+	//----
 
-    void setup();
-    void update();
-    void draw();
-    void exit();
+	// API
 
-    //----
+	void load_Pantone_JSON();
 
-    // API
+	void setPosition(glm::vec2 p);
+	void setPositionHelper(glm::vec2 p)
+	{
+		positionHelper = p;
+	};
 
-    void load_Pantone_JSON();
+	void switch_palette_Type();
+	void switch_sorted_Type();
+	void set_palette_Type(int p);
+	void set_sorted_Type(int p);
 
-    void setPosition(glm::vec2 p);
-    void setPositionHelper(glm::vec2 p)
-    {
-        positionHelper = p;
-    };
+	// TODO: resize buttons to fit..
+	//void setSize(glm::vec2 size);
 
-    void switch_palette_Type();
-    void switch_sorted_Type();
-    void set_palette_Type(int p);
-    void set_sorted_Type(int p);
+	void setRowsSize(int rows);
+	void setBoxSize(float size);
 
-    // TODO: resize buttons to fit..
-    void setSize(glm::vec2 size);
-    void setRowsSize(int rows);
-    void setBoxSize(float size);
+	void setVisible(bool b);
+	void setVisible_debugText(bool b);
 
-    void setVisible(bool b);
-    void setVisible_debugText(bool b);
+	void setEnableClicks(bool b)
+	{
+		ENABLE_clicks = b;
 
-    void set_ENABLE_clicks(bool b)
-    {
-        ENABLE_clicks = b;
-        if (b)
-        {
-            addKeysListeners();
-            addMouseListeners();
-        }
-        else
-        {
-            removeKeysListeners();
-            removeMouseListeners();
-        }
-    }
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+		if (b)
+		{
+			addKeysListeners();
+			addMouseListeners();
+		}
+		else
+		{
+			removeKeysListeners();
+			removeMouseListeners();
+		}
+#endif
+	}
 
-    void set_ENABLE_keys(bool b)
-    {
-        ENABLE_keys = b;
-        if (ENABLE_keys)
-            addKeysListeners();
-        else
-            removeKeysListeners();
-    }
+	void setEnableKeys(bool b)
+	{
+		ENABLE_keys = b;
 
-    // pointer back
-    void setup_colorBACK(ofFloatColor &c);
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+		if (ENABLE_keys) addKeysListeners();
+		else removeKeysListeners();
+#endif
+	}
 
-    // main palette getter
-    vector<ofColor> getPalette();
+	// pointer back
+	void setup_colorBACK(ofFloatColor &c);
 
-    vector<std::string> pantoneNames;
 
-    //--
+public:
+	// main palette getter
+	vector<ofColor> getPalette();
+	vector<std::string> getNames();
+	int getSize();
+	int getLibIndex() {
+		return LibraryColors_Index.get();
+	}
+
+public:
+	vector<std::string> colors_PantoneNames;
+
+	//--
 
 private:
 
-    // path for json colors file
-    string path = "colorsBrowser/pantone-colors.json";
+	// path for json colors file
+	std::string path_Global;
+	std::string path_File;
 
-    //-
+	//-
 
-    // SETTINGS
+private:
 
-    ofParameter<float> boxSize{"BOX SIZE", 15, 10, 100};//boxes
-    ofParameter<float> boxPad{"PAD", 1, 0, 10};
-    ofParameter<int> cardSize{"CARD SIZE", 7, 2, 100};// minimal card of colors
-    ofParameter<int> cardsPerRow{"CARDS PER ROW", 4, 2, 100};
-    ofParameter<bool> ENABLE_oneCard_MODE{"ONE CARD MODE", true};
-    int perRow = 10;
+	ofParameter<float> boxSize{ "BOX SIZE", 15, 10, 100 };//boxes
+	ofParameter<float> boxPad{ "PAD", 1, 0, 10 };
+	ofParameter<int> cardSize{ "CARD SIZE", 7, 2, 100 };// minimal card of colors
+	ofParameter<int> cardsPerRow{ "CARDS PER ROW", 4, 2, 100 };
+	ofParameter<bool> ENABLE_oneCard_MODE{ "ONE CARD MODE", true };
+	int perRow = 10;
 
-    int cardNum = 0;
-    int cardColor_size = 100;
-    int cardColor_pad = 20;
-    glm::vec2 cardPos;
+	int cardNum = 0;
+	int cardColor_size = 100;
+	int cardColor_pad = 20;
+	glm::vec2 cardPos;
 
-    //--
+	//--
 
-    // MAIN STORAGE
+	// main storage
 
-    map<string, ofColor> colorNameMap;
-    vector<colorMapping_STRUCT> colors_STRUCT;
+	map<std::string, ofColor> colorNameMap;
 
-    //--
+	//-
 
-    // PANTONE COLORS
+public:
+	vector<colorMapping_STRUCT> colors_STRUCT;
 
-    ofJson js;
-    vector<ofColor> pantoneColors;
+	//--
 
+	// pantone colors
 
-    //-
+private:
+	ofJson js;
+	vector<ofColor> colors_Pantone;
 
-    // RECTANGLE MANAGER SYSTEM - OFXRECTANGLE
-    //draggable, sortable, align...
-    std::vector<ofxRectangle> rectangles;
-    std::vector<ofRectangle *> selectedRects;
-    ofxRectangle selectedRectsBoundingBox;
-    ofxRectangle *draggingRectPtr;
-    glm::vec2 dragStart;
-    bool isSelecting;
-    ofRectangle selectionRect;
-    ofAlignHorz hAlign;
-    ofAlignVert vAlign;
-    ofRectangle *anchorRect;
-    string keyboardCommands;
-    bool showKeyboardCommands;
-    std::vector<ofRectangle> packedRects;
-    void rectangles_update();
-    void rectangles_draw();
+	//-
 
-    //-
+	// RECTANGLE MANAGER SYSTEM - OFXRECTANGLE
 
-    // color converters
-    // These string to hex conversions aren't trivial.
-    static int stringToHex(string hex)
-    {
-        int aHex;
-        stringstream convert(hex);
-        convert >> std::hex >> aHex;
-        return aHex;
-    }
-    static void hexToColor(ofColor &col, string hex)
-    {
-        string r = hex.substr(0, 2);
-        int ri = stringToHex(r);
-        string g = hex.substr(2, 2);
-        int gi = stringToHex(g);
-        string b = hex.substr(4, 2);
-        int bi = stringToHex(b);
-        col.set(ri, gi, bi);
-    }
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+	//draggable, sortable, align...
+	std::vector<ofxRectangle> rectangles;
+	std::vector<ofRectangle *> selectedRects;
+	ofxRectangle selectedRectsBoundingBox;
+	ofxRectangle *draggingRectPtr;
+	glm::vec2 dragStart;
+	bool isSelecting;
+	ofRectangle selectionRect;
+	ofAlignHorz hAlign;
+	ofAlignVert vAlign;
+	ofRectangle *anchorRect;
+	std::string keyboardCommands;
+	bool showKeyboardCommands;
+	std::vector<ofRectangle> packedRects;
+#endif
 
-    //-
+	//-
 
-    void keyPressed(ofKeyEventArgs &eventArgs);
-    void keyReleased(ofKeyEventArgs &eventArgs);
-    void addKeysListeners();
-    void removeKeysListeners();
+private:
+	void rectangles_update();
+	void rectangles_draw();
 
-    void mouseDragged(ofMouseEventArgs &eventArgs);
-    void mousePressed(ofMouseEventArgs &eventArgs);
-    void mouseReleased(ofMouseEventArgs &eventArgs);
-    void addMouseListeners();
-    void removeMouseListeners();
+	//-
 
-    //-
+	// color converters
+	// These string to hex conversions aren't trivial.
+	static int stringToHex(std::string hex)
+	{
+		int aHex;
+		stringstream convert(hex);
+		convert >> std::hex >> aHex;
+		return aHex;
+	}
 
-    // modes and states
+	static void hexToColor(ofColor &col, std::string hex)
+	{
+		std::string r = hex.substr(0, 2);
+		int ri = stringToHex(r);
+		std::string g = hex.substr(2, 2);
+		int gi = stringToHex(g);
+		std::string b = hex.substr(4, 2);
+		int bi = stringToHex(b);
+		col.set(ri, gi, bi);
+	}
 
-    bool SHOW_debugText = false;
-    bool SHOW_ColorsBrowse = true;
-    bool ENABLE_clicks = true;
-    bool ENABLE_keys = false;
+	//----
 
-    bool bShowDebug = false;//for rectangle manager
+public:
+	void keyPressed(ofKeyEventArgs &eventArgs);
+	void keyReleased(ofKeyEventArgs &eventArgs);
 
-    //-
+	void mouseDragged(ofMouseEventArgs &eventArgs);
+	void mousePressed(ofMouseEventArgs &eventArgs);
+	void mouseReleased(ofMouseEventArgs &eventArgs);
 
-    // pointers back
+private:
+	void addKeysListeners();
+	void removeKeysListeners();
 
-    ofFloatColor color_BACK;
-    ofFloatColor color_BACK_PRE;
-    ofFloatColor *color_BACK_OFAPP;
+	void addMouseListeners();
+	void removeMouseListeners();
 
-    //-
+	//-
 
-    void refresh_Clicks();// to browsing by keys
-    void grid_generate();
-    void grid_create_boxes();
-    void grid_clear();
+	// modes and states
 
-    //-
+public:
+	ofParameter<bool> ENABLE_keys{ "Enable Keys", false };
 
-    // grid position
-    glm::vec2 position;
-    // text debug positions
-    glm::vec2 positionHelper;
+private:
+	bool SHOW_debugText = false;
+	bool SHOW_ColorsBrowse = true;
+	bool ENABLE_clicks = true;
+	//bool ENABLE_keys = false;
 
-    // 0:PANTONE COLORS 1:OFX_COLOR_NATIVE, 2:OFX_OPEN_COLOR
-    int MODE_COLOR;
+	bool bShowDebug = false;//for rectangle manager
 
-    // 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
-    int MODE_SORTING;
+	//-
 
-    // last clicked color box
-    string currName = "";
-    int currColor = -1;
-    int currColor_OriginalPos = -1;
+	// pointers back
+
+	ofFloatColor color_BACK;
+	ofFloatColor color_BACK_PRE;
+	ofFloatColor *color_BACK_OFAPP;
+
+	//-
+
+	void buildColors();
+
+	void refresh_Clicks();// to browsing by keys
+	void grid_create_boxes();
+	void clearInterface();
+
+	//-
+
+	// grid position
+	glm::vec2 position;
+	// text debug positions
+	glm::vec2 positionHelper;
+
+public:
+
+	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN
+
+	ofParameter<int> LibraryColors_Index{ "Library", 0, 0, 2 };
+	ofParameter<std::string> MODE_COLOR_name{ "Library Name", "" };
+
+	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
+
+	ofParameter<int> MODE_SORTING{ "Sorting Mode", 0, 1, 4 };
+	ofParameter<std::string> MODE_SORTING_name{ "Sorting Name", "" };
+
+	ofParameterGroup params;
+
+	ofEventListener listener_Library;
+	ofEventListener listener_ModeSorting;
+
+private:
+	// last clicked color box
+	std::string currName = "";
+	int currColor = -1;
+	int currColor_OriginalPos = -1;
 };
