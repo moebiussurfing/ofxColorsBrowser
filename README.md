@@ -1,55 +1,60 @@
-ofxAddonTemplateCustomApp
+ofxColorsBrowser
 =============================
 
 # Overview
-**ofxAddonTemplateCustomApp** is an **openFrameworks** addon template for MYSELF.
+**ofxColorsBrowser** is an **openFrameworks** addon to browse big color libraries.
 
 ## Screenshot
 ![image](/readme_images/Capture.PNG?raw=true "image")
 
 ## Features
-- Customize gui.
-- Basic parameters and app modes.
-- Store/Recall settings.
-- 
-
+* Three included libraries.
+  * Pantone (3000 colors readed from a JSON file)
+  * Open Color
+  * OF Native named colors
+* Gui with clickable colored boxes
+* Key commands
+* Basic parameters and app modes.
+* Store/Recall settings.
 
 ## Usage
  
 ### ofApp.h
 ```.cpp
-#include "ofxAddonTemplateCustomApp.h"
-ofxAddonTemplateCustomApp myAddon;
+#include "ofxColorsBrowser.h"
+
+ofxColorsBrowser colorBrowser;
+ofFloatColor color_BACK;
 ```
 
 ### ofApp.cpp
 ```.cpp
 ofApp::setup(){
-	ofxAddonTemplateCustomApp.setup();
-}
+    colorBrowser.setup_colorBACK(color_BACK);// set local target color receiver
+    colorBrowser.setup();
 
 ofApp::update(){
-	ofxAddonTemplateCustomApp.update();
+	ofxColorsBrowser.update();
 }
 
 ofApp::draw(){
-	ofxAddonTemplateCustomApp.draw();
-	ofxAddonTemplateCustomApp.drawGui();
+    ofBackground( ofColor( color_BACK ));// auto updated when changes
+	colorBrowser.draw();
 }
 ```
 
 ## Dependencies
-- 
+ * ofxFontStash
+ * ofxGui
+ * ofxSurfingHelpers
+
+ Already included into ```/libs```:  
+* ofxOpenColor
+* ofxRectangleUtils
 
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**
 - **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
-
-### TODO/IDEAS
-* 
-
-### Notes
-*
 
 ## Author
 Addon by **@moebiusSurfing**  
