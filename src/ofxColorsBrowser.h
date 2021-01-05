@@ -1,11 +1,11 @@
 #pragma once
 #include "ofMain.h"
 
-//-
+//----
 
-//#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
+#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
 
-//-
+//----
 
 #include "ofxOpenColor.h"
 #include "ofxSurfingHelpers.h"
@@ -16,6 +16,8 @@
 #include "ofxFontStash.h"
 using namespace ofx;
 #endif
+
+#include "ofxGui.h"
 
 // internal shorcuts no add listeners or remove
 #define KEY_SHORTCUTS_ENABLE
@@ -56,6 +58,12 @@ private:
 	ofxFontStash font;
 #endif
 
+	ofTrueTypeFont font2;
+	string helpInfo;
+
+	ofxPanel gui;
+	bool bGui = false;
+
 	//-
 
 public:
@@ -80,7 +88,7 @@ public:
 	};
 
 	void switch_palette_Type();
-	void switch_sorted_Type();
+	void nextSortType();
 	void set_palette_Type(int p);
 	void set_sorted_Type(int p);
 
@@ -91,26 +99,55 @@ public:
 	void setBoxSize(float size);
 
 	void setVisible(bool b);
-	void setVisible_debugText(bool b);
+	void setVisibleDebug(bool b);
+	void setToggleVisibleDebug();
 
-	void setEnableClicks(bool b)
+	ofParameter<bool> SHOW_Gui{ "GUI", true };
+
+	//--------------------------------------------------------------
+	bool isVisible() {
+		return SHOW_Gui.get();
+	}
+
+	//--------------------------------------------------------------
+	void setToggleVisible()
+	{
+		SHOW_Gui = !SHOW_Gui.get();
+		ofLogNotice(__FUNCTION__) << "SHOW_Gui: " << SHOW_Gui;
+
+		setVisible(SHOW_Gui);
+
+		//SHOW_InterfaceColors = !SHOW_InterfaceColors;
+		//setVisible(SHOW_InterfaceColors);
+	}
+
+	//--------------------------------------------------------------
+	void setEnableInterfaceClicks(bool b)
 	{
 		ENABLE_clicks = b;
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 		if (b)
 		{
-			addKeysListeners();
+			//addKeysListeners();
 			addMouseListeners();
 		}
 		else
 		{
-			removeKeysListeners();
+			//removeKeysListeners();
 			removeMouseListeners();
 		}
 #endif
 	}
 
+	//--------------------------------------------------------------
+	void setToggleEnableKeys() {
+		ENABLE_keys = !ENABLE_keys;
+
+		setEnableKeys(ENABLE_keys);
+	}
+
+	//--------------------------------------------------------------
 	void setEnableKeys(bool b)
 	{
 		ENABLE_keys = b;
@@ -120,6 +157,21 @@ public:
 		else removeKeysListeners();
 #endif
 	}
+
+	//--------------------------------------------------------------
+	void setActive(bool b)
+	{
+		ENABLE_keys = b;
+
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+		if (ENABLE_keys) addKeysListeners();
+		else removeKeysListeners();
+#endif
+
+		setVisible(b);
+	}
+
+	//----
 
 	// pointer back
 	void setup_colorBACK(ofFloatColor &c);
@@ -144,6 +196,7 @@ private:
 	// path for json colors file
 	std::string path_Global;
 	std::string path_File;
+	std::string path_FileSettings;
 
 	//-
 
@@ -256,7 +309,7 @@ public:
 
 private:
 	bool SHOW_debugText = false;
-	bool SHOW_ColorsBrowse = true;
+	bool SHOW_InterfaceColors = true;
 	bool ENABLE_clicks = true;
 	//bool ENABLE_keys = false;
 
@@ -282,6 +335,7 @@ private:
 
 	// grid position
 	glm::vec2 position;
+
 	// text debug positions
 	glm::vec2 positionHelper;
 
@@ -290,12 +344,12 @@ public:
 	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN
 
 	ofParameter<int> LibraryColors_Index{ "Library", 0, 0, 2 };
-	ofParameter<std::string> MODE_COLOR_name{ "Library Name", "" };
+	ofParameter<std::string> LibraryColors_Index_name{ " ", "" };
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
 
-	ofParameter<int> MODE_SORTING{ "Sorting Mode", 0, 1, 4 };
-	ofParameter<std::string> MODE_SORTING_name{ "Sorting Name", "" };
+	ofParameter<int> MODE_SORTING{ "Sorting Mode", 0, 0, 4 };
+	ofParameter<std::string> MODE_SORTING_name{ " ", "" };
 
 	ofParameterGroup params;
 

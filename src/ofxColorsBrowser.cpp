@@ -1,6 +1,5 @@
 #include "ofxColorsBrowser.h"
 
-
 //--------------------------------------------------------------
 // comparing colors to sorting methods
 
@@ -44,10 +43,43 @@ ofxColorsBrowser::ofxColorsBrowser()
 	setEnableKeys(false);
 #endif
 
+	//-
+
 	path_Global = "ofxColorsBrowser/";
 	path_File = path_Global + "pantone-colors.json";
+	path_FileSettings = path_Global + "AppSettings.xml";
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
+
+	//--
+
+	helpInfo = "";
+	helpInfo += "\n";
+	helpInfo += "KEY COMMANDS";
+	helpInfo += "\n";
+	//helpInfo += "\n";
+	helpInfo += "Mouse Click           Browse Colors";
+	helpInfo += "\n";
+	helpInfo += "Up Down Left Right    Browse Colors";
+	helpInfo += "\n";
+	helpInfo += "a d w s		       Browse Cards";
+	helpInfo += "\n";
+	helpInfo += "r                     Random Card";
+	helpInfo += "\n";
+	helpInfo += "BackSpace             Change Library";
+	helpInfo += "\n";
+	helpInfo += "Tab                   Change Sorting Type";
+	helpInfo += "\n";
+	helpInfo += "0 1 2 3 4             Set Sort Type";
+	helpInfo += "\n";
+	helpInfo += "K                     Enable Keys";
+	helpInfo += "\n";
+	helpInfo += "D                     Debug";
+	helpInfo += "\n";
+	helpInfo += "G                     Gui Panel";
+	helpInfo += "\n";
+	helpInfo += "g                     Gui";
+	helpInfo += "\n";
 }
 
 //--------------------------------------------------------------
@@ -62,7 +94,7 @@ void ofxColorsBrowser::buildColors()
 
 	//-
 
-	cardPos = glm::vec2(235, 155);
+	cardPos = glm::vec2(235, 170);
 	cardNum = 0;
 	currColor = 0;
 
@@ -85,7 +117,7 @@ void ofxColorsBrowser::buildColors()
 
 		//-
 
-		string name;
+		std::string name;
 		ofColor c;
 
 		for (int i = 0; i < colors_PantoneNames.size(); i++)
@@ -440,10 +472,10 @@ void ofxColorsBrowser::load_Pantone_JSON()
 		{
 			//ofLogNotice(__FUNCTION__) << "VALUES ["<<i<<"] "<<jsValues<<endl;
 			ofColor c;
-			string colorHEXcode = ofToString(jsValues);
-			vector<string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
-			string myCol = colorHEXcode_VEC[1];
-			vector<string> myCol2 = ofSplitString(myCol, "\"");
+			std::string colorHEXcode = ofToString(jsValues);
+			vector<std::string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
+			std::string myCol = colorHEXcode_VEC[1];
+			vector<std::string> myCol2 = ofSplitString(myCol, "\"");
 			hexToColor(c, myCol2[0]);
 
 			colors_Pantone.push_back(c);
@@ -460,36 +492,53 @@ void ofxColorsBrowser::load_Pantone_JSON()
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup()
 {
+	setPosition(glm::vec2(220, 350));//call before setup
+
+	//--
+
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	font.setup("assets/fonts/Kazesawa-Extrabold.ttf", 1.0, 1024, false, 8, 1.5);
+	std::string _path;
+	_path = "assets/fonts/Kazesawa-Extrabold.ttf";
+	font.setup(_path, 1.0, 1024, false, 8, 1.5);
 	font.setCharacterSpacing(0);
+
+	_path = "assets/fonts/mono.ttf";
+	font2.load(_path, 8, true, true);
 #endif
 
 	//-
 
 	MODE_SORTING_name.setSerializable(false);
-	MODE_COLOR_name.setSerializable(false);
+	LibraryColors_Index_name.setSerializable(false);
 
 	params.setName("ofxColorsBrowser");
 	params.add(LibraryColors_Index);
+	params.add(LibraryColors_Index_name);
 	params.add(MODE_SORTING);
-	params.add(MODE_COLOR_name);
-	params.add(MODE_COLOR_name);
+	params.add(MODE_SORTING_name);
 	params.add(ENABLE_keys);
 
 	//-
 
+	gui.setup("ofxColorsBrowser");
+	gui.add(params);
+	gui.setPosition(ofGetWidth() * 0.5 - 100, 10);
+
+	//-
+
+
 	//--------------------------------------------------------------
 	listener_ModeSorting = MODE_SORTING.newListener([this](int &i) {
 		ofLogNotice("MODE_SORTING: ") << i;
-		//ofLogNotice(__FUNCTION__) << i;
+
+		if (MODE_SORTING == 5) MODE_SORTING = 0;
+		MODE_SORTING = ofClamp(MODE_SORTING, 0, 4);
 
 		if (MODE_SORTING == 0) { ofSort(colors_STRUCT, comparePosition); MODE_SORTING_name = "Original"; }
 		else if (MODE_SORTING == 1) { ofSort(colors_STRUCT, compareName); MODE_SORTING_name = "Name"; }
 		else if (MODE_SORTING == 2) { ofSort(colors_STRUCT, compareHue); MODE_SORTING_name = "Hue"; }
 		else if (MODE_SORTING == 3) { ofSort(colors_STRUCT, compareBrightness); MODE_SORTING_name = "Brightness"; }
 		else if (MODE_SORTING == 4) { ofSort(colors_STRUCT, compareSaturation); MODE_SORTING_name = "Saturation"; }
-		else if (MODE_SORTING == 5) switch_sorted_Type();
 
 		clearInterface();
 		grid_create_boxes();
@@ -501,7 +550,6 @@ void ofxColorsBrowser::setup()
 	//--------------------------------------------------------------
 	listener_Library = LibraryColors_Index.newListener([this](int &i) {
 		ofLogNotice("LibraryColors_Index: ") << i;
-		//ofLogNotice(__FUNCTION__) << i;
 
 		LibraryColors_Index = LibraryColors_Index % 3;
 
@@ -509,17 +557,17 @@ void ofxColorsBrowser::setup()
 		{
 		case OFX_PANTONE_COLORS:
 			ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
-			MODE_COLOR_name = "Pantone";
+			LibraryColors_Index_name = "Pantone";
 			break;
 
 		case OFX_COLOR_NATIVE:
 			ofLogNotice(__FUNCTION__) << "OFX_COLOR_NATIVE";
-			MODE_COLOR_name = "OF Native";
+			LibraryColors_Index_name = "OF Native";
 			break;
 
 		case OFX_OPEN_COLOR:
 			ofLogNotice(__FUNCTION__) << "OFX_OPEN_COLOR";
-			MODE_COLOR_name = "Open Color";
+			LibraryColors_Index_name = "Open Color";
 			break;
 		}
 
@@ -557,18 +605,20 @@ void ofxColorsBrowser::setup()
 	grid_create_boxes();
 #endif	
 
-	//-
+	//-----
 
 	// startup
 
-	setEnableClicks(true);
-	setVisible_debugText(false);
+	if (isVisible()) {
+		setEnableInterfaceClicks(true);
+		setVisibleDebug(true);
+	}
 
 	//currColor = 0;
 	//cardNum = 0;
 	//refresh_Clicks();
 
-	//--
+	ofxSurfingHelpers::loadGroup(params, path_FileSettings);
 }
 
 
@@ -636,255 +686,293 @@ void ofxColorsBrowser::update()
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
-	ofPushMatrix();
-	ofPushStyle();
-
-	//TODO: add more pages...
-
-	//-
-
-	// 1. DRAW ALL THE COLORS NAMES
-
-	int maxLinesThatFitsScreen = 42;
-	bool bColorizeLabel = false;
-	bool bColorizeBg = true;
-
-	int iPadded;
-	int line;
-	int lineBegin;
-	int lineEnd;
-	int maxCards = maxLinesThatFitsScreen / cardSize;
-	int linesPage = cardSize * maxCards;
-	int pageNum;
-
-	pageNum = (int)currColor / linesPage;
-	lineBegin = pageNum * linesPage;
-	lineEnd = lineBegin + linesPage - 1;//-1
-	string str;
-	ofColor c;
-
-	// draw all color names marking the one selected
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	if (SHOW_debugText)
+	if (SHOW_Gui)
 	{
-		for (int i = lineBegin; i <= lineEnd; i++)
-		{
-			line = i;
+		ofPushMatrix();
+		ofPushStyle();
 
-			if (colors_STRUCT.size() > 0)
-				str = colors_STRUCT[line].name;
+		//TODO: add more pages...
 
-			if (pageNum == 0)
-			{
-				iPadded = i;
-			}
-			else
-			{
-				iPadded = i - lineBegin;
-			}
+		//-
 
-			// all marked names
-			float fontSize = 20;
-			float fontMargin = 10;
-			float x = 10;
-			float y = 20 + iPadded * 20;
-			float rectWidth = 200;
-			int margin = 6;
+		// 1. DRAW ALL THE COLORS NAMES
 
-			//-
+		int maxLinesThatFitsScreen = 42;
+		bool bColorizeLabel = false;
+		bool bColorizeBg = true;
 
-			// 1. selected color
-			if (i == currColor)
-			{
-				// rectangle
-				if (!bColorizeBg) ofSetColor(0);//black
-				else ofSetColor(colors_STRUCT[i].color);
-				ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+		int iPadded;
+		int line;
+		int lineBegin;
+		int lineEnd;
+		int maxCards = maxLinesThatFitsScreen / cardSize;
+		int linesPage = cardSize * maxCards;
+		int pageNum;
 
-				// text
+		pageNum = (int)currColor / linesPage;
+		lineBegin = pageNum * linesPage;
+		lineEnd = lineBegin + linesPage - 1;//-1
 
-				if (bColorizeLabel) c = colors_STRUCT[i].color;
-				else c = ofColor::white;
+		std::string str;
+		ofColor c;
 
+		//--
 
-				// A
-				ofSetColor(c);
-				font.draw(
-					str,
-					fontSize,
-					x + margin,
-					y
-				);
-
-				// B
-				//ofDrawBitmapStringHighlight(str, x, y, c, ofColor::black);
-			}
-
-			// 2. all color not selected
-			else
-			{
-				// back light
-				ofSetColor(255);//white
-				ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
-
-				if (bColorizeLabel)
-					c = colors_STRUCT[i].color;
-				else
-					c = ofColor::black;
-
-				//A
-				//ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
-
-				//B
-				ofSetColor(c);
-				font.draw(
-					str,
-					fontSize,
-					x + margin,
-					y
-				);
-			}
-
-			// line to mark first color on each card
-			if (i % cardSize == 0)
-			{
-				int lineSize = 3;
-				int px = x + 2;
-				int py = y - 4;
-				ofSetLineWidth(2.0);
-				ofDrawLine(px, py, px + lineSize, py);
-			}
-		}
-	}
-#endif
-
-	//--
-
-	// 2. MONITOR COLOR SELECTED: name & position in vector
+		// draw all color names marking the one selected
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	if (SHOW_debugText)
-	{
-		int i = 0;
-		int x = position.x + 5;
-		int y = 25;
 
-		ofDrawBitmapStringHighlight("name: " + currName, x, y + (i++) * 20, ofColor::black, ofColor::white);
+		// 1. left lateral list
 
-		string str = "number: " + ofToString(currColor_OriginalPos) + "/" + ofToString(colors_STRUCT.size() - 1);
-		ofDrawBitmapStringHighlight(str, x, y + (i++) * 20, ofColor::black, ofColor::white);
-		ofDrawBitmapStringHighlight("page: " + ofToString(pageNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
-		ofDrawBitmapStringHighlight("cardSize: " + ofToString(cardSize), x, y + (i++) * 20, ofColor::black, ofColor::white);
-		ofDrawBitmapStringHighlight("cardsPerRow: " + ofToString(cardsPerRow), x, y + (i++) * 20, ofColor::black, ofColor::white);
-		ofDrawBitmapStringHighlight("cardNum: " + ofToString(cardNum), x, y + (i++) * 20, ofColor::black, ofColor::white);
-
-	}
-#endif
-
-	//-
-
-	// 3. MONITOR APP MODES
-
-	if (SHOW_ColorsBrowse)
-	{
 		if (SHOW_debugText)
 		{
-			string str;
+			float _x = 10;
+			float _y = 20;
 
-			//-
-
-			str = "LIBRARY: ";
-			switch (LibraryColors_Index)
+			for (int i = lineBegin; i <= lineEnd; i++)
 			{
-			case OFX_PANTONE_COLORS:
-				str += "PANTONE COLORS";
-				break;
-			case OFX_COLOR_NATIVE:
-				str += "OF NATIVE COLORS";
-				break;
-			case OFX_OPEN_COLOR:
-				str += "OPEN COLOR";
-				break;
-			}
-			ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
+				line = i;
 
-			//-
+				if (colors_STRUCT.size() > 0)
+					str = colors_STRUCT[line].name;
 
-			str = "SORTING: ";
-			switch (MODE_SORTING)
-			{
-			case 0:
-				str += "ORIGINAL";
-				break;
-			case 1:
-				str += "NAME";
-				break;
-			case 2:
-				str += "HUE";
-				break;
-			case 3:
-				str += "BRIGHTNESS";
-				break;
-			case 4:
-				str += "SATURATION";
-				break;
-			}
-			ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
+				if (pageNum == 0)
+				{
+					iPadded = i;
+				}
+				else
+				{
+					iPadded = i - lineBegin;
+				}
 
-			//-
+				// all marked names
+				float fontSize = 20;
+				float fontMargin = 10;
+				float x = _x;
+				float y = _y + iPadded * 20;
+				float rectWidth = 200;
+				int margin = 6;
 
-			if (ENABLE_keys)
-			{
-				str = "PALETTES\n";
-				str += "[BACKSPACE] NEXT\n";
-				str += "\n";
-				str += "SORTING\n";
-				str += "[0] ORIGINAL\n";
-				str += "[1] NAME\n";
-				str += "[2] HUE\n";
-				str += "[3] BRIGHTNESS\n";
-				str += "[4] SATURATION\n";
-				str += "[5] NEXT\n";
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-				str += "\n";
-				str += "RECTANGLES\n";
-#endif
-				str += "[D] DEBUG";
-				ofDrawBitmapStringHighlight(str, positionHelper.x, positionHelper.y + 80, ofColor::black, ofColor::white);
+				//-
+
+				// 1. selected color
+				if (i == currColor)
+				{
+					// rectangle
+					if (!bColorizeBg) ofSetColor(0);//black
+					else ofSetColor(colors_STRUCT[i].color);
+					ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
+					// text
+
+					if (bColorizeLabel) c = colors_STRUCT[i].color;
+					else c = ofColor::white;
+
+
+					// A
+					ofSetColor(c);
+					font.draw(
+						str,
+						fontSize,
+						x + margin,
+						y
+					);
+
+					// B
+					//ofDrawBitmapStringHighlight(str, x, y, c, ofColor::black);
+				}
+
+				// 2. all color not selected
+				else
+				{
+					// back light
+					ofSetColor(255);//white
+					ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
+					if (bColorizeLabel) c = colors_STRUCT[i].color;
+					else c = ofColor::black;
+
+					//A
+					//ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
+
+					//B
+					ofSetColor(c);
+					font.draw(
+						str,
+						fontSize,
+						x + margin,
+						y
+					);
+				}
+
+				// line to mark first color on each card
+				if (i % cardSize == 0)
+				{
+					int lineSize = 3;
+					int px = x + 2;
+					int py = y - 4;
+					ofSetLineWidth(2.0);
+					ofDrawLine(px, py, px + lineSize, py);
+				}
 			}
 		}
-
-		//--
-
-		// 4. DRAW COLOR BOXES
-
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-		rectangles_draw();
-		//rectangles with mouse management and draggables..
 #endif
 
 		//--
-	}
 
-	ofPopMatrix();
-	ofPopStyle();
+		// 2. MONITOR COLOR SELECTED: name & position in vector
+
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+		if (SHOW_debugText)
+		{
+			int x = position.x + 5;
+			int y = 10;
+
+			std::string str = "";
+			str += "DEBUG";
+			str += "\n";
+			str += "Color         " + ofToString(currColor_OriginalPos) + "/" + ofToString(colors_STRUCT.size() - 1);
+			str += "\n";
+			str += "Card          " + ofToString(cardNum);
+			str += "\n";
+			str += "Page          " + ofToString(pageNum);
+			str += "\n";
+			str += "Card Size     " + ofToString(cardSize);
+			str += "\n";
+			str += "Cards/Row     " + ofToString(cardsPerRow);
+			//str += "\n";
+
+			ofxSurfingHelpers::drawTextBoxed(font2, str, x, y);
+		}
+#endif
+
+		//--
+
+		// 3. MONITOR APP MODES
+
+		if (SHOW_InterfaceColors)
+		{
+			if (SHOW_debugText)
+			{
+				std::string str1;
+				str1 = "";
+				str1 += "\n";
+
+				str1 += "MONITOR";
+				str1 += "\n";
+
+				//str1 += "\n";
+
+				str1 += "LIBRARY: ";
+
+				//-
+
+				switch (LibraryColors_Index)
+				{
+				case OFX_PANTONE_COLORS:
+					str1 += "PANTONE";
+					break;
+				case OFX_COLOR_NATIVE:
+					str1 += "OF NATIVE";
+					break;
+				case OFX_OPEN_COLOR:
+					str1 += "OPEN COLOR";
+					break;
+				}
+				//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
+
+				//-
+
+				str1 += "\n";
+
+				str1 += "SORTING: ";
+				switch (MODE_SORTING)
+				{
+				case 0:
+					str1 += "ORIGINAL";
+					break;
+				case 1:
+					str1 += "NAME";
+					break;
+				case 2:
+					str1 += "HUE";
+					break;
+				case 3:
+					str1 += "BRIGHTNESS";
+					break;
+				case 4:
+					str1 += "SATURATION";
+					break;
+				}
+				//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
+
+				//-
+
+				str1 += "\n";
+
+				std::string str2 = str1 + helpInfo;
+
+				ofxSurfingHelpers::drawTextBoxed(font2, str2, positionHelper.x, positionHelper.y);
+			}
+
+			//--
+
+			// 4. DRAW COLOR BOXES
+
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+			rectangles_draw();
+			//rectangles with mouse management and draggables..
+#endif
+		//--
+		}
+
+		ofPopMatrix();
+		ofPopStyle();
+
+		//-
+
+		if (bGui) gui.draw();
+	}
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 {
+	const int &key = eventArgs.key;
+	ofLogNotice(__FUNCTION__) << " : " << key;
+
+	if (key == 'K')
+	{
+		setToggleEnableKeys();
+	}
+
+	//-
+
 	if (ENABLE_keys)
 	{
-		const int &key = eventArgs.key;
-		ofLogNotice(__FUNCTION__) << " : " << key;
 
 		//-
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
-	// 0. card selector
+		if (key == 'g')
+		{
+			setToggleVisible();
+		}
 
-		if (key == OF_KEY_RIGHT_SHIFT || key == 'd')//prev card
+		else if (key == 'D')
+		{
+			setToggleVisibleDebug();
+		}
+
+		else if (key == 'G')
+		{
+			bGui = !bGui;
+		}
+
+		// 0. card selector
+
+		else if (key == OF_KEY_RIGHT_SHIFT || key == 'd')//prev card
 		{
 			cardNum++;
 			if (cardSize * cardNum + cardSize > colors_STRUCT.size())
@@ -919,6 +1007,8 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			refresh_Clicks();
 		}
 
+		//-
+
 		else if (key == 'r')//random to one card
 		{
 			cardNum = (int)ofRandom((colors_STRUCT.size()) / cardSize);
@@ -927,7 +1017,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		}
 		//-
 
-		// 1. slelect colors of palette
+		// 1. slelect colors 
 		else if (key == OF_KEY_RIGHT)
 		{
 			currColor++;
@@ -1012,9 +1102,9 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 				MODE_SORTING = 4;
 			}
 		}
-		else if (key == '5' || key == OF_KEY_TAB)
+		else if (key == OF_KEY_TAB)
 		{
-			switch_sorted_Type();
+			nextSortType();
 		}
 
 		//--
@@ -1198,13 +1288,13 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs)
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
-	const int &x = eventArgs.x;
-	const int &y = eventArgs.y;
-	const int &button = eventArgs.button;
-	//ofLogNotice(__FUNCTION__) << "mouseDragged " <<  x << ", " << y << ", " << button;
-
 	if (bShowDebug)
 	{
+		const int &x = eventArgs.x;
+		const int &y = eventArgs.y;
+		const int &button = eventArgs.button;
+		//ofLogNotice(__FUNCTION__) << "mouseDragged " <<  x << ", " << y << ", " << button;
+
 		if (draggingRectPtr != NULL)
 		{
 			draggingRectPtr->setPosition(ofPoint(x, y) - draggingRectPtr->dragOffset);
@@ -1230,18 +1320,18 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs)
 void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-
-	const int &x = eventArgs.x;
-	const int &y = eventArgs.y;
-	const int &button = eventArgs.button;
-	//    ofLogNotice(__FUNCTION__) << "mousePressed " <<  x << ", " << y << ", " << button;
-
-	//-
-
-	// 1. rectangles system
-
 	if (ENABLE_clicks)
 	{
+		const int &x = eventArgs.x;
+		const int &y = eventArgs.y;
+		const int &button = eventArgs.button;
+
+		//ofLogNotice(__FUNCTION__) << "mousePressed " <<  x << ", " << y << ", " << button;
+
+		//-
+
+		// 1. rectangles system
+
 		dragStart = glm::vec2(x, y);  // set a new drag start point
 
 		// SHORTCUT MODE
@@ -1318,14 +1408,14 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 						// 3. update browsing grid
 
 						currColor = i;
-						ofLogNotice("ofxColorsBrowser:mousePressed") << "currColor [" << currColor << "]";
+						ofLogNotice(__FUNCTION__) << "currColor [" << currColor << "]";
 
 						currName = colors_STRUCT[currColor].name;
-						ofLogNotice("ofxColorsBrowser:mousePressed") << "currName [" << currName << "]";
+						ofLogNotice(__FUNCTION__) << "currName [" << currName << "]";
 
 						currColor_OriginalPos = colors_STRUCT[currColor].position;
-						ofLogNotice("ofxColorsBrowser:mousePressed") << "originalPos[" << currColor_OriginalPos
-							<< "]";
+						ofLogNotice(__FUNCTION__) << "originalPos[" << currColor_OriginalPos << "]";
+
 						//-
 
 						// 4. update selected card
@@ -1404,14 +1494,14 @@ void ofxColorsBrowser::refresh_Clicks()//over rectangles
 void ofxColorsBrowser::mouseReleased(ofMouseEventArgs &eventArgs)
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-
-	const int &x = eventArgs.x;
-	const int &y = eventArgs.y;
-	const int &button = eventArgs.button;
-	//    ofLogNotice(__FUNCTION__) << "mouseReleased " <<  x << ", " << y << ", " << button;
-
 	if (ENABLE_clicks)
 	{
+
+		const int &x = eventArgs.x;
+		const int &y = eventArgs.y;
+		const int &button = eventArgs.button;
+		//ofLogNotice(__FUNCTION__) << "mouseReleased " <<  x << ", " << y << ", " << button;
+
 		draggingRectPtr = nullptr;
 		isSelecting = false;
 	}
@@ -1445,8 +1535,10 @@ void ofxColorsBrowser::exit()
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	removeKeysListeners();
 	removeMouseListeners();
-	//setEnableClicks(false);
+
+	//setEnableInterfaceClicks(false);
 #endif
+	ofxSurfingHelpers::saveGroup(params, path_FileSettings);
 }
 
 //--------------------------------------------------------------
@@ -1458,10 +1550,9 @@ ofxColorsBrowser::~ofxColorsBrowser()
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
 {
-	//    color_BACK = c;
+	//color_BACK = c;
 	color_BACK_OFAPP = &c;
 }
-
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setPosition(glm::vec2 p)
@@ -1482,13 +1573,6 @@ void ofxColorsBrowser::setRowsSize(int rows)
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setVisible(bool b)
-{
-	SHOW_ColorsBrowse = b;
-	setEnableClicks(b);
-}
-
-//--------------------------------------------------------------
 void ofxColorsBrowser::switch_palette_Type()
 {
 	LibraryColors_Index = (LibraryColors_Index + 1) % 2;
@@ -1502,37 +1586,9 @@ void ofxColorsBrowser::switch_palette_Type()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::switch_sorted_Type()
+void ofxColorsBrowser::nextSortType()
 {
 	MODE_SORTING++;
-	MODE_SORTING = MODE_SORTING % 5;
-
-	ofLogNotice(__FUNCTION__) << MODE_SORTING;
-
-	switch (MODE_SORTING)
-	{
-	case 0:
-		ofSort(colors_STRUCT, comparePosition);
-		break;
-	case 1:
-		ofSort(colors_STRUCT, compareName);
-		break;
-	case 2:
-		ofSort(colors_STRUCT, compareHue);
-		break;
-	case 3:
-		ofSort(colors_STRUCT, compareBrightness);
-		break;
-	case 4:
-		ofSort(colors_STRUCT, compareSaturation);
-		break;
-	}
-
-	if (MODE_SORTING >= 0 && MODE_SORTING <= 4)
-	{
-		clearInterface();
-		grid_create_boxes();
-	}
 }
 
 //--------------------------------------------------------------
@@ -1657,12 +1713,12 @@ void ofxColorsBrowser::rectangles_draw()
 
 	//ofPoint mouse(ofGetMouseX(), ofGetMouseY());
 
-	if (bShowDebug)
-	{
-		ofFill();
-		ofSetColor(255, showKeyboardCommands ? 255 : 127);
-		ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12, 16);
-	}
+	//if (bShowDebug)
+	//{
+	//	ofFill();
+	//	ofSetColor(255, showKeyboardCommands ? 255 : 127);
+	//	ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12, 16);
+	//}
 
 	//--
 
@@ -1788,7 +1844,7 @@ void ofxColorsBrowser::rectangles_draw()
 				ofColor c = 0;//black
 				ofSetColor(c);
 
-				string str;
+				std::string str;
 				if (LibraryColors_Index == OFX_PANTONE_COLORS)
 					str += "PANTONE\n";
 				str += colors_STRUCT[iPad].name;
@@ -1859,7 +1915,7 @@ void ofxColorsBrowser::rectangles_draw()
 		ss << "p: pack rectangles" << endl;
 		keyboardCommands = ss.str();
 
-		string hAlignString = "";
+		std::string hAlignString = "";
 		switch (hAlign)
 		{
 		case OF_ALIGN_HORZ_LEFT:
@@ -1879,7 +1935,7 @@ void ofxColorsBrowser::rectangles_draw()
 			break;
 		}
 
-		string vAlignString = "";
+		std::string vAlignString = "";
 		switch (vAlign)
 		{
 		case OF_ALIGN_VERT_TOP:
@@ -1964,7 +2020,24 @@ vector<std::string> ofxColorsBrowser::getNames()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setVisible_debugText(bool b)
+void ofxColorsBrowser::setVisible(bool b)
+{
+	ofLogNotice(__FUNCTION__) << "SHOW_Gui: " << SHOW_Gui;
+
+	SHOW_Gui = b;
+
+	SHOW_InterfaceColors = b;
+
+	setEnableInterfaceClicks(b);
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setVisibleDebug(bool b)
 {
 	SHOW_debugText = b;
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setToggleVisibleDebug()
+{
+	SHOW_debugText = !SHOW_debugText;
 }

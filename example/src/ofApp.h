@@ -1,19 +1,26 @@
 #pragma once
-
 #include "ofMain.h"
+
 #include "ofxColorsBrowser.h"
+
+/*
+
+NOTE
+
+To run this example out-of-the-box, you must uncomment the line:
+#define USE_OFX_COLOR_BROWSER_INTERFACE
+from ofxColorsBrowser.h
+
+*/
 
 class ofApp: public ofBaseApp{
 public:
     void setup();
     void update();
     void draw();
-    void exit();
     void keyPressed(int key);
+    void windowResized(int w, int h);
 
-    ofxColorsBrowser ColorBrowser;
+    ofxColorsBrowser colorBrowser;
     ofFloatColor color_BACK;
-
-    bool SHOW_ColorBrowser = true;
-    bool ENABLE_ColorBrowser_Keys = true;
 };

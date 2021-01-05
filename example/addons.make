@@ -1,5 +1,7 @@
+ofxGui
 ofxColorsBrowser
 ofxFontStash
 ofxInterface
 ofxOpenColor
 ofxRectangleUtils
+ofxSurfingHelpers

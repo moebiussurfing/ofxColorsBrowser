@@ -2,62 +2,33 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
-    ofBackground(64);
-    ofSetFrameRate(30);
+    ofSetFrameRate(60);
     
-//    ColorBrowser.setBoxSize(15);
-//    ColorBrowser.setRowsSize(7*8);
-    
-    ColorBrowser.setup_colorBACK(color_BACK);
+    colorBrowser.setup_colorBACK(color_BACK);// set local target color receiver
 
-    ColorBrowser.setPosition(glm::vec2(220, 325));
-    ColorBrowser.setPositionHelper(glm::vec2(ofGetWidth()-220, 0));
+    colorBrowser.setup();
 
-    ColorBrowser.setup();
-
-    ColorBrowser.setVisible(SHOW_ColorBrowser);
-    ColorBrowser.setVisible_debugText(SHOW_ColorBrowser);
+    colorBrowser.setVisible(true);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	ColorBrowser.update();
+	colorBrowser.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofBackground( ofColor( color_BACK ));
-	ColorBrowser.draw();
-}
+    ofBackground( ofColor( color_BACK ));// auto updated when changes
 
-//--------------------------------------------------------------
-void ofApp::exit(){
-	ColorBrowser.exit();
+	colorBrowser.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+}
 
-//    if (key == 'p')
-//        ColorBrowser.switch_palette_Type();
-//
-//    if (key == 's')
-//        ColorBrowser.switch_sorted_Type();
-
-    if (key == 'g')
-    {
-        SHOW_ColorBrowser =!SHOW_ColorBrowser;
-
-        ColorBrowser.setVisible(SHOW_ColorBrowser);
-        ColorBrowser.setVisible_debugText(SHOW_ColorBrowser);
-    }
-
-    if (key == 'k')
-    {
-        ENABLE_ColorBrowser_Keys = !ENABLE_ColorBrowser_Keys;
-        ColorBrowser.set_ENABLE_keys(ENABLE_ColorBrowser_Keys);
-    }
-
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h) {
+	colorBrowser.setPositionHelper(glm::vec2(ofGetWidth() - 350, 10));
 }
 
