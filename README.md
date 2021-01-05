@@ -50,9 +50,9 @@ ofApp::draw(){
  * ofxSurfingHelpers
 
  Already included into ```/libs```:  
-* ofxOpenColor (*from @pd-andy*)
+* ofxOpenColor ( *from @pd-andy* )  
 https://github.com/pd-andy/ofxOpenColor
-* ofxRectangleUtils (*from @bakercp*)
+* ofxRectangleUtils ( *from @bakercp* )  
 https://github.com/bakercp/ofxRectangleUtils
 
 ## Tested systems
