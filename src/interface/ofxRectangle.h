@@ -1,3 +1,5 @@
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+
 //
 // Copyright (c) 2009 Christopher Baker <https://christopherbaker.net>
 //
@@ -7,9 +9,7 @@
 
 #pragma once
 
-
 #include "ofMain.h"
-
 
 class ofxRectangle: public ofRectangle
 {
@@ -231,3 +231,5 @@ public:
         bShowdebug = b;
     }
 };
+
+#endif

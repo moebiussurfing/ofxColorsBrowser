@@ -1,3 +1,4 @@
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
 #include "ColorRectangle.h"
 
@@ -108,4 +109,4 @@
 //         colorBACK = &c;
 //     }
 
-
+#endif

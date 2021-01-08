@@ -1,3 +1,5 @@
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+
 //
 //  Color_BitmapTextButton.h
 //  AnimationBreaker
@@ -69,3 +71,5 @@ namespace ofxInterface
 }	// namespace
 
 #endif /* defined(__ofxUINode__Color_BitmapTextButton__) */
+
+#endif

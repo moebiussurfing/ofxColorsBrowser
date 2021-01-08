@@ -1,3 +1,4 @@
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
 #include "Color_BitmapTextButton.h"
 
@@ -113,4 +114,4 @@ namespace ofxInterface
 
 } 	// namespace
 
-
+#endif

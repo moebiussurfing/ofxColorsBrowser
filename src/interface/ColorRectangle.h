@@ -1,3 +1,5 @@
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+
 #ifndef __ofxInterface__ColorRectangle__
 #define __ofxInterface__ColorRectangle__
 
@@ -53,3 +55,5 @@
     };
 
 #endif /* defined(__ofxUINode__ColorRectangle__) */
+
+#endif

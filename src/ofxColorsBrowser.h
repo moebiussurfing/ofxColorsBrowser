@@ -6,7 +6,7 @@
 
 //	OPTIONAL
 
-#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
+//#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
 
 //----
 
