@@ -2,21 +2,22 @@ ofxColorsBrowser
 =============================
 
 # Overview
-**ofxColorsBrowser** is an **openFrameworks** addon to browse big color libraries.
+**ofxColorsBrowser** is an **openFrameworks** addon to browse color libraries.
 
 ## Screenshot
 ![image](/readme_images/Capture.PNG?raw=true "image")
 
 ## Features
 * Three included libraries.
-  * Pantone (>2000 colors from a JSON file).
+  * Pantone (+2000 colors from a JSON file).
   * Open Color.
   * OF Native named colors
-* Gui with clickable colored boxes. 
+* Gui with clickable colored and named boxes. 
   * Can be completely disabled to simplify. (Having access to the raw colors)
 * Key commands
 * Basic parameters and app modes.
 * Store/Recall settings.
+* Technically updatable with other libraries (JSON, XML, or other libs/addons).
 
 ## Usage
  
@@ -45,15 +46,17 @@ ofApp::draw(){
 ```
 
 ## Dependencies
- * ofxFontStash
- * ofxGui
- * ofxSurfingHelpers
+* ofxGui
+* ofxSurfingHelpers
 
- Already included into ```/libs```:  
+*Not required when interface is disabled:*  
+* ofxRectangleUtils ( *from @bakercp* )  
+https://github.com/bakercp/ofxRectangleUtils  
+* ofxFontStash  
+
+Already included into ```/libs```:  
 * ofxOpenColor ( *from @pd-andy* )  
 https://github.com/pd-andy/ofxOpenColor
-* ofxRectangleUtils ( *from @bakercp* )  
-https://github.com/bakercp/ofxRectangleUtils
 
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**

@@ -1,11 +1,15 @@
 #pragma once
 #include "ofMain.h"
 
+
 //----
+
+//	OPTIONAL
 
 #define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
 
 //----
+
 
 #include "ofxOpenColor.h"
 #include "ofxSurfingHelpers.h"
@@ -184,6 +188,12 @@ public:
 	int getSize();
 	int getLibIndex() {
 		return LibraryColors_Index.get();
+	}
+	int getSizeCards() {
+		return cardSize.get();
+	}
+	std::string getNameLib() {
+		return LibraryColors_Index_name.get();
 	}
 
 public:

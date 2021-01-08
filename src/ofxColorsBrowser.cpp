@@ -106,7 +106,7 @@ void ofxColorsBrowser::buildColors()
 	{
 		ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
 
-		// dessired distribution for this palette
+		//ideal card size and layout
 		cardSize = 7;
 		cardsPerRow = 10;
 		boxSize = 15;
