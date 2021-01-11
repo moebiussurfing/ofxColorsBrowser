@@ -9,7 +9,7 @@ NOTE
 
 To run this example out-of-the-box, you must uncomment the line:
 #define USE_OFX_COLOR_BROWSER_INTERFACE
-from ofxColorsBrowser.h
+into ofxColorsBrowser.h
 
 */
 

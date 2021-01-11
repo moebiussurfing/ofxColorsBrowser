@@ -6,7 +6,8 @@
 
 //	OPTIONAL
 
-//#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
+//uncomment to run the bundled example!
+#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
 
 //----
 
