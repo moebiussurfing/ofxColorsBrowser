@@ -15,8 +15,8 @@
 # and the PG will write to the console the kind of error and in which line it is
 
 meta:
-	ADDON_NAME = ofxAddonTemplate
-	ADDON_DESCRIPTION = ofxAddonTemplate is amazing!
+	ADDON_NAME = ofxColorsBrowser
+	ADDON_DESCRIPTION = openFrameworks addon to handle big color libraries including a +2000 colors Pantone library.
 	ADDON_AUTHOR = @moebiussurfing
 	ADDON_TAGS = "addon" "template"
 	ADDON_URL = http://github.com/moebiussurfing/ofxAddonTemplate
