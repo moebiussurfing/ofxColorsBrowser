@@ -42,6 +42,7 @@ enum
 {
 	OFX_PANTONE_COLORS,
 	OFX_COLOR_NATIVE,
+	OFX_MATERIAL_COLOR,
 	OFX_OPEN_COLOR
 };
 
@@ -85,6 +86,7 @@ public:
 	// API
 
 	void load_Pantone_JSON();
+	void load_Material_JSON();
 
 	void setPosition(glm::vec2 p);
 	void setPositionHelper(glm::vec2 p)
@@ -199,20 +201,26 @@ public:
 
 public:
 	vector<std::string> colors_PantoneNames;
-
+	vector<std::string> colors_MaterialNames;
+	vector<string> tagsMaterial { 
+		"50", "100", "200", "300", "400", "500",
+		"600", "700", "800", "900", 
+		"a100", "a200", "a400", "a700" };
+	
 	//--
 
 private:
 
 	// path for json colors file
 	std::string path_Global;
-	std::string path_File;
+	std::string path_FilePantone;
+	std::string path_FileMaterial;
 	std::string path_FileSettings;
 
 	//-
 
 private:
-
+	// grid layout
 	ofParameter<float> boxSize{ "BOX SIZE", 15, 10, 100 };//boxes
 	ofParameter<float> boxPad{ "PAD", 1, 0, 10 };
 	ofParameter<int> cardSize{ "CARD SIZE", 7, 2, 100 };// minimal card of colors
@@ -243,10 +251,11 @@ public:
 private:
 	ofJson js;
 	vector<ofColor> colors_Pantone;
+	vector<ofColor> colors_Material;
 
 	//-
 
-	// RECTANGLE MANAGER SYSTEM - OFXRECTANGLE
+	// rectangle manager system - ofxRectangle
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	//draggable, sortable, align...
@@ -352,9 +361,9 @@ private:
 
 public:
 
-	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN
+	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN, 3:OFX_MATERIAL
 
-	ofParameter<int> LibraryColors_Index{ "Library", 0, 0, 2 };
+	ofParameter<int> LibraryColors_Index{ "Library", 0, 0, 3 };
 	ofParameter<std::string> LibraryColors_Index_name{ " ", "" };
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT

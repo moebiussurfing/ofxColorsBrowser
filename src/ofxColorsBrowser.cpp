@@ -46,7 +46,8 @@ ofxColorsBrowser::ofxColorsBrowser()
 	//-
 
 	path_Global = "ofxColorsBrowser/";
-	path_File = path_Global + "pantone-colors.json";
+	path_FilePantone = path_Global + "pantone-colors.json";
+	path_FileMaterial = path_Global + "material-colors.json";
 	path_FileSettings = path_Global + "AppSettings.xml";
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
@@ -452,7 +453,7 @@ void ofxColorsBrowser::load_Pantone_JSON()
 	colors_PantoneNames.clear();
 	colors_Pantone.clear();
 
-	ofFile file(path_File);
+	ofFile file(path_FilePantone);
 	if (file.exists())
 	{
 		file >> js;
@@ -484,10 +485,69 @@ void ofxColorsBrowser::load_Pantone_JSON()
 	}
 	else
 	{
-		ofLogNotice(__FUNCTION__) << "FILE '" << path_File << "' NOT FOUND!";
+		ofLogNotice(__FUNCTION__) << "FILE '" << path_FilePantone << "' NOT FOUND!";
 	}
 }
 
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::load_Material_JSON()
+{
+	ofLogNotice(__FUNCTION__);
+
+	colors_MaterialNames.clear();
+	colors_Material.clear();
+
+	ofFile file(path_FileMaterial);
+	if (file.exists())
+	{
+		file >> js;
+		ofLogNotice(__FUNCTION__) << js;
+
+		int i = 0;
+		for (auto &jp : js)
+		{
+			//TODO: parse palette colors json...
+
+			ofLogNotice(__FUNCTION__) << "----------------------\n" << "SUB-PALETTE  [" << i << "] " << jp;
+			//ofLogNotice(__FUNCTION__) << ofToString(jp[i]); jp.get(i);
+			ofLogNotice(__FUNCTION__) << jp[i];
+
+			int c = 0;
+			for (auto &jc : jp)
+			{
+				ofLogNotice(__FUNCTION__) << "COLOR  [" << i << "] " << jc;// << " " << jp[i];
+
+				for (auto &jt : jc)
+				{
+					colors_MaterialNames.push_back(tagsMaterial[c]);
+					ofLogNotice(__FUNCTION__) << "Name:" << ofToString(tagsMaterial[c]) << " Hex:" << ofToString(jc);
+				}
+
+				//colors_MaterialNames.push_back(jsName);
+				c++;
+			}
+
+			//i = 0;
+			//for (auto &jsValues : js["values"])
+			//{
+			//	//ofLogNotice(__FUNCTION__) << "VALUES ["<<i<<"] "<<jsValues<<endl;
+			//	ofColor c;
+			//	std::string colorHEXcode = ofToString(jsValues);
+			//	vector<std::string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
+			//	std::string myCol = colorHEXcode_VEC[1];
+			//	vector<std::string> myCol2 = ofSplitString(myCol, "\"");
+			//	hexToColor(c, myCol2[0]);
+
+			//	colors_Pantone.push_back(c);
+			i++;
+		}
+	}
+	else
+	{
+		ofLogNotice(__FUNCTION__) << "FILE '" << path_FileMaterial << "' NOT FOUND!";
+	}
+}
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup()
@@ -569,6 +629,11 @@ void ofxColorsBrowser::setup()
 			ofLogNotice(__FUNCTION__) << "OFX_OPEN_COLOR";
 			LibraryColors_Index_name = "Open Color";
 			break;
+
+		case OFX_MATERIAL_COLOR:
+			ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
+			LibraryColors_Index_name = "Material Color";
+			break;
 		}
 
 		//-
@@ -585,6 +650,9 @@ void ofxColorsBrowser::setup()
 
 	// pantone colors
 	load_Pantone_JSON();
+
+	// material colors
+	load_Material_JSON();
 
 	//--
 
