@@ -54,7 +54,7 @@ ofApp::draw(){
 * [ofxFontStash](https://github.com/armadillu/ofxFontStash)  
 
 Already included into ```/libs```:  
-* ofxOpenColor (https://github.com/pd-andy/ofxOpenColor)  
+* [ofxOpenColor](https://github.com/pd-andy/ofxOpenColor)  
  
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**
@@ -64,7 +64,7 @@ Already included into ```/libs```:
 Addon by **@moebiusSurfing**  
 *(ManuMolina). 2020.*  
 
-Thanks to *@bakercp* adn *@pd-andy* for their repositories.  
+Thanks to **@bakercp** and **@pd-andy** for their repositories.  
 
 ## License
 *MIT License.*
