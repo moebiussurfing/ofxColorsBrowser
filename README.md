@@ -2,22 +2,23 @@ ofxColorsBrowser
 =============================
 
 # Overview
-**ofxColorsBrowser** is an **openFrameworks** addon to browse color libraries.
+**ofxColorsBrowser** is an **openFrameworks** addon to browse color libraries and help integration to your OF app.
 
 ## Screenshot
 ![image](/readme_images/Capture.PNG?raw=true "image")
 
 ## Features
-* Three included libraries.
+* Three included color libraries.
   * **Pantone** (+2000 colors from a JSON file).
   * **Open Color**.
   * **OF Native** named colors
 * **GUI** with clickable colored and named boxes. 
-  * Can be completely disabled to simplify. (But still having access to the colors)
-* Key commands and *ofxGui* panel.
+  * Interface can be completely disabled to simplify. (But still having access to the colors)
+* Key commands and **ofxGui** panel.
 * Basic parameters and app modes.
-* Store/Recall settings.
-* Technically updatable with other libraries (JSON, XML, or other libs/addons).
+* Sort by hue, name, original...
+* Store / Recall settings.
+* Technically updatable with other libraries (JSON, XML, or other colors libs/addons).
 
 ## Usage
  
@@ -64,7 +65,7 @@ Already included into ```/libs```:
 Addon by **@moebiusSurfing**  
 *(ManuMolina). 2020.*  
 
-Thanks to **@bakercp** and **@pd-andy** for their repositories.  
+Thanks to **@bakercp**, **@armadillu** and **@pd-andy** for their repositories.  
 
 ## License
 *MIT License.*
