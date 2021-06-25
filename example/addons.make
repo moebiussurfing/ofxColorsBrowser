@@ -1,6 +1,7 @@
+ofxAnimatable
 ofxColorsBrowser
 ofxFontStash
+ofxFontStash2
 ofxGui
-ofxInterface
 ofxRectangleUtils
 ofxSurfingHelpers

@@ -41,7 +41,6 @@ enum
 enum
 {
 	OFX_PANTONE_COLORS,
-	OFX_SANZOWADA_COLORS,
 	OFX_COLOR_NATIVE,
 	OFX_MATERIAL_COLOR,
 	OFX_OPEN_COLOR
@@ -81,25 +80,20 @@ public:
 	void update();
 	void draw();
 	void exit();
-	void windowResized(int w, int h);
 
 	//----
 
 	// API
 
 	void load_Pantone_JSON();
-	void load_SanzoWadaDictionary_JSON();
 	void load_Material_JSON();
 
 	void setPosition(glm::vec2 p);
-
-private:
 	void setPositionHelper(glm::vec2 p)
 	{
 		positionHelper = p;
 	};
 
-public:
 	void switch_palette_Type();
 	void nextSortType();
 	void set_palette_Type(int p);
@@ -220,7 +214,6 @@ private:
 	// path for json colors file
 	std::string path_Global;
 	std::string path_FilePantone;
-	std::string path_FileSanzoWada;
 	std::string path_FileMaterial;
 	std::string path_FileSettings;
 
@@ -259,11 +252,6 @@ private:
 	ofJson js;
 	vector<ofColor> colors_Pantone;
 	vector<ofColor> colors_Material;
-
-	// snazo wada
-	ofJson jSanzoWada;
-	vector<ofColor> colors_SanzoWada;
-	vector<std::string> colorsNames_SanzoWada;
 
 	//-
 
@@ -375,7 +363,7 @@ public:
 
 	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN, 3:OFX_MATERIAL
 
-	ofParameter<int> LibraryColors_Index{ "Library", 0, 0, 4 };
+	ofParameter<int> LibraryColors_Index{ "Library", 0, 0, 3 };
 	ofParameter<std::string> LibraryColors_Index_name{ " ", "" };
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT

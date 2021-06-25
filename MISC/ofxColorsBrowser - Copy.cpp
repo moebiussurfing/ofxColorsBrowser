@@ -31,11 +31,6 @@ bool comparePosition(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s
 //----
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::windowResized(int w, int h) {
-	//setPositionHelper(glm::vec2(ofGetWidth() - 400, 0));
-}
-
-//--------------------------------------------------------------
 ofxColorsBrowser::ofxColorsBrowser()
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
@@ -52,7 +47,6 @@ ofxColorsBrowser::ofxColorsBrowser()
 
 	path_Global = "ofxColorsBrowser/";
 	path_FilePantone = path_Global + "pantone-colors.json";
-	path_FileSanzoWada = path_Global + "SANZO_WADA_Library.json";
 	path_FileMaterial = path_Global + "material-colors.json";
 	path_FileSettings = path_Global + "AppSettings.xml";
 
@@ -69,7 +63,7 @@ ofxColorsBrowser::ofxColorsBrowser()
 	helpInfo += "\n";
 	helpInfo += "Up Down Left Right    Browse Colors";
 	helpInfo += "\n";
-	helpInfo += "a d w s               Browse Cards";
+	helpInfo += "a d w s		       Browse Cards";
 	helpInfo += "\n";
 	helpInfo += "r                     Random Card";
 	helpInfo += "\n";
@@ -131,51 +125,6 @@ void ofxColorsBrowser::buildColors()
 		{
 			name = colors_PantoneNames[i];
 			c = colors_Pantone[i];
-
-			// 1. names map
-			colorNameMap[name] = c;
-
-			// 2. struct
-			colorMapping_STRUCT myColor;
-			myColor.name = name;
-			myColor.color = c;
-			myColor.position = i;
-
-			// 3. add color to vector
-			colors_STRUCT.push_back(myColor);
-		}
-		ofLogNotice(__FUNCTION__);
-	}
-
-	//--
-
-	// OFX_SANZOWADA_COLORS
-
-	else if (LibraryColors_Index == OFX_SANZOWADA_COLORS)
-	{
-		ofLogNotice(__FUNCTION__) << "OFX_SANZOWADA_COLORS";
-
-		//ideal card size and layout
-		cardSize = 1;
-		cardsPerRow = 25;
-		//cardsPerRow = 10;
-		boxSize = 45;
-		//boxSize = 15;
-		boxPad = 0.5;
-
-		cardColor_size = 100;
-		//cardColor_size = 100;
-		cardColor_pad = 20;
-
-		//-
-
-		std::string name;
-		ofColor c;
-
-		for (int i = 0; i < colorsNames_SanzoWada.size(); i++)
-		{
-			name = colorsNames_SanzoWada[i];
-			c = colors_SanzoWada[i];
 
 			// 1. names map
 			colorNameMap[name] = c;
@@ -542,40 +491,6 @@ void ofxColorsBrowser::load_Pantone_JSON()
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::load_SanzoWadaDictionary_JSON()
-{
-	ofLogNotice(__FUNCTION__);
-
-	colors_SanzoWada.clear();
-	colorsNames_SanzoWada.clear();
-
-	ofFile file(path_FileSanzoWada);
-	if (file.exists())
-	{
-		file >> jSanzoWada;
-		ofLogNotice(__FUNCTION__) << jSanzoWada;
-		ofLogNotice(__FUNCTION__) << endl;
-
-		for (auto &jc : jSanzoWada)
-		{
-			string _name = jc["name"];
-			string _hex = jc["hex"];
-
-			colorsNames_SanzoWada.push_back(_name);
-
-			ofStringReplace(_hex, "#", "");
-			ofColor c;
-			hexToColor(c, _hex);
-			colors_SanzoWada.push_back(c);
-		}
-	}
-	else
-	{
-		ofLogNotice(__FUNCTION__) << "FILE '" << path_FilePantone << "' NOT FOUND!";
-	}
-}
-
-//--------------------------------------------------------------
 void ofxColorsBrowser::load_Material_JSON()
 {
 	ofLogNotice(__FUNCTION__);
@@ -647,13 +562,8 @@ void ofxColorsBrowser::setup()
 	font.setup(_path, 1.0, 1024, false, 8, 1.5);
 	font.setCharacterSpacing(0);
 
-	//_path = "assets/fonts/mono.ttf";
-	//font2.load(_path, 10, true, true);
-
-	_path = "assets/fonts/overpass-mono-bold.otf";
-	//_path = "assets/fonts/telegrama_render.otf";
-	font2.load(_path, 8, true, true, true);
-	// if font not present will draw rectangle box with a default font
+	_path = "assets/fonts/mono.ttf";
+	font2.load(_path, 8, true, true);
 #endif
 
 	//-
@@ -676,6 +586,7 @@ void ofxColorsBrowser::setup()
 
 	//-
 
+
 	//--------------------------------------------------------------
 	listener_ModeSorting = MODE_SORTING.newListener([this](int &i) {
 		ofLogNotice("MODE_SORTING: ") << i;
@@ -692,7 +603,7 @@ void ofxColorsBrowser::setup()
 		clearInterface();
 		grid_create_boxes();
 
-	});
+		});
 
 	//-
 
@@ -707,11 +618,6 @@ void ofxColorsBrowser::setup()
 		case OFX_PANTONE_COLORS:
 			ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
 			LibraryColors_Index_name = "Pantone";
-			break;
-
-		case OFX_SANZOWADA_COLORS:
-			ofLogNotice(__FUNCTION__) << "OFX_SANZOWADA_COLORS";
-			LibraryColors_Index_name = "Sanzo Wada Dictionary";
 			break;
 
 		case OFX_COLOR_NATIVE:
@@ -738,7 +644,7 @@ void ofxColorsBrowser::setup()
 
 		grid_create_boxes();
 
-	});
+		});
 
 	//----
 
@@ -746,9 +652,7 @@ void ofxColorsBrowser::setup()
 	load_Pantone_JSON();
 
 	// material colors
-	//load_Material_JSON(); // -> crashes
-
-	load_SanzoWadaDictionary_JSON();
+	load_Material_JSON();
 
 	//--
 
@@ -884,9 +788,6 @@ void ofxColorsBrowser::draw()
 
 		// draw all color names marking the one selected
 
-		//TODO:
-		if (colors_STRUCT.size() == 0) return;
-
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
 		// 1. left lateral list
@@ -898,12 +799,10 @@ void ofxColorsBrowser::draw()
 
 			for (int i = lineBegin; i <= lineEnd; i++)
 			{
-				//i = ofClamp(i, 0, colors_STRUCT.size() - 1);
 				line = i;
 
-				if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size())
+				if (colors_STRUCT.size() > 0)
 					str = colors_STRUCT[line].name;
-				else str = "";
 
 				if (pageNum == 0)
 				{
@@ -975,7 +874,7 @@ void ofxColorsBrowser::draw()
 				}
 
 				// line to mark first color on each card
-				if (i % cardSize == 0 && i < colors_STRUCT.size())
+				if (i % cardSize == 0)
 				{
 					int lineSize = 3;
 					int px = x + 2;
@@ -994,6 +893,9 @@ void ofxColorsBrowser::draw()
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 		if (SHOW_debugText)
 		{
+			int x = position.x + 5;
+			int y = 10;
+
 			std::string str = "";
 			str += "DEBUG";
 			str += "\n";
@@ -1008,12 +910,7 @@ void ofxColorsBrowser::draw()
 			str += "Cards/Row     " + ofToString(cardsPerRow);
 			//str += "\n";
 
-			//float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str));
-			int x = position.x + 5;
-			int y = 5;
-
-			ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str), x, y,
-				ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
+			ofxSurfingHelpers::drawTextBoxed(font2, str, x, y);
 		}
 #endif
 
@@ -1042,9 +939,6 @@ void ofxColorsBrowser::draw()
 				{
 				case OFX_PANTONE_COLORS:
 					str1 += "PANTONE";
-					break;
-				case OFX_SANZOWADA_COLORS:
-					str1 += "Sanzo Wada Dictionary";
 					break;
 				case OFX_COLOR_NATIVE:
 					str1 += "OF NATIVE";
@@ -1086,11 +980,7 @@ void ofxColorsBrowser::draw()
 
 				std::string str2 = str1 + helpInfo;
 
-				float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str2)) + 10;
-				setPositionHelper(glm::vec2(ofGetWidth() - w, 5));
-
-				ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str2), positionHelper.x, positionHelper.y,
-					ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
+				ofxSurfingHelpers::drawTextBoxed(font2, str2, positionHelper.x, positionHelper.y);
 			}
 
 			//--
@@ -1753,12 +1643,7 @@ void ofxColorsBrowser::setRowsSize(int rows)
 //--------------------------------------------------------------
 void ofxColorsBrowser::switch_palette_Type()
 {
-	//LibraryColors_Index = (LibraryColors_Index + 1) % 2;
-
-
-	LibraryColors_Index = (LibraryColors_Index + 1);
-	LibraryColors_Index = ofClamp(LibraryColors_Index, LibraryColors_Index.getMin(), LibraryColors_Index.getMax());
-
+	LibraryColors_Index = (LibraryColors_Index + 1) % 2;
 	ofLogNotice(__FUNCTION__) << LibraryColors_Index;
 
 	clearInterface();
@@ -1961,87 +1846,84 @@ void ofxColorsBrowser::rectangles_draw()
 			for (int i = 0; i < cardSize; i++)
 			{
 				int iPad = i + colorBegin;
-				if (iPad < colors_STRUCT.size())
-				{
-					ofSetColor(colors_STRUCT[iPad].color);
-					ofFill();
+				ofSetColor(colors_STRUCT[iPad].color);
+				ofFill();
 
-					// 2.1 color box
+				// 2.1 color box
 
-					//ofDrawRectangle(
-					//    cardPos.x + i * (cardColor_size + cardColor_pad),
-					//    cardPos.y,
-					//    cardColor_size,
-					//    cardColor_size);
+				//ofDrawRectangle(
+				//    cardPos.x + i * (cardColor_size + cardColor_pad),
+				//    cardPos.y,
+				//    cardColor_size,
+				//    cardColor_size);
 
-					ofDrawRectRounded(
-						glm::vec2(
-							cardPos.x + i * (cardColor_size + cardColor_pad),
-							cardPos.y),
-						cardColor_size,
-						cardColor_size,
-						2.5,
-						2.5,
-						0.0,
-						0.0
-					);
+				ofDrawRectRounded(
+					glm::vec2(
+						cardPos.x + i * (cardColor_size + cardColor_pad),
+						cardPos.y),
+					cardColor_size,
+					cardColor_size,
+					2.5,
+					2.5,
+					0.0,
+					0.0
+				);
 
-					//ofDrawRectangle(
-					//    cardPos.x + i * (cardColor_size + cardColor_pad),
-					//    cardPos.y,
-					//    cardColor_size,
-					//    cardColor_size*1.1);
+				//ofDrawRectangle(
+				//    cardPos.x + i * (cardColor_size + cardColor_pad),
+				//    cardPos.y,
+				//    cardColor_size,
+				//    cardColor_size*1.1);
 
-					//-
+				//-
 
-					// 2.2. background text box
+				// 2.2. background text box
 
-					// 2.2.1 text background
-					ofSetColor(255);//white
-					ofDrawRectangle(
-						glm::vec2(
-							cardPos.x + i * (cardColor_size + cardColor_pad),
-							cardPos.y + cardColor_size),
-						cardColor_size,
-						50
-					);
+				// 2.2.1 text background
+				ofSetColor(255);//white
+				ofDrawRectangle(
+					glm::vec2(
+						cardPos.x + i * (cardColor_size + cardColor_pad),
+						cardPos.y + cardColor_size),
+					cardColor_size,
+					50
+				);
 
-					//-
+				//-
 
-					// 2.2.2 text font
+				// 2.2.2 text font
 
-					// A.
-					//x = cardPos.x + i * (cardColor_size + cardColor_pad) + 4;
-					//y = cardPos.y + cardColor_size - 6;
+				// A.
+				//x = cardPos.x + i * (cardColor_size + cardColor_pad) + 4;
+				//y = cardPos.y + cardColor_size - 6;
 
-					// B.
-					x = cardPos.x + i * (cardColor_size + cardColor_pad) + 3;
-					y = cardPos.y + cardColor_size + letterPad;
+				// B.
+				x = cardPos.x + i * (cardColor_size + cardColor_pad) + 3;
+				y = cardPos.y + cardColor_size + letterPad;
 
-					// A.
-					//ofDrawBitmapStringHighlight(
-					//    colors_STRUCT[iPad].name,
-					//    x,
-					//    y);
+				// A.
+				//ofDrawBitmapStringHighlight(
+				//    colors_STRUCT[iPad].name,
+				//    x,
+				//    y);
 
-					// B.
-					//ofColor c = colors_STRUCT[iPad].color;
-					ofColor c = 0;//black
-					ofSetColor(c);
+				// B.
+				//ofColor c = colors_STRUCT[iPad].color;
+				ofColor c = 0;//black
+				ofSetColor(c);
 
-					std::string str;
-					if (LibraryColors_Index == OFX_PANTONE_COLORS)
-						str += "PANTONE\n";
-					str += colors_STRUCT[iPad].name;
+				std::string str;
+				if (LibraryColors_Index == OFX_PANTONE_COLORS)
+					str += "PANTONE\n";
+				str += colors_STRUCT[iPad].name;
 
-					font.drawMultiLine(
-						ofToUpper(str),
-						fontSize,
-						x + fontPad,
-						y
-					);
+				font.drawMultiLine(
+					ofToUpper(str),
+					fontSize,
+					x + fontPad,
+					y
+				);
 
-				}
 			}
 
 			ofPopStyle();
