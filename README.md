@@ -10,20 +10,18 @@ ofxColorsBrowser
 ![image](/readme_images/Capture2.PNG?raw=true "image")
 
 ## Color Libraries
-* Four included color libraries.
   * **Pantone** (+2000 colors from a JSON file).
   * [Wada Sanzo](https://sanzo-wada.dmbk.io/): A Dictionary of Color Combinations.
   * **Open Color**.
   * **OF Native** named colors
 
 ## Features
+* Technically updatable with other parsed libraries (JSON, XML, or other colors libs/addons).
+* Sort by Hue, Name or with the original sorting.
 * **GUI** with clickable colored and named boxes. 
 * Interface can be completely disabled to simplify. (But still having access to the colors)
-* Key commands and **ofxGui** panel.
-* Basic parameters and app modes.
-* Sort by Hue, Name, Original...
-* Store / Recall settings.
-* Technically updatable with other parsed libraries (JSON, XML, or other colors libs/addons).
+* Key commands, browse with arrow keys and **ofxGui** panel.
+* Basic parameters and app modes.Store / Recall settings.
 
 ## Usage
  
