@@ -35,15 +35,19 @@ ofFloatColor color_BACK;
 
 ### ofApp.cpp
 ```.cpp
-ofApp::setup(){
+ofApp::setup()
+{
 	colorBrowser.setup_colorBACK(color_BACK); // set local target color auto-receiver
 	colorBrowser.setup();
+}
 
-ofApp::update(){
+ofApp::update()
+{
 	ofxColorsBrowser.update();
 }
 
-ofApp::draw(){
+ofApp::draw()
+{
 	ofBackground( ofColor( color_BACK )); // auto updated when changes
 	colorBrowser.draw();
 }
