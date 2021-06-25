@@ -10,6 +10,7 @@ ofxColorsBrowser
 ## Features
 * Three included color libraries.
   * **Pantone** (+2000 colors from a JSON file).
+  * [Wada Sanzo](https://sanzo-wada.dmbk.io/): A Dictionary of Color Combinations.
   * **Open Color**.
   * **OF Native** named colors
 * **GUI** with clickable colored and named boxes. 
