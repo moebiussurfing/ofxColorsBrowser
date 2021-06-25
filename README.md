@@ -6,6 +6,7 @@ ofxColorsBrowser
 
 ## Screenshot
 ![image](/readme_images/Capture.PNG?raw=true "image")
+![image](/readme_images/Capture2.PNG?raw=true "image")
 
 ## Features
 * Three included color libraries.
