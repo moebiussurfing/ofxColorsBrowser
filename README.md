@@ -5,8 +5,10 @@ ofxColorsBrowser
 **ofxColorsBrowser** is an **openFrameworks** addon to browse color libraries and help integration to your OF app.
 
 ## Screenshot
+#### Pantone  
 ![image](/readme_images/Capture.PNG?raw=true "image")  
 
+#### Wada Sanzo
 ![image](/readme_images/Capture2.PNG?raw=true "image")
 
 ## Color Libraries
@@ -54,15 +56,15 @@ ofApp::draw()
 ```
 
 ## Dependencies
-* ofxGui
-* [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
+- ofxGui
+- [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 
 *Not required when interface is disabled:*  
-* [ofxRectangleUtils](https://github.com/bakercp/ofxRectangleUtils) 
-* [ofxFontStash](https://github.com/armadillu/ofxFontStash)  
+- [ofxRectangleUtils](https://github.com/bakercp/ofxRectangleUtils) 
+- [ofxFontStash](https://github.com/armadillu/ofxFontStash)  
 
 Already included into ```/libs```:  
-* [ofxOpenColor](https://github.com/pd-andy/ofxOpenColor)  
+- [ofxOpenColor](https://github.com/pd-andy/ofxOpenColor)  
  
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**
