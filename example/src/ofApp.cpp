@@ -29,6 +29,6 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
-	colorBrowser.setPositionHelper(glm::vec2(ofGetWidth() - 350, 10));
+	colorBrowser.windowResized(w, h);
 }
 
