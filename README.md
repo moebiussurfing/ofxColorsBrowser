@@ -23,7 +23,7 @@ ofxColorsBrowser
 * **GUI** with clickable colored and named boxes. 
 * Interface can be completely disabled to simplify. (But still having access to the colors)
 * Key commands, browse with arrow keys and **ofxGui** panel.
-* Basic parameters and app modes.Store / Recall settings.
+* Basic parameters and app modes. Store / Recall settings.
 
 ## Usage
  
@@ -39,19 +39,19 @@ ofFloatColor color_BACK;
 ```.cpp
 ofApp::setup()
 {
-	colorBrowser.setup_colorBACK(color_BACK); // set local target color auto-receiver
-	colorBrowser.setup();
+  colorBrowser.setup_colorBACK(color_BACK); // set local target color auto-receiver
+  colorBrowser.setup();
 }
 
 ofApp::update()
 {
-	ofxColorsBrowser.update();
+  ofxColorsBrowser.update();
 }
 
 ofApp::draw()
 {
-	ofBackground( ofColor( color_BACK )); // auto updated when changes
-	colorBrowser.draw();
+  ofBackground( ofColor( color_BACK )); // auto updated when changes
+  colorBrowser.draw();
 }
 ```
 
