@@ -5,7 +5,8 @@ ofxColorsBrowser
 **ofxColorsBrowser** is an **openFrameworks** addon to browse color libraries and help integration to your OF app.
 
 ## Screenshot
-![image](/readme_images/Capture.PNG?raw=true "image")
+![image](/readme_images/Capture.PNG?raw=true "image")  
+
 ![image](/readme_images/Capture2.PNG?raw=true "image")
 
 ## Color Libraries
