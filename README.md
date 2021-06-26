@@ -50,7 +50,8 @@ ofApp::update()
 
 ofApp::draw()
 {
-  ofBackground( ofColor( color_BACK )); // auto updated when changes
+  ofColor colorBg = ofColor(color_BACK); // auto updated when a color is picked
+  ofBackground(colorBg);
   colorBrowser.draw();
 }
 ```
