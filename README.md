@@ -2,7 +2,7 @@ ofxColorsBrowser
 =============================
 
 # Overview
-**ofxColorsBrowser** is an **openFrameworks** addon to browse color libraries and help integration to your OF app.
+An **openFrameworks** add-on to browse color libraries.  
 
 ## Screenshot
 #### Pantone  
