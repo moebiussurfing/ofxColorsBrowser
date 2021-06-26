@@ -2,7 +2,7 @@ ofxColorsBrowser
 =============================
 
 # Overview
-An **openFrameworks** add-on to browse color libraries.  
+An **openFrameworks** add-on to browse color libraries from JSON files.  
 
 ## Screenshot
 #### Pantone  
