@@ -15,6 +15,9 @@ An **openFrameworks** add-on to browse many named color libraries imported from 
 #### Crayola  
 ![image](/readme_images/Capture3.PNG?raw=true "image")  
 
+#### Sort by Hue  
+![image](/readme_images/Capture4.PNG?raw=true "image")  
+
 ## Color Libraries
   * **Pantone** (+2000 colors).
   * [**Sanzo Wada**](https://github.com/dblodorn/sanzo-wada): [A Dictionary of Color Combinations](https://sanzo-wada.dmbk.io/) from **@dblodorn**.
