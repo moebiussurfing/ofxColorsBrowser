@@ -53,11 +53,12 @@ enum
 // palettes
 enum
 {
-	OFX_PANTONE_COLORS,
-	OFX_SANZOWADA_COLORS,
-	OFX_COLOR_NATIVE,
-	OFX_MATERIAL_COLOR, // TODO:
-	OFX_OPEN_COLOR
+	OFX_PANTONE_COLORS,		// 0
+	OFX_SANZOWADA_COLORS,	// 1
+	OFX_COLOR_NATIVE,		// 2
+	OFX_MATERIAL_COLOR,		// TODO:
+	OFX_OPEN_COLOR,			// 4
+	OFX_CHEPRASOV			// 5
 };
 
 // color struct
@@ -103,6 +104,7 @@ public:
 	void load_Pantone_JSON();
 	void load_SanzoWadaDictionary_JSON();
 	void load_Material_JSON();
+	void load_Cheprasov_JSON();
 
 	void setPositionRectangles(glm::vec2 p);
 
@@ -113,7 +115,7 @@ private:
 	};
 
 public:
-	void switch_palette_Type();
+	void switch_palette_Type(); // to use externally by the code
 	void nextSortType();
 	void set_palette_Type(int p);
 	void set_sorted_Type(int p);
@@ -215,17 +217,17 @@ public:
 		return cardSize.get();
 	}
 	std::string getNameLib() {
-		return nameLibrary.get();
+		return name_Library.get();
 	}
 
 public:
 	vector<std::string> colors_PantoneNames;
 	vector<std::string> colors_MaterialNames;
-	vector<string> tagsMaterial { 
+	vector<string> tagsMaterial{
 		"50", "100", "200", "300", "400", "500",
-		"600", "700", "800", "900", 
+		"600", "700", "800", "900",
 		"a100", "a200", "a400", "a700" };
-	
+
 	//--
 
 private:
@@ -234,6 +236,7 @@ private:
 	std::string path_Global;
 	std::string path_FilePantone;
 	std::string path_FileSanzoWada;
+	std::string path_FileCheprasov;
 	std::string path_FileMaterial;
 	std::string path_FileSettings;
 
@@ -266,9 +269,9 @@ public:
 
 	//--
 
-	// pantone colors
-
 private:
+
+	// pantone colors
 	ofJson js;
 	vector<ofColor> colors_Pantone;
 	vector<ofColor> colors_Material;
@@ -277,6 +280,11 @@ private:
 	ofJson jSanzoWada;
 	vector<ofColor> colors_SanzoWada;
 	vector<std::string> colorsNames_SanzoWada;
+
+	// cheprasov
+	ofJson jCheprasov;
+	vector<ofColor> colors_Cheprasov;
+	vector<std::string> colorsNames_Cheprasov;
 
 	//-
 
@@ -388,8 +396,8 @@ public:
 
 	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN, 3:OFX_MATERIAL
 
-	ofParameter<int> index_Library{ "Library", 0, 0, 4 };
-	ofParameter<std::string> nameLibrary{ " ", "" };
+	ofParameter<int> index_Library{ "Library", 0, 0, 0 };
+	ofParameter<std::string> name_Library{ " ", "" };
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
 

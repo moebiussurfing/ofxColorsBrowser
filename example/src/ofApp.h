@@ -7,9 +7,11 @@
 
 NOTE
 
-To run this example out-of-the-box, you must uncomment the line:
+To run this example out-of-the-box, 
+you must uncomment the line:
 #define USE_OFX_COLOR_BROWSER_INTERFACE
 into ofxColorsBrowser.h
+Thant's to enable the user gui.
 
 */
 

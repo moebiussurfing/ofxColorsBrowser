@@ -53,9 +53,13 @@ ofxColorsBrowser::ofxColorsBrowser()
 	//-
 
 	path_Global = "ofxColorsBrowser/";
+	
+	// library files
 	path_FilePantone = path_Global + "pantone-colors.json";
 	path_FileSanzoWada = path_Global + "SANZO_WADA_Library.json";
+	path_FileCheprasov = path_Global + "cheprasov-colors.json";
 	path_FileMaterial = path_Global + "material-colors.json";
+
 	path_FileSettings = path_Global + "AppSettings.xml";
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
@@ -113,10 +117,9 @@ void ofxColorsBrowser::buildColors()
 	{
 		ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
 
-		//ideal card size and layout
+		// ideal card size and layout
 		cardSize = 7;
 		bShowCards = true;
-		//bShowCards = false;
 		cardsPerRow = 10;
 
 		boxSize = 15;
@@ -134,18 +137,19 @@ void ofxColorsBrowser::buildColors()
 		{
 			name = colors_PantoneNames[i];
 			c = colors_Pantone[i];
+			{
+				// 1. names map
+				colorNameMap[name] = c;
 
-			// 1. names map
-			colorNameMap[name] = c;
+				// 2. struct
+				colorMapping_STRUCT myColor;
+				myColor.name = name;
+				myColor.color = c;
+				myColor.position = i;
 
-			// 2. struct
-			colorMapping_STRUCT myColor;
-			myColor.name = name;
-			myColor.color = c;
-			myColor.position = i;
-
-			// 3. add color to vector
-			colors_STRUCT.push_back(myColor);
+				// 3. add color to vector
+				colors_STRUCT.push_back(myColor);
+			}
 		}
 		ofLogNotice(__FUNCTION__);
 	}
@@ -158,15 +162,12 @@ void ofxColorsBrowser::buildColors()
 	{
 		ofLogNotice(__FUNCTION__) << "OFX_SANZOWADA_COLORS";
 
-		//ideal card size and layout
+		// ideal card size and layout
 		cardSize = 1;
-		//bShowCards = false;
 		bShowCards = true;
 
 		cardsPerRow = 25;
-		//cardsPerRow = 10;
 		boxSize = 45;
-		//boxSize = 15;
 		boxPad = 0.5;
 
 		cardColor_size = 100;
@@ -181,18 +182,19 @@ void ofxColorsBrowser::buildColors()
 		{
 			name = colorsNames_SanzoWada[i];
 			c = colors_SanzoWada[i];
+			{
+				// 1. names map
+				colorNameMap[name] = c;
 
-			// 1. names map
-			colorNameMap[name] = c;
+				// 2. struct
+				colorMapping_STRUCT myColor;
+				myColor.name = name;
+				myColor.color = c;
+				myColor.position = i;
 
-			// 2. struct
-			colorMapping_STRUCT myColor;
-			myColor.name = name;
-			myColor.color = c;
-			myColor.position = i;
-
-			// 3. add color to vector
-			colors_STRUCT.push_back(myColor);
+				// 3. add color to vector
+				colors_STRUCT.push_back(myColor);
+			}
 		}
 		ofLogNotice(__FUNCTION__);
 	}
@@ -204,14 +206,10 @@ void ofxColorsBrowser::buildColors()
 	else if (index_Library == OFX_COLOR_NATIVE)
 	{
 		// dessired distribution for this palette
-		//cardSize = 4;
-		//cardSize = 12;
 		cardSize = 1;
 		cardsPerRow = 14;
-		//cardsPerRow = 1;
-
-		//bShowCards = false;
 		bShowCards = true;
+
 		boxSize = 40;
 		boxPad = 2;
 
@@ -386,16 +384,28 @@ void ofxColorsBrowser::buildColors()
 		}
 	}
 
+
 	//----
 
-	// 3. OFX_OPEN_COLOR
+	// 3. OFX_MATERIAL_COLOR
+
+	//TODO:
+	else if (index_Library == OFX_MATERIAL_COLOR)
+	{
+	ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
+
+	}
+
+	//----
+
+	// 4. OFX_OPEN_COLOR
 
 	else if (index_Library == OFX_OPEN_COLOR)
 	{
 		ofLogNotice(__FUNCTION__) << "OFX_OPEN_COLOR";
 
 #define NUM_COLORS_ROW 10
-		//that's the ideal distribution for open color palette
+		// that's the ideal distribution for open color palette
 
 		// dessired distribution for this palette
 		cardSize = 13;
@@ -505,6 +515,51 @@ void ofxColorsBrowser::buildColors()
 			colors_STRUCT.push_back(colorORANGE);
 		}
 	}
+
+	//----
+
+	// 5. OFX_CHEPRASOV
+
+	else if (index_Library == OFX_CHEPRASOV)
+	{
+		ofLogNotice(__FUNCTION__) << "OFX_CHEPRASOV";
+
+		// ideal card size and layout
+		cardSize = 7;
+		bShowCards = true;
+		cardsPerRow = 10;
+
+		boxSize = 15;
+		boxPad = 0.5;
+
+		cardColor_size = 100;
+		cardColor_pad = 20;
+
+		//-
+
+		std::string name;
+		ofColor c;
+
+		for (int i = 0; i < colorsNames_Cheprasov.size(); i++)
+		{
+			name = colorsNames_Cheprasov[i];
+			c = colors_Cheprasov[i];
+			{
+				// 1. names map
+				colorNameMap[name] = c;
+
+				// 2. struct
+				colorMapping_STRUCT myColor;
+				myColor.name = name;
+				myColor.color = c;
+				myColor.position = i;
+
+				// 3. add color to vector
+				colors_STRUCT.push_back(myColor);
+			}
+		}
+		ofLogNotice(__FUNCTION__);
+	}
 }
 
 //--------------------------------------------------------------
@@ -551,7 +606,6 @@ void ofxColorsBrowser::load_Pantone_JSON()
 	}
 }
 
-
 //--------------------------------------------------------------
 void ofxColorsBrowser::load_SanzoWadaDictionary_JSON()
 {
@@ -587,67 +641,107 @@ void ofxColorsBrowser::load_SanzoWadaDictionary_JSON()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::load_Material_JSON()
+void ofxColorsBrowser::load_Cheprasov_JSON()
 {
+	// Taken from here: https://github.com/cheprasov/json-colors
+
 	ofLogNotice(__FUNCTION__);
 
-	colors_MaterialNames.clear();
-	colors_Material.clear();
+	colors_Cheprasov.clear();
+	colorsNames_Cheprasov.clear();
 
-	ofFile file(path_FileMaterial);
+	ofFile file(path_FileCheprasov);
 	if (file.exists())
 	{
-		file >> js;
-		ofLogNotice(__FUNCTION__) << js;
+		file >> jCheprasov;
+		ofLogNotice(__FUNCTION__) << jCheprasov;
+		ofLogNotice(__FUNCTION__) << endl;
 
-		int i = 0;
-		for (auto &jp : js)
+		for (auto &jc : jCheprasov)
 		{
-			//TODO: parse palette colors json...
+			string _name = jc["name"];
+			string _hex = jc["hex"];
 
-			ofLogNotice(__FUNCTION__) << "----------------------\n" << "SUB-PALETTE  [" << i << "] " << jp;
-			//ofLogNotice(__FUNCTION__) << ofToString(jp[i]); jp.get(i);
-			ofLogNotice(__FUNCTION__) << jp[i];
+			colorsNames_Cheprasov.push_back(_name);
 
-			int c = 0;
-			for (auto &jc : jp)
-			{
-				ofLogNotice(__FUNCTION__) << "COLOR  [" << i << "] " << jc;// << " " << jp[i];
+			ofStringReplace(_hex, "#", "");
+			ofColor c;
+			hexToColor(c, _hex);
 
-				for (auto &jt : jc)
-				{
-					colors_MaterialNames.push_back(tagsMaterial[c]);
-					ofLogNotice(__FUNCTION__) << "Name:" << ofToString(tagsMaterial[c]) << " Hex:" << ofToString(jc);
-				}
-
-				//colors_MaterialNames.push_back(jsName);
-				c++;
-			}
-
-			//i = 0;
-			//for (auto &jsValues : js["values"])
-			//{
-			//	//ofLogNotice(__FUNCTION__) << "VALUES ["<<i<<"] "<<jsValues<<endl;
-			//	ofColor c;
-			//	std::string colorHEXcode = ofToString(jsValues);
-			//	vector<std::string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
-			//	std::string myCol = colorHEXcode_VEC[1];
-			//	vector<std::string> myCol2 = ofSplitString(myCol, "\"");
-			//	hexToColor(c, myCol2[0]);
-
-			//	colors_Pantone.push_back(c);
-			i++;
+			colors_Cheprasov.push_back(c);
 		}
 	}
 	else
 	{
-		ofLogNotice(__FUNCTION__) << "FILE '" << path_FileMaterial << "' NOT FOUND!";
+		ofLogNotice(__FUNCTION__) << "FILE '" << path_FileCheprasov << "' NOT FOUND!";
 	}
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::load_Material_JSON()
+{
+	//TODO:
+
+	//ofLogNotice(__FUNCTION__);
+
+	//colors_MaterialNames.clear();
+	//colors_Material.clear();
+
+	//ofFile file(path_FileMaterial);
+	//if (file.exists())
+	//{
+	//	file >> js;
+	//	ofLogNotice(__FUNCTION__) << js;
+
+	//	int i = 0;
+	//	for (auto &jp : js)
+	//	{
+	//		//TODO: parse palette colors json...
+
+	//		ofLogNotice(__FUNCTION__) << "----------------------\n" << "SUB-PALETTE  [" << i << "] " << jp;
+	//		//ofLogNotice(__FUNCTION__) << ofToString(jp[i]); jp.get(i);
+	//		ofLogNotice(__FUNCTION__) << jp[i];
+
+	//		int c = 0;
+	//		for (auto &jc : jp)
+	//		{
+	//			ofLogNotice(__FUNCTION__) << "COLOR  [" << i << "] " << jc;// << " " << jp[i];
+
+	//			for (auto &jt : jc)
+	//			{
+	//				colors_MaterialNames.push_back(tagsMaterial[c]);
+	//				ofLogNotice(__FUNCTION__) << "Name:" << ofToString(tagsMaterial[c]) << " Hex:" << ofToString(jc);
+	//			}
+
+	//			//colors_MaterialNames.push_back(jsName);
+	//			c++;
+	//		}
+
+	//		//i = 0;
+	//		//for (auto &jsValues : js["values"])
+	//		//{
+	//		//	//ofLogNotice(__FUNCTION__) << "VALUES ["<<i<<"] "<<jsValues<<endl;
+	//		//	ofColor c;
+	//		//	std::string colorHEXcode = ofToString(jsValues);
+	//		//	vector<std::string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
+	//		//	std::string myCol = colorHEXcode_VEC[1];
+	//		//	vector<std::string> myCol2 = ofSplitString(myCol, "\"");
+	//		//	hexToColor(c, myCol2[0]);
+
+	//		//	colors_Pantone.push_back(c);
+	//		i++;
+	//	}
+	//}
+	//else
+	//{
+	//	ofLogNotice(__FUNCTION__) << "FILE '" << path_FileMaterial << "' NOT FOUND!";
+	//}
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::setup()
 {
+	//position
 	setPositionRectangles(glm::vec2(250, 390)); // call before setup
 
 	//--
@@ -669,13 +763,14 @@ void ofxColorsBrowser::setup()
 
 	//-
 
+	// exclude
 	MODE_SORTING_name.setSerializable(false);
-	nameLibrary.setSerializable(false);
+	name_Library.setSerializable(false);
 
 	params.setName("ofxColorsBrowser");
 	paramsLayout.setName("Layout");
 	params.add(index_Library);
-	params.add(nameLibrary);
+	params.add(name_Library);
 	params.add(MODE_SORTING);
 	//paramsLayout.add(boxSize);
 	//paramsLayout.add(boxPad);
@@ -697,7 +792,8 @@ void ofxColorsBrowser::setup()
 	//-
 
 	//--------------------------------------------------------------
-	listener_ModeSorting = MODE_SORTING.newListener([this](int &i) {
+	listener_ModeSorting = MODE_SORTING.newListener([this](int &i) 
+	{
 		ofLogNotice("MODE_SORTING: ") << i;
 
 		if (MODE_SORTING == 5) MODE_SORTING = 0;
@@ -711,75 +807,90 @@ void ofxColorsBrowser::setup()
 
 		clearInterface();
 		buildRectangles();
-
 	});
 
 	//-
 
 	//--------------------------------------------------------------
-	listener_Library = index_Library.newListener([this](int &i) {
+	listener_Library = index_Library.newListener([this](int &i)
+	{
 		ofLogNotice("index_Library: ") << i;
 
 		index_Library = ofClamp(index_Library, index_Library.getMin(), index_Library.getMax());
 
-		// exclude
-		if (index_Library == OFX_MATERIAL_COLOR) index_Library = OFX_PANTONE_COLORS;
+		// exclude. skip material
+		if (index_Library == OFX_MATERIAL_COLOR) index_Library++;
+		//if (index_Library == OFX_MATERIAL_COLOR) index_Library = OFX_PANTONE_COLORS;
 
 		switch (index_Library)
 		{
 		case OFX_PANTONE_COLORS:
 			ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
-			nameLibrary = "Pantone";
+			name_Library = "Pantone";
 			break;
 
 		case OFX_SANZOWADA_COLORS:
 			ofLogNotice(__FUNCTION__) << "OFX_SANZOWADA_COLORS";
-			nameLibrary = "Sanzo Wada";
+			name_Library = "Sanzo Wada";
 			break;
 
 		case OFX_COLOR_NATIVE:
 			ofLogNotice(__FUNCTION__) << "OFX_COLOR_NATIVE";
-			nameLibrary = "OF Native";
+			name_Library = "OF Native";
+			break;
+
+		case OFX_MATERIAL_COLOR:
+			ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
+			name_Library = "Material";
 			break;
 
 		case OFX_OPEN_COLOR:
 			ofLogNotice(__FUNCTION__) << "OFX_OPEN_COLOR";
-			nameLibrary = "Open Color";
+			name_Library = "Open Color";
 			break;
 
-			//case OFX_MATERIAL_COLOR:
-			//	ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
-			//	nameLibrary = "Material Color";
-			//	break;
+		case OFX_CHEPRASOV:
+			ofLogNotice(__FUNCTION__) << "OFX_CHEPRASOV";
+			name_Library = "Cheprasov";
+			break;
 		}
 
 		//-
 
 		clearInterface();
-
 		buildColors();
-
 		buildRectangles();
 
+		//workflow
 		// refresh
-		MODE_SORTING = MODE_SORTING;
-
+		MODE_SORTING = 0; // A. reset
+		//MODE_SORTING = MODE_SORTING; // B. mantain previous
 	});
 
 	//----
 
-	// pantone colors
+	// read json files
+	index_Library.setMax(5);
+
+	//-
+
+	// 1. pantone colors
 	load_Pantone_JSON();
 
-	// material colors
-	//load_Material_JSON(); // -> crashes
-
+	// 2. sanzo colors
 	load_SanzoWadaDictionary_JSON();
+
+	// 5. cheprasov colors
+	load_Cheprasov_JSON();
+
+	//TODO:
+	// 4. material colors
+	load_Material_JSON(); // -> crashes
 
 	//--
 
 	// 1. default sorting
-	MODE_SORTING = SORTING_ORIGINAL;//
+	MODE_SORTING = SORTING_ORIGINAL;
 	// by name, at the start
 
 	// 2. default palette mode
@@ -787,6 +898,7 @@ void ofxColorsBrowser::setup()
 
 	//--
 
+	// build current loaded library
 	buildColors();
 
 	//--
@@ -799,7 +911,8 @@ void ofxColorsBrowser::setup()
 
 	// startup
 
-	if (isVisible()) {
+	if (isVisible())
+	{
 		setEnableInterfaceClicks(true);
 		setVisibleDebug(true);
 	}
@@ -808,6 +921,7 @@ void ofxColorsBrowser::setup()
 	//cardNum = 0;
 	//refresh_Clicks();
 
+	// settings
 	ofxSurfingHelpers::loadGroup(params, path_FileSettings);
 }
 
@@ -834,12 +948,12 @@ void ofxColorsBrowser::buildRectangles()
 
 		ofColor c = colors_STRUCT[i].color;
 
-		ofxRectangle rect(ofRectangle(xBtn, yBtn, boxSize, boxSize), c);
+		ofxRectangle r(ofRectangle(xBtn, yBtn, boxSize, boxSize), c);
 
-		rect.setName(colors_STRUCT[i].name);
-		rect.setPosition_inVector(colors_STRUCT[i].position);
+		r.setName(colors_STRUCT[i].name);
+		r.setPosition_inVector(colors_STRUCT[i].position);
 
-		rectangles.push_back(rect);
+		rectangles.push_back(r);
 	}
 
 	selectedRectsBoundingBox = ofxRectangle(ofRectangle(), ofColor(127, 80));
@@ -848,6 +962,9 @@ void ofxColorsBrowser::buildRectangles()
 	anchorRect = NULL;
 	showKeyboardCommands = false;
 
+	//-
+
+	// workflow
 	// startup
 	currColor = 0;
 	cardNum = 0;
@@ -881,11 +998,15 @@ void ofxColorsBrowser::draw()
 		ofPushMatrix();
 		ofPushStyle();
 
+		//position
+		float _x = 20;
+		float _y = 40;
+
 		//TODO: add more pages...
 
 		//-
 
-		// 1. DRAW ALL THE COLORS NAMES
+		// 1. draw all the colors names
 
 		int maxLinesThatFitsScreen = 42;
 		bool bColorizeLabel = false;
@@ -919,16 +1040,12 @@ void ofxColorsBrowser::draw()
 
 		if (SHOW_debugText)
 		{
-			float _x = 10;
-			float _y = 20;
-
 			for (int i = lineBegin; i <= lineEnd; i++)
 			{
 				//i = ofClamp(i, 0, colors_STRUCT.size() - 1);
 				line = i;
 
-				if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size())
-					str = colors_STRUCT[line].name;
+				if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size()) str = colors_STRUCT[line].name;
 				else str = "";
 
 				if (pageNum == 0)
@@ -941,6 +1058,7 @@ void ofxColorsBrowser::draw()
 				}
 
 				// all marked names
+
 				float fontSize = 20;
 				float fontMargin = 10;
 				float x = _x;
@@ -991,8 +1109,8 @@ void ofxColorsBrowser::draw()
 					//ofDrawBitmapStringHighlight(str, x, y, c, ofColor::black);
 				}
 
-				// 2. all color not selected
-
+				// 2. all colors. not selected
+				
 				else
 				{
 					// back light
@@ -1016,6 +1134,7 @@ void ofxColorsBrowser::draw()
 				}
 
 				// 3. line to mark first color on each card
+
 				if (cardSize != 1)
 					if (i % cardSize == 0 && i < colors_STRUCT.size())
 					{
@@ -1057,7 +1176,9 @@ void ofxColorsBrowser::draw()
 			//str += "\n";
 
 			//float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str));
-			int x = positionRectangles.x + 5;
+
+			//position
+			int x = positionRectangles.x + 0;
 			int y = 15;
 
 			ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str), x, y,
@@ -1080,51 +1201,70 @@ void ofxColorsBrowser::draw()
 				//str1 += "MONITOR";
 				//str1 += "\n";
 				//str1 += "\n";
-
-				str1 += "LIBRARY: ";
+				//str1 += "LIBRARY: ";
 				//str1 += " " + ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
 
 				//-
+
+				str1 += "LIBRARY: ";
 
 				switch (index_Library)
 				{
 				case OFX_PANTONE_COLORS:
 					str1 += "PANTONE";
 					break;
+
 				case OFX_SANZOWADA_COLORS:
-					str1 += "Sanzo Wada Dictionary";
+					str1 += "SANZO WADA DICTIONARY";
 					break;
+
 				case OFX_COLOR_NATIVE:
 					str1 += "OF NATIVE";
 					break;
+
 				case OFX_OPEN_COLOR:
 					str1 += "OPEN COLOR";
 					break;
+
+				case OFX_MATERIAL_COLOR:
+					str1 += "MATERIAL COLORS";
+					break;
+
+				case OFX_CHEPRASOV:
+					str1 += "CHEPRASOV";
+					break;
 				}
+
 				//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
 
 				//-
 
 				str1 += "\n";
 				str1 += "SORTING: ";
+
 				switch (MODE_SORTING)
 				{
 				case 0:
 					str1 += "ORIGINAL";
 					break;
+
 				case 1:
 					str1 += "NAME";
 					break;
+
 				case 2:
 					str1 += "HUE";
 					break;
+
 				case 3:
 					str1 += "BRIGHTNESS";
 					break;
+
 				case 4:
 					str1 += "SATURATION";
 					break;
 				}
+
 				//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
 
 				//-
@@ -1134,6 +1274,7 @@ void ofxColorsBrowser::draw()
 				std::string str2 = str1 + helpInfo;
 
 				float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str2)) + 10;
+
 				setPositionHelper(glm::vec2(ofGetWidth() - w, 5));
 
 				ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str2), positionHelper.x, positionHelper.y,
@@ -1146,7 +1287,10 @@ void ofxColorsBrowser::draw()
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 			drawRectangles();
-			//rectangles with mouse management and draggables..
+
+			//TODO:
+			// extra interface is
+			// rectangles with mouse management and draggables..
 #endif
 		//--
 		}
@@ -1175,7 +1319,6 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
 	if (ENABLE_keys)
 	{
-
 		//-
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
@@ -1943,7 +2086,7 @@ void ofxColorsBrowser::drawRectangles()
 
 	//--
 
-	// CARDS ENABLED:
+	// cards enabled:
 
 	// 1. draw card rectangles
 
@@ -2080,11 +2223,10 @@ void ofxColorsBrowser::drawRectangles()
 					ofSetColor(c);
 
 					std::string str;
-					if (index_Library == OFX_PANTONE_COLORS)
-						str += "PANTONE\n";
+					if (index_Library == OFX_PANTONE_COLORS) str += "PANTONE\n";
 
 					string _n = colors_STRUCT[iPad].name;
-					ofStringReplace(_n, " ", "\n"); // break lines when space
+					//ofStringReplace(_n, " ", "\n"); // break lines when space
 					ofStringReplace(_n, "-", "\n"); // break lines when space
 					str += _n;
 
@@ -2284,3 +2426,6 @@ void ofxColorsBrowser::setToggleVisibleDebug()
 {
 	SHOW_debugText = !SHOW_debugText;
 }
+
+
+
