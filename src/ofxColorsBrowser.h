@@ -1,19 +1,32 @@
 #pragma once
+
 #include "ofMain.h"
 
 
-//----
+/*
+
+TODO:
+
++ add ImGui gui
++ more responsive, variable sizes..
++ make a base class to imrpove adding more libraries?
+
+*/
+
+
+//----------
 
 //	OPTIONAL
 
-//uncomment to run the bundled example!
+// uncomment to run the bundled example!
 #define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
 
-//----
+//----------
 
 
 #include "ofxOpenColor.h"
 #include "ofxSurfingHelpers.h"
+#include "ofxSurfing_ofxGui.h"
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 #include "ofxRectangleUtils.h"
@@ -43,7 +56,7 @@ enum
 	OFX_PANTONE_COLORS,
 	OFX_SANZOWADA_COLORS,
 	OFX_COLOR_NATIVE,
-	OFX_MATERIAL_COLOR,
+	OFX_MATERIAL_COLOR, // TODO:
 	OFX_OPEN_COLOR
 };
 
@@ -91,7 +104,7 @@ public:
 	void load_SanzoWadaDictionary_JSON();
 	void load_Material_JSON();
 
-	void setPosition(glm::vec2 p);
+	void setPositionRectangles(glm::vec2 p);
 
 private:
 	void setPositionHelper(glm::vec2 p)
@@ -196,13 +209,13 @@ public:
 	vector<std::string> getNames();
 	int getSize();
 	int getLibIndex() {
-		return LibraryColors_Index.get();
+		return index_Library.get();
 	}
 	int getSizeCards() {
 		return cardSize.get();
 	}
 	std::string getNameLib() {
-		return LibraryColors_Index_name.get();
+		return nameLibrary.get();
 	}
 
 public:
@@ -232,13 +245,13 @@ private:
 	ofParameter<float> boxPad{ "PAD", 1, 0, 10 };
 	ofParameter<int> cardSize{ "CARD SIZE", 7, 2, 100 };// minimal card of colors
 	ofParameter<int> cardsPerRow{ "CARDS PER ROW", 4, 2, 100 };
-	ofParameter<bool> ENABLE_oneCard_MODE{ "ONE CARD MODE", true };
+	ofParameter<bool> bShowCards{ "ONE CARD MODE", true };
 	int perRow = 10;
 
 	int cardNum = 0;
 	int cardColor_size = 100;
 	int cardColor_pad = 20;
-	glm::vec2 cardPos;
+	glm::vec2 positionCards;
 
 	//--
 
@@ -290,7 +303,7 @@ private:
 
 private:
 	void rectangles_update();
-	void rectangles_draw();
+	void drawRectangles();
 
 	//-
 
@@ -360,13 +373,13 @@ private:
 	void buildColors();
 
 	void refresh_Clicks();// to browsing by keys
-	void grid_create_boxes();
+	void buildRectangles();
 	void clearInterface();
 
 	//-
 
 	// grid position
-	glm::vec2 position;
+	glm::vec2 positionRectangles;
 
 	// text debug positions
 	glm::vec2 positionHelper;
@@ -375,8 +388,8 @@ public:
 
 	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN, 3:OFX_MATERIAL
 
-	ofParameter<int> LibraryColors_Index{ "Library", 0, 0, 4 };
-	ofParameter<std::string> LibraryColors_Index_name{ " ", "" };
+	ofParameter<int> index_Library{ "Library", 0, 0, 4 };
+	ofParameter<std::string> nameLibrary{ " ", "" };
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
 
@@ -384,6 +397,7 @@ public:
 	ofParameter<std::string> MODE_SORTING_name{ " ", "" };
 
 	ofParameterGroup params;
+	ofParameterGroup paramsLayout;
 
 	ofEventListener listener_Library;
 	ofEventListener listener_ModeSorting;
