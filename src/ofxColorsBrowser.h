@@ -10,6 +10,8 @@ TODO:
 + add ImGui gui
 + more responsive, variable sizes..
 + make a base class to imrpove adding more libraries?
++ add more browseable pages
++ split build from resize responsive layout
 
 */
 
@@ -24,9 +26,9 @@ TODO:
 //----------
 
 
-#include "ofxOpenColor.h"
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfing_ofxGui.h"
+#include "ofxOpenColor.h"
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 #include "ofxRectangleUtils.h"
@@ -40,7 +42,9 @@ using namespace ofx;
 // internal shorcuts no add listeners or remove
 #define KEY_SHORTCUTS_ENABLE
 
-// sortings
+//--
+
+// sorting modes
 enum
 {
 	SORTING_ORIGINAL,
@@ -50,24 +54,27 @@ enum
 	SORTING_SATURATION
 };
 
-// palettes
+// libraries
 enum
 {
 	OFX_PANTONE_COLORS,		// 0
 	OFX_SANZOWADA_COLORS,	// 1
 	OFX_COLOR_NATIVE,		// 2
-	OFX_MATERIAL_COLOR,		// TODO:
+	OFX_MATERIAL_COLOR,		// 3 TODO:
 	OFX_OPEN_COLOR,			// 4
-	OFX_CHEPRASOV			// 5
+	OFX_CHEPRASOV,			// 5
+	OFX_CRAYOLA,			// 6
+	OFXCOLORSBROWSER__COUNT
 };
 
-// color struct
+// a color struct
 typedef struct
 {
 	std::string name;
 	ofColor color;
-	int position;//original position
-} colorMapping_STRUCT;
+	int position; // original position vs name, hue, sat...etc
+}
+colorMapping_STRUCT;
 
 //--
 
@@ -83,7 +90,7 @@ private:
 	string helpInfo;
 
 	ofxPanel gui;
-	bool bGui = false;
+	bool bGuiDebug = false;
 
 	//-
 
@@ -97,18 +104,24 @@ public:
 	void exit();
 	void windowResized(int w, int h);
 
-	//----
+	//-
 
-	// API
-
+private:
+	// importers
 	void load_Pantone_JSON();
 	void load_SanzoWadaDictionary_JSON();
 	void load_Material_JSON();
 	void load_Cheprasov_JSON();
+	void load_Crayola_JSON();
 
+	//----
+
+	// API
+	
+	//-
+
+public:
 	void setPositionRectangles(glm::vec2 p);
-
-private:
 	void setPositionHelper(glm::vec2 p)
 	{
 		positionHelper = p;
@@ -130,20 +143,20 @@ public:
 	void setVisibleDebug(bool b);
 	void setToggleVisibleDebug();
 
-	ofParameter<bool> SHOW_Gui{ "GUI", true };
+	ofParameter<bool> bGui{ "GUI", true };
 
 	//--------------------------------------------------------------
 	bool isVisible() {
-		return SHOW_Gui.get();
+		return bGui.get();
 	}
 
 	//--------------------------------------------------------------
 	void setToggleVisible()
 	{
-		SHOW_Gui = !SHOW_Gui.get();
-		ofLogNotice(__FUNCTION__) << "SHOW_Gui: " << SHOW_Gui;
+		bGui = !bGui.get();
+		ofLogNotice(__FUNCTION__) << "bGui: " << bGui;
 
-		setVisible(SHOW_Gui);
+		setVisible(bGui);
 
 		//SHOW_InterfaceColors = !SHOW_InterfaceColors;
 		//setVisible(SHOW_InterfaceColors);
@@ -214,7 +227,7 @@ public:
 		return index_Library.get();
 	}
 	int getSizeCards() {
-		return cardSize.get();
+		return amtColorsInCard.get();
 	}
 	std::string getNameLib() {
 		return name_Library.get();
@@ -232,13 +245,15 @@ public:
 
 private:
 
-	// path for json colors file
 	std::string path_Global;
+	std::string path_FileSettings;
+
+	// path for json colors files
 	std::string path_FilePantone;
 	std::string path_FileSanzoWada;
-	std::string path_FileCheprasov;
 	std::string path_FileMaterial;
-	std::string path_FileSettings;
+	std::string path_FileCheprasov;
+	std::string path_FileCrayola;
 
 	//-
 
@@ -246,12 +261,12 @@ private:
 	// grid layout
 	ofParameter<float> boxSize{ "BOX SIZE", 15, 10, 100 };//boxes
 	ofParameter<float> boxPad{ "PAD", 1, 0, 10 };
-	ofParameter<int> cardSize{ "CARD SIZE", 7, 2, 100 };// minimal card of colors
-	ofParameter<int> cardsPerRow{ "CARDS PER ROW", 4, 2, 100 };
-	ofParameter<bool> bShowCards{ "ONE CARD MODE", true };
+	ofParameter<int> amtColorsInCard{ "CARD SIZE", 7, 2, 100 };// minimal card of colors
+	ofParameter<int> amtCardsInRow{ "CARDS PER ROW", 4, 2, 100 };
+	ofParameter<bool> bShowCards{ "SHOW CARDS", true };
 	int perRow = 10;
 
-	int cardNum = 0;
+	int index_Card = 0;
 	int cardColor_size = 100;
 	int cardColor_pad = 20;
 	glm::vec2 positionCards;
@@ -260,14 +275,14 @@ private:
 
 	// main storage
 
-	map<std::string, ofColor> colorNameMap;
+	map<std::string, ofColor> colors_NamesMAP;
 
 	//-
 
 public:
 	vector<colorMapping_STRUCT> colors_STRUCT;
 
-	//--
+	//----
 
 private:
 
@@ -279,19 +294,26 @@ private:
 	// snazo wada
 	ofJson jSanzoWada;
 	vector<ofColor> colors_SanzoWada;
-	vector<std::string> colorsNames_SanzoWada;
+	vector<std::string> colors_SanzoWadaNames;
 
 	// cheprasov
 	ofJson jCheprasov;
 	vector<ofColor> colors_Cheprasov;
-	vector<std::string> colorsNames_Cheprasov;
+	vector<std::string> colors_CheprasovNames;
 
-	//-
+	// crayola
+	ofJson jCrayola;
+	vector<ofColor> colors_Crayola;
+	vector<std::string> colors_CrayolaNames;
+
+	//----
 
 	// rectangle manager system - ofxRectangle
 
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+	//-
+
 	//draggable, sortable, align...
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	std::vector<ofxRectangle> rectangles;
 	std::vector<ofRectangle *> selectedRects;
 	ofxRectangle selectedRectsBoundingBox;
@@ -379,8 +401,7 @@ private:
 	//-
 
 	void buildColors();
-
-	void refresh_Clicks();// to browsing by keys
+	void refresh_Clicks(); // to browsing by keys
 	void buildRectangles();
 	void clearInterface();
 
@@ -394,13 +415,10 @@ private:
 
 public:
 
-	// 0:PANTONE 1:OFX_NATIVE, 2:OFX_OPEN, 3:OFX_MATERIAL
-
 	ofParameter<int> index_Library{ "Library", 0, 0, 0 };
 	ofParameter<std::string> name_Library{ " ", "" };
 
 	// 0:ORIGINAL, 1:NAME, 2:HUE, 3:BRIGHTNESS, 4:SATURATION, 5:NEXT
-
 	ofParameter<int> MODE_SORTING{ "Sorting Mode", 0, 0, 4 };
 	ofParameter<std::string> MODE_SORTING_name{ " ", "" };
 
@@ -413,6 +431,6 @@ public:
 private:
 	// last clicked color box
 	std::string currName = "";
-	int currColor = -1;
+	int index_Color = -1;
 	int currColor_OriginalPos = -1;
 };

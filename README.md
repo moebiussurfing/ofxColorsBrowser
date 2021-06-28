@@ -2,28 +2,35 @@ ofxColorsBrowser
 =============================
 
 # Overview
-An **openFrameworks** add-on to browse color libraries from JSON files.  
+An **openFrameworks** add-on to browse many named color libraries imported from JSON files.  
 
-## Screenshot
-#### Pantone  
-![image](/readme_images/Capture.PNG?raw=true "image")  
+## Screenshots
 
-#### Wada Sanzo
-![image](/readme_images/Capture2.PNG?raw=true "image")
+#### Sanzo Wada
+![image](/readme_images/Capture.PNG?raw=true "image")
+
+#### Cheprasov  
+![image](/readme_images/Capture2.PNG?raw=true "image")  
+
+#### Crayola  
+![image](/readme_images/Capture3.PNG?raw=true "image")  
 
 ## Color Libraries
-  * **Pantone** (+2000 colors from a JSON file).
-  * [Wada Sanzo](https://sanzo-wada.dmbk.io/): A Dictionary of Color Combinations.
-  * **Open Color**.
-  * **OF Native** named colors
+  * **Pantone** (+2000 colors).
+  * [**Sanzo Wada**](https://github.com/dblodorn/sanzo-wada): [A Dictionary of Color Combinations](https://sanzo-wada.dmbk.io/) from **@dblodorn**.
+  * [**Crayola**](https://gist.github.com/jjdelc/1868136) from **@jjdelc**.
+  * [**Cheprasov**](https://github.com/cheprasov/json-colors) from **@cheprasov**.
+  * [**Open Color**](https://github.com/pd-andy/ofxOpenColor) from **@pd-andy**.
+  * **OF Native** named colors.
 
 ## Features
-* Technically updatable with other parsed libraries (JSON, XML, or other colors libs/addons).
-* Sort by Hue, Name or with the original sorting.
+* Updatable with other text files based libraries (JSON, XML, or other colors libs/addons).
+* Cards with seteable amount of colors.
+* Sort the library by Hue, Name or with the original sorting.
 * **GUI** with clickable colored and named boxes. 
-* Interface can be completely disabled to simplify. (But still having access to the colors)
-* Key commands, browse with arrow keys and **ofxGui** panel.
-* Basic parameters and app modes. Store / Recall settings.
+* The interface can be completely disabled to simplify. But still exposing access to the colors.
+* Key commands, browse with arrow keys and an **ofxGui** debug panel.
+* Basic exposed parameters to integrate in other apps/add-ons. Store/Recall settings.
 
 ## Usage
  
@@ -39,7 +46,7 @@ ofFloatColor color_BACK;
 ```.cpp
 ofApp::setup()
 {
-  colorBrowser.setup_colorBACK(color_BACK); // set local target color auto-receiver
+  colorBrowser.setup_colorBACK(color_BACK); // set local target color
   colorBrowser.setup();
 }
 
@@ -75,7 +82,7 @@ Already included into ```/libs```:
 Addon by **@moebiusSurfing**  
 *(ManuMolina). 2020.*  
 
-Thanks to **@bakercp**, **@armadillu** and **@pd-andy** for their repositories.  
+_Thanks to **@bakercp**, **@armadillu**, **@pd-andy** and all the JSON packers linked above for their repositories._  
 
 ## License
 *MIT License.*

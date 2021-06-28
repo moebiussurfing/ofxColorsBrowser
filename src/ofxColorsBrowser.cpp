@@ -53,14 +53,19 @@ ofxColorsBrowser::ofxColorsBrowser()
 	//-
 
 	path_Global = "ofxColorsBrowser/";
-	
+	path_FileSettings = path_Global + "AppSettings.xml";
+
+	//-
+
 	// library files
 	path_FilePantone = path_Global + "pantone-colors.json";
 	path_FileSanzoWada = path_Global + "SANZO_WADA_Library.json";
-	path_FileCheprasov = path_Global + "cheprasov-colors.json";
 	path_FileMaterial = path_Global + "material-colors.json";
+	path_FileCheprasov = path_Global + "cheprasov-colors.json";
+	path_FileCrayola = path_Global + "crayola.json";
+	// * add your new libs here!
 
-	path_FileSettings = path_Global + "AppSettings.xml";
+	//-
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
 
@@ -70,26 +75,27 @@ ofxColorsBrowser::ofxColorsBrowser()
 	helpInfo += "\n";
 	helpInfo += "KEYS";
 	helpInfo += "\n\n";
-	//helpInfo += "\n";
-	helpInfo += "Mouse Click           Browse Colors";
+	helpInfo += "Mouse Click           Colors  ";
 	helpInfo += "\n";
-	helpInfo += "Up|Down|Left|Right    ";
+	helpInfo += "Up|Down|Left|Right            ";
 	helpInfo += "\n";
-	helpInfo += "BackSpace             Library";
 	helpInfo += "\n";
-	helpInfo += "Tab                   Sorting Type";
+	helpInfo += "BackSpace             Library ";
 	helpInfo += "\n";
-	helpInfo += "adws                  Browse Cards";
 	helpInfo += "\n";
-	helpInfo += "r                     Random Card";
+	helpInfo += "space|a|d|w|s|        Cards   ";
 	helpInfo += "\n";
-	helpInfo += "01234                 Sort Type";
+	helpInfo += "r                     Random  ";
 	helpInfo += "\n";
-	helpInfo += "K                     Keys";
 	helpInfo += "\n";
-	helpInfo += "D                     Debug";
+	helpInfo += "Tab|0|1|2|3|4         Sorting ";
 	helpInfo += "\n";
-	helpInfo += "g                     Gui";
+	helpInfo += "\n";
+	helpInfo += "K                     Keys    ";
+	helpInfo += "\n";
+	helpInfo += "D                     Debug   ";
+	helpInfo += "\n";
+	helpInfo += "g                     Gui     ";
 	helpInfo += "\n";
 	//helpInfo += "G                     Gui Panel";
 	//helpInfo += "\n";
@@ -101,13 +107,13 @@ void ofxColorsBrowser::buildColors()
 	ofLogNotice(__FUNCTION__);
 
 	colors_STRUCT.clear();
-	colorNameMap.clear();
+	colors_NamesMAP.clear();
 	//TODO: seems is not erasing last name colors..?
 
 	//-
 
-	cardNum = 0;
-	currColor = 0;
+	index_Card = 0;
+	index_Color = 0;
 
 	//--
 
@@ -118,15 +124,16 @@ void ofxColorsBrowser::buildColors()
 		ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
 
 		// ideal card size and layout
-		cardSize = 7;
-		bShowCards = true;
-		cardsPerRow = 10;
+		{
+			amtColorsInCard = 7;
+			amtCardsInRow = 10;
 
-		boxSize = 15;
-		boxPad = 0.5;
+			boxSize = 15;
+			boxPad = 0.5;
 
-		cardColor_size = 100;
-		cardColor_pad = 20;
+			cardColor_size = 100;
+			cardColor_pad = 20;
+		}
 
 		//-
 
@@ -139,7 +146,7 @@ void ofxColorsBrowser::buildColors()
 			c = colors_Pantone[i];
 			{
 				// 1. names map
-				colorNameMap[name] = c;
+				colors_NamesMAP[name] = c;
 
 				// 2. struct
 				colorMapping_STRUCT myColor;
@@ -163,28 +170,29 @@ void ofxColorsBrowser::buildColors()
 		ofLogNotice(__FUNCTION__) << "OFX_SANZOWADA_COLORS";
 
 		// ideal card size and layout
-		cardSize = 1;
-		bShowCards = true;
+		{
+			amtColorsInCard = 8;
+			amtCardsInRow = 2;
 
-		cardsPerRow = 25;
-		boxSize = 45;
-		boxPad = 0.5;
-
-		cardColor_size = 100;
-		cardColor_pad = 20;
+			boxSize = 52;
+			boxPad = 1;
+			
+			cardColor_size = 100;
+			cardColor_pad = 20;
+		}
 
 		//-
 
 		std::string name;
 		ofColor c;
 
-		for (int i = 0; i < colorsNames_SanzoWada.size(); i++)
+		for (int i = 0; i < colors_SanzoWadaNames.size(); i++)
 		{
-			name = colorsNames_SanzoWada[i];
+			name = colors_SanzoWadaNames[i];
 			c = colors_SanzoWada[i];
 			{
 				// 1. names map
-				colorNameMap[name] = c;
+				colors_NamesMAP[name] = c;
 
 				// 2. struct
 				colorMapping_STRUCT myColor;
@@ -205,168 +213,157 @@ void ofxColorsBrowser::buildColors()
 
 	else if (index_Library == OFX_COLOR_NATIVE)
 	{
-		// dessired distribution for this palette
-		cardSize = 1;
-		cardsPerRow = 14;
-		bShowCards = true;
-
-		boxSize = 40;
-		boxPad = 2;
-
-		cardColor_size = 100;
-		cardColor_pad = 10;
-
 		// build a map from name to ofColor of all the named OF colors;
-		colorNameMap["white"] = ofColor::white;
-		colorNameMap["gray"] = ofColor::gray;
-		colorNameMap["black"] = ofColor::black;
-		colorNameMap["red"] = ofColor::red;
-		colorNameMap["green"] = ofColor::green;
-		colorNameMap["blue"] = ofColor::blue;
-		colorNameMap["cyan"] = ofColor::cyan;
-		colorNameMap["magenta"] = ofColor::magenta;
-		colorNameMap["yellow"] = ofColor::yellow;
-		colorNameMap["aliceBlue"] = ofColor::aliceBlue;
-		colorNameMap["antiqueWhite"] = ofColor::antiqueWhite;
-		colorNameMap["aqua"] = ofColor::aqua;
-		colorNameMap["aquamarine"] = ofColor::aquamarine;
-		colorNameMap["azure"] = ofColor::azure;
-		colorNameMap["beige"] = ofColor::beige;
-		colorNameMap["bisque"] = ofColor::bisque;
-		colorNameMap["blanchedAlmond"] = ofColor::blanchedAlmond;
-		colorNameMap["blueViolet"] = ofColor::blueViolet;
-		colorNameMap["brown"] = ofColor::brown;
-		colorNameMap["burlyWood"] = ofColor::burlyWood;
-		colorNameMap["cadetBlue"] = ofColor::cadetBlue;
-		colorNameMap["chartreuse"] = ofColor::chartreuse;
-		colorNameMap["chocolate"] = ofColor::chocolate;
-		colorNameMap["coral"] = ofColor::coral;
-		colorNameMap["cornflowerBlue"] = ofColor::cornflowerBlue;
-		colorNameMap["cornsilk"] = ofColor::cornsilk;
-		colorNameMap["crimson"] = ofColor::crimson;
-		colorNameMap["darkBlue"] = ofColor::darkBlue;
-		colorNameMap["darkCyan"] = ofColor::darkCyan;
-		colorNameMap["darkGoldenRod"] = ofColor::darkGoldenRod;
-		colorNameMap["darkGray"] = ofColor::darkGray;
-		colorNameMap["darkGrey"] = ofColor::darkGrey;
-		colorNameMap["darkGreen"] = ofColor::darkGreen;
-		colorNameMap["darkKhaki"] = ofColor::darkKhaki;
-		colorNameMap["darkMagenta"] = ofColor::darkMagenta;
-		colorNameMap["darkOliveGreen"] = ofColor::darkOliveGreen;
-		colorNameMap["darkorange"] = ofColor::darkorange;
-		colorNameMap["darkOrchid"] = ofColor::darkOrchid;
-		colorNameMap["darkRed"] = ofColor::darkRed;
-		colorNameMap["darkSalmon"] = ofColor::darkSalmon;
-		colorNameMap["darkSeaGreen"] = ofColor::darkSeaGreen;
-		colorNameMap["darkSlateBlue"] = ofColor::darkSlateBlue;
-		colorNameMap["darkSlateGray"] = ofColor::darkSlateGray;
-		colorNameMap["darkSlateGrey"] = ofColor::darkSlateGrey;
-		colorNameMap["darkTurquoise"] = ofColor::darkTurquoise;
-		colorNameMap["darkViolet"] = ofColor::darkViolet;
-		colorNameMap["deepPink"] = ofColor::deepPink;
-		colorNameMap["deepSkyBlue"] = ofColor::deepSkyBlue;
-		colorNameMap["dimGray"] = ofColor::dimGray;
-		colorNameMap["dimGrey"] = ofColor::dimGrey;
-		colorNameMap["dodgerBlue"] = ofColor::dodgerBlue;
-		colorNameMap["fireBrick"] = ofColor::fireBrick;
-		colorNameMap["floralWhite"] = ofColor::floralWhite;
-		colorNameMap["forestGreen"] = ofColor::forestGreen;
-		colorNameMap["fuchsia"] = ofColor::fuchsia;
-		colorNameMap["gainsboro"] = ofColor::gainsboro;
-		colorNameMap["ghostWhite"] = ofColor::ghostWhite;
-		colorNameMap["gold"] = ofColor::gold;
-		colorNameMap["goldenRod"] = ofColor::goldenRod;
-		colorNameMap["grey"] = ofColor::grey;
-		colorNameMap["greenYellow"] = ofColor::greenYellow;
-		colorNameMap["honeyDew"] = ofColor::honeyDew;
-		colorNameMap["hotPink"] = ofColor::hotPink;
-		colorNameMap["indianRed "] = ofColor::indianRed;
-		colorNameMap["indigo "] = ofColor::indigo;
-		colorNameMap["ivory"] = ofColor::ivory;
-		colorNameMap["khaki"] = ofColor::khaki;
-		colorNameMap["lavender"] = ofColor::lavender;
-		colorNameMap["lavenderBlush"] = ofColor::lavenderBlush;
-		colorNameMap["lawnGreen"] = ofColor::lawnGreen;
-		colorNameMap["lemonChiffon"] = ofColor::lemonChiffon;
-		colorNameMap["lightBlue"] = ofColor::lightBlue;
-		colorNameMap["lightCoral"] = ofColor::lightCoral;
-		colorNameMap["lightCyan"] = ofColor::lightCyan;
-		colorNameMap["lightGoldenRodYellow"] = ofColor::lightGoldenRodYellow;
-		colorNameMap["lightGray"] = ofColor::lightGray;
-		colorNameMap["lightGrey"] = ofColor::lightGrey;
-		colorNameMap["lightGreen"] = ofColor::lightGreen;
-		colorNameMap["lightPink"] = ofColor::lightPink;
-		colorNameMap["lightSalmon"] = ofColor::lightSalmon;
-		colorNameMap["lightSeaGreen"] = ofColor::lightSeaGreen;
-		colorNameMap["lightSkyBlue"] = ofColor::lightSkyBlue;
-		colorNameMap["lightSlateGray"] = ofColor::lightSlateGray;
-		colorNameMap["lightSlateGrey"] = ofColor::lightSlateGrey;
-		colorNameMap["lightSteelBlue"] = ofColor::lightSteelBlue;
-		colorNameMap["lightYellow"] = ofColor::lightYellow;
-		colorNameMap["lime"] = ofColor::lime;
-		colorNameMap["limeGreen"] = ofColor::limeGreen;
-		colorNameMap["linen"] = ofColor::linen;
-		colorNameMap["maroon"] = ofColor::maroon;
-		colorNameMap["mediumAquaMarine"] = ofColor::mediumAquaMarine;
-		colorNameMap["mediumBlue"] = ofColor::mediumBlue;
-		colorNameMap["mediumOrchid"] = ofColor::mediumOrchid;
-		colorNameMap["mediumPurple"] = ofColor::mediumPurple;
-		colorNameMap["mediumSeaGreen"] = ofColor::mediumSeaGreen;
-		colorNameMap["mediumSlateBlue"] = ofColor::mediumSlateBlue;
-		colorNameMap["mediumSpringGreen"] = ofColor::mediumSpringGreen;
-		colorNameMap["mediumTurquoise"] = ofColor::mediumTurquoise;
-		colorNameMap["mediumVioletRed"] = ofColor::mediumVioletRed;
-		colorNameMap["midnightBlue"] = ofColor::midnightBlue;
-		colorNameMap["mintCream"] = ofColor::mintCream;
-		colorNameMap["mistyRose"] = ofColor::mistyRose;
-		colorNameMap["moccasin"] = ofColor::moccasin;
-		colorNameMap["navajoWhite"] = ofColor::navajoWhite;
-		colorNameMap["navy"] = ofColor::navy;
-		colorNameMap["oldLace"] = ofColor::oldLace;
-		colorNameMap["olive"] = ofColor::olive;
-		colorNameMap["oliveDrab"] = ofColor::oliveDrab;
-		colorNameMap["orange"] = ofColor::orange;
-		colorNameMap["orangeRed"] = ofColor::orangeRed;
-		colorNameMap["orchid"] = ofColor::orchid;
-		colorNameMap["paleGoldenRod"] = ofColor::paleGoldenRod;
-		colorNameMap["paleGreen"] = ofColor::paleGreen;
-		colorNameMap["paleTurquoise"] = ofColor::paleTurquoise;
-		colorNameMap["paleVioletRed"] = ofColor::paleVioletRed;
-		colorNameMap["papayaWhip"] = ofColor::papayaWhip;
-		colorNameMap["peachPuff"] = ofColor::peachPuff;
-		colorNameMap["peru"] = ofColor::peru;
-		colorNameMap["pink"] = ofColor::pink;
-		colorNameMap["plum"] = ofColor::plum;
-		colorNameMap["powderBlue"] = ofColor::powderBlue;
-		colorNameMap["purple"] = ofColor::purple;
-		colorNameMap["rosyBrown"] = ofColor::rosyBrown;
-		colorNameMap["royalBlue"] = ofColor::royalBlue;
-		colorNameMap["saddleBrown"] = ofColor::saddleBrown;
-		colorNameMap["salmon"] = ofColor::salmon;
-		colorNameMap["sandyBrown"] = ofColor::sandyBrown;
-		colorNameMap["seaGreen"] = ofColor::seaGreen;
-		colorNameMap["seaShell"] = ofColor::seaShell;
-		colorNameMap["sienna"] = ofColor::sienna;
-		colorNameMap["silver"] = ofColor::silver;
-		colorNameMap["skyBlue"] = ofColor::skyBlue;
-		colorNameMap["slateBlue"] = ofColor::slateBlue;
-		colorNameMap["slateGray"] = ofColor::slateGray;
-		colorNameMap["slateGrey"] = ofColor::slateGrey;
-		colorNameMap["snow"] = ofColor::snow;
-		colorNameMap["springGreen"] = ofColor::springGreen;
-		colorNameMap["steelBlue"] = ofColor::steelBlue;
-		colorNameMap["tan"] = ofColor::tan;
-		colorNameMap["teal"] = ofColor::teal;
-		colorNameMap["thistle"] = ofColor::thistle;
-		colorNameMap["tomato"] = ofColor::tomato;
-		colorNameMap["turquoise"] = ofColor::turquoise;
-		colorNameMap["violet"] = ofColor::violet;
-		colorNameMap["wheat"] = ofColor::wheat;
-		colorNameMap["whiteSmoke"] = ofColor::whiteSmoke;
-		colorNameMap["yellowGreen"] = ofColor::yellowGreen;
+		colors_NamesMAP["white"] = ofColor::white;
+		colors_NamesMAP["gray"] = ofColor::gray;
+		colors_NamesMAP["black"] = ofColor::black;
+		colors_NamesMAP["red"] = ofColor::red;
+		colors_NamesMAP["green"] = ofColor::green;
+		colors_NamesMAP["blue"] = ofColor::blue;
+		colors_NamesMAP["cyan"] = ofColor::cyan;
+		colors_NamesMAP["magenta"] = ofColor::magenta;
+		colors_NamesMAP["yellow"] = ofColor::yellow;
+		colors_NamesMAP["aliceBlue"] = ofColor::aliceBlue;
+		colors_NamesMAP["antiqueWhite"] = ofColor::antiqueWhite;
+		colors_NamesMAP["aqua"] = ofColor::aqua;
+		colors_NamesMAP["aquamarine"] = ofColor::aquamarine;
+		colors_NamesMAP["azure"] = ofColor::azure;
+		colors_NamesMAP["beige"] = ofColor::beige;
+		colors_NamesMAP["bisque"] = ofColor::bisque;
+		colors_NamesMAP["blanchedAlmond"] = ofColor::blanchedAlmond;
+		colors_NamesMAP["blueViolet"] = ofColor::blueViolet;
+		colors_NamesMAP["brown"] = ofColor::brown;
+		colors_NamesMAP["burlyWood"] = ofColor::burlyWood;
+		colors_NamesMAP["cadetBlue"] = ofColor::cadetBlue;
+		colors_NamesMAP["chartreuse"] = ofColor::chartreuse;
+		colors_NamesMAP["chocolate"] = ofColor::chocolate;
+		colors_NamesMAP["coral"] = ofColor::coral;
+		colors_NamesMAP["cornflowerBlue"] = ofColor::cornflowerBlue;
+		colors_NamesMAP["cornsilk"] = ofColor::cornsilk;
+		colors_NamesMAP["crimson"] = ofColor::crimson;
+		colors_NamesMAP["darkBlue"] = ofColor::darkBlue;
+		colors_NamesMAP["darkCyan"] = ofColor::darkCyan;
+		colors_NamesMAP["darkGoldenRod"] = ofColor::darkGoldenRod;
+		colors_NamesMAP["darkGray"] = ofColor::darkGray;
+		colors_NamesMAP["darkGrey"] = ofColor::darkGrey;
+		colors_NamesMAP["darkGreen"] = ofColor::darkGreen;
+		colors_NamesMAP["darkKhaki"] = ofColor::darkKhaki;
+		colors_NamesMAP["darkMagenta"] = ofColor::darkMagenta;
+		colors_NamesMAP["darkOliveGreen"] = ofColor::darkOliveGreen;
+		colors_NamesMAP["darkorange"] = ofColor::darkorange;
+		colors_NamesMAP["darkOrchid"] = ofColor::darkOrchid;
+		colors_NamesMAP["darkRed"] = ofColor::darkRed;
+		colors_NamesMAP["darkSalmon"] = ofColor::darkSalmon;
+		colors_NamesMAP["darkSeaGreen"] = ofColor::darkSeaGreen;
+		colors_NamesMAP["darkSlateBlue"] = ofColor::darkSlateBlue;
+		colors_NamesMAP["darkSlateGray"] = ofColor::darkSlateGray;
+		colors_NamesMAP["darkSlateGrey"] = ofColor::darkSlateGrey;
+		colors_NamesMAP["darkTurquoise"] = ofColor::darkTurquoise;
+		colors_NamesMAP["darkViolet"] = ofColor::darkViolet;
+		colors_NamesMAP["deepPink"] = ofColor::deepPink;
+		colors_NamesMAP["deepSkyBlue"] = ofColor::deepSkyBlue;
+		colors_NamesMAP["dimGray"] = ofColor::dimGray;
+		colors_NamesMAP["dimGrey"] = ofColor::dimGrey;
+		colors_NamesMAP["dodgerBlue"] = ofColor::dodgerBlue;
+		colors_NamesMAP["fireBrick"] = ofColor::fireBrick;
+		colors_NamesMAP["floralWhite"] = ofColor::floralWhite;
+		colors_NamesMAP["forestGreen"] = ofColor::forestGreen;
+		colors_NamesMAP["fuchsia"] = ofColor::fuchsia;
+		colors_NamesMAP["gainsboro"] = ofColor::gainsboro;
+		colors_NamesMAP["ghostWhite"] = ofColor::ghostWhite;
+		colors_NamesMAP["gold"] = ofColor::gold;
+		colors_NamesMAP["goldenRod"] = ofColor::goldenRod;
+		colors_NamesMAP["grey"] = ofColor::grey;
+		colors_NamesMAP["greenYellow"] = ofColor::greenYellow;
+		colors_NamesMAP["honeyDew"] = ofColor::honeyDew;
+		colors_NamesMAP["hotPink"] = ofColor::hotPink;
+		colors_NamesMAP["indianRed "] = ofColor::indianRed;
+		colors_NamesMAP["indigo "] = ofColor::indigo;
+		colors_NamesMAP["ivory"] = ofColor::ivory;
+		colors_NamesMAP["khaki"] = ofColor::khaki;
+		colors_NamesMAP["lavender"] = ofColor::lavender;
+		colors_NamesMAP["lavenderBlush"] = ofColor::lavenderBlush;
+		colors_NamesMAP["lawnGreen"] = ofColor::lawnGreen;
+		colors_NamesMAP["lemonChiffon"] = ofColor::lemonChiffon;
+		colors_NamesMAP["lightBlue"] = ofColor::lightBlue;
+		colors_NamesMAP["lightCoral"] = ofColor::lightCoral;
+		colors_NamesMAP["lightCyan"] = ofColor::lightCyan;
+		colors_NamesMAP["lightGoldenRodYellow"] = ofColor::lightGoldenRodYellow;
+		colors_NamesMAP["lightGray"] = ofColor::lightGray;
+		colors_NamesMAP["lightGrey"] = ofColor::lightGrey;
+		colors_NamesMAP["lightGreen"] = ofColor::lightGreen;
+		colors_NamesMAP["lightPink"] = ofColor::lightPink;
+		colors_NamesMAP["lightSalmon"] = ofColor::lightSalmon;
+		colors_NamesMAP["lightSeaGreen"] = ofColor::lightSeaGreen;
+		colors_NamesMAP["lightSkyBlue"] = ofColor::lightSkyBlue;
+		colors_NamesMAP["lightSlateGray"] = ofColor::lightSlateGray;
+		colors_NamesMAP["lightSlateGrey"] = ofColor::lightSlateGrey;
+		colors_NamesMAP["lightSteelBlue"] = ofColor::lightSteelBlue;
+		colors_NamesMAP["lightYellow"] = ofColor::lightYellow;
+		colors_NamesMAP["lime"] = ofColor::lime;
+		colors_NamesMAP["limeGreen"] = ofColor::limeGreen;
+		colors_NamesMAP["linen"] = ofColor::linen;
+		colors_NamesMAP["maroon"] = ofColor::maroon;
+		colors_NamesMAP["mediumAquaMarine"] = ofColor::mediumAquaMarine;
+		colors_NamesMAP["mediumBlue"] = ofColor::mediumBlue;
+		colors_NamesMAP["mediumOrchid"] = ofColor::mediumOrchid;
+		colors_NamesMAP["mediumPurple"] = ofColor::mediumPurple;
+		colors_NamesMAP["mediumSeaGreen"] = ofColor::mediumSeaGreen;
+		colors_NamesMAP["mediumSlateBlue"] = ofColor::mediumSlateBlue;
+		colors_NamesMAP["mediumSpringGreen"] = ofColor::mediumSpringGreen;
+		colors_NamesMAP["mediumTurquoise"] = ofColor::mediumTurquoise;
+		colors_NamesMAP["mediumVioletRed"] = ofColor::mediumVioletRed;
+		colors_NamesMAP["midnightBlue"] = ofColor::midnightBlue;
+		colors_NamesMAP["mintCream"] = ofColor::mintCream;
+		colors_NamesMAP["mistyRose"] = ofColor::mistyRose;
+		colors_NamesMAP["moccasin"] = ofColor::moccasin;
+		colors_NamesMAP["navajoWhite"] = ofColor::navajoWhite;
+		colors_NamesMAP["navy"] = ofColor::navy;
+		colors_NamesMAP["oldLace"] = ofColor::oldLace;
+		colors_NamesMAP["olive"] = ofColor::olive;
+		colors_NamesMAP["oliveDrab"] = ofColor::oliveDrab;
+		colors_NamesMAP["orange"] = ofColor::orange;
+		colors_NamesMAP["orangeRed"] = ofColor::orangeRed;
+		colors_NamesMAP["orchid"] = ofColor::orchid;
+		colors_NamesMAP["paleGoldenRod"] = ofColor::paleGoldenRod;
+		colors_NamesMAP["paleGreen"] = ofColor::paleGreen;
+		colors_NamesMAP["paleTurquoise"] = ofColor::paleTurquoise;
+		colors_NamesMAP["paleVioletRed"] = ofColor::paleVioletRed;
+		colors_NamesMAP["papayaWhip"] = ofColor::papayaWhip;
+		colors_NamesMAP["peachPuff"] = ofColor::peachPuff;
+		colors_NamesMAP["peru"] = ofColor::peru;
+		colors_NamesMAP["pink"] = ofColor::pink;
+		colors_NamesMAP["plum"] = ofColor::plum;
+		colors_NamesMAP["powderBlue"] = ofColor::powderBlue;
+		colors_NamesMAP["purple"] = ofColor::purple;
+		colors_NamesMAP["rosyBrown"] = ofColor::rosyBrown;
+		colors_NamesMAP["royalBlue"] = ofColor::royalBlue;
+		colors_NamesMAP["saddleBrown"] = ofColor::saddleBrown;
+		colors_NamesMAP["salmon"] = ofColor::salmon;
+		colors_NamesMAP["sandyBrown"] = ofColor::sandyBrown;
+		colors_NamesMAP["seaGreen"] = ofColor::seaGreen;
+		colors_NamesMAP["seaShell"] = ofColor::seaShell;
+		colors_NamesMAP["sienna"] = ofColor::sienna;
+		colors_NamesMAP["silver"] = ofColor::silver;
+		colors_NamesMAP["skyBlue"] = ofColor::skyBlue;
+		colors_NamesMAP["slateBlue"] = ofColor::slateBlue;
+		colors_NamesMAP["slateGray"] = ofColor::slateGray;
+		colors_NamesMAP["slateGrey"] = ofColor::slateGrey;
+		colors_NamesMAP["snow"] = ofColor::snow;
+		colors_NamesMAP["springGreen"] = ofColor::springGreen;
+		colors_NamesMAP["steelBlue"] = ofColor::steelBlue;
+		colors_NamesMAP["tan"] = ofColor::tan;
+		colors_NamesMAP["teal"] = ofColor::teal;
+		colors_NamesMAP["thistle"] = ofColor::thistle;
+		colors_NamesMAP["tomato"] = ofColor::tomato;
+		colors_NamesMAP["turquoise"] = ofColor::turquoise;
+		colors_NamesMAP["violet"] = ofColor::violet;
+		colors_NamesMAP["wheat"] = ofColor::wheat;
+		colors_NamesMAP["whiteSmoke"] = ofColor::whiteSmoke;
+		colors_NamesMAP["yellowGreen"] = ofColor::yellowGreen;
 
 		int i = 0;
-		for (auto const &x : colorNameMap)
+		for (auto const &x : colors_NamesMAP)
 		{
 			// std::cout << x.first  // string (key)
 			// << ':'
@@ -382,8 +379,21 @@ void ofxColorsBrowser::buildColors()
 
 			i++;
 		}
-	}
 
+		//--
+
+		// dessired distribution for this palette
+		{
+			amtColorsInCard = 10;
+			amtCardsInRow = 2;
+
+			boxSize = 50;
+			boxPad = 2;
+
+			cardColor_size = 100;
+			cardColor_pad = 10;
+		}
+	}
 
 	//----
 
@@ -392,7 +402,7 @@ void ofxColorsBrowser::buildColors()
 	//TODO:
 	else if (index_Library == OFX_MATERIAL_COLOR)
 	{
-	ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
+		ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
 
 	}
 
@@ -406,16 +416,7 @@ void ofxColorsBrowser::buildColors()
 
 #define NUM_COLORS_ROW 10
 		// that's the ideal distribution for open color palette
-
-		// dessired distribution for this palette
-		cardSize = 13;
-		cardsPerRow = 1;
-		boxSize = 30;
-		boxPad = 1;
-
-		cardColor_size = 65;
-		cardColor_pad = 5;
-
+		
 		bool flipOrder = true;
 		int iFlip;
 		int pos = 0;//-1? to set correlative positions...
@@ -427,19 +428,19 @@ void ofxColorsBrowser::buildColors()
 			else iFlip = i;
 
 			// 1.
-			colorNameMap["GREY " + ofToString(i)] = oc_gray_[iFlip];
-			colorNameMap["RED " + ofToString(i)] = oc_red_[iFlip];
-			colorNameMap["PINK " + ofToString(i)] = oc_pink_[iFlip];
-			colorNameMap["GRAPE " + ofToString(i)] = oc_grape_[iFlip];
-			colorNameMap["VIOLET " + ofToString(i)] = oc_violet_[iFlip];
-			colorNameMap["INDIGO " + ofToString(i)] = oc_indigo_[iFlip];
-			colorNameMap["BLUE " + ofToString(i)] = oc_blue_[iFlip];
-			colorNameMap["CYAN " + ofToString(i)] = oc_cyan_[iFlip];
-			colorNameMap["TEAL " + ofToString(i)] = oc_teal_[iFlip];
-			colorNameMap["GREEN " + ofToString(i)] = oc_green_[iFlip];
-			colorNameMap["LIME " + ofToString(i)] = oc_lime_[iFlip];
-			colorNameMap["YELLOW " + ofToString(i)] = oc_yellow_[iFlip];
-			colorNameMap["ORANGE " + ofToString(i)] = oc_orange_[iFlip];
+			colors_NamesMAP["GREY " + ofToString(i)] = oc_gray_[iFlip];
+			colors_NamesMAP["RED " + ofToString(i)] = oc_red_[iFlip];
+			colors_NamesMAP["PINK " + ofToString(i)] = oc_pink_[iFlip];
+			colors_NamesMAP["GRAPE " + ofToString(i)] = oc_grape_[iFlip];
+			colors_NamesMAP["VIOLET " + ofToString(i)] = oc_violet_[iFlip];
+			colors_NamesMAP["INDIGO " + ofToString(i)] = oc_indigo_[iFlip];
+			colors_NamesMAP["BLUE " + ofToString(i)] = oc_blue_[iFlip];
+			colors_NamesMAP["CYAN " + ofToString(i)] = oc_cyan_[iFlip];
+			colors_NamesMAP["TEAL " + ofToString(i)] = oc_teal_[iFlip];
+			colors_NamesMAP["GREEN " + ofToString(i)] = oc_green_[iFlip];
+			colors_NamesMAP["LIME " + ofToString(i)] = oc_lime_[iFlip];
+			colors_NamesMAP["YELLOW " + ofToString(i)] = oc_yellow_[iFlip];
+			colors_NamesMAP["ORANGE " + ofToString(i)] = oc_orange_[iFlip];
 
 			// 2. vector
 			colorMapping_STRUCT colorGREY;
@@ -514,6 +515,20 @@ void ofxColorsBrowser::buildColors()
 			colors_STRUCT.push_back(colorYELLOW);
 			colors_STRUCT.push_back(colorORANGE);
 		}
+
+		//-
+
+		// ideal card size and layout
+		{
+			amtColorsInCard = 13; //  important to mantain gradient
+			amtCardsInRow = 1;
+
+			boxSize = 50;
+			boxPad = 1;
+
+			cardColor_size = 70;
+			cardColor_pad = 5;
+		}
 	}
 
 	//----
@@ -525,28 +540,29 @@ void ofxColorsBrowser::buildColors()
 		ofLogNotice(__FUNCTION__) << "OFX_CHEPRASOV";
 
 		// ideal card size and layout
-		cardSize = 7;
-		bShowCards = true;
-		cardsPerRow = 10;
+		{
+			amtColorsInCard = 7;
+			amtCardsInRow = 9;
 
-		boxSize = 15;
-		boxPad = 0.5;
+			boxSize = 20;
+			boxPad = 1;
 
-		cardColor_size = 100;
-		cardColor_pad = 20;
+			cardColor_size = 100;
+			cardColor_pad = 20;
+		}
 
 		//-
 
 		std::string name;
 		ofColor c;
 
-		for (int i = 0; i < colorsNames_Cheprasov.size(); i++)
+		for (int i = 0; i < colors_CheprasovNames.size(); i++)
 		{
-			name = colorsNames_Cheprasov[i];
+			name = colors_CheprasovNames[i];
 			c = colors_Cheprasov[i];
 			{
 				// 1. names map
-				colorNameMap[name] = c;
+				colors_NamesMAP[name] = c;
 
 				// 2. struct
 				colorMapping_STRUCT myColor;
@@ -560,7 +576,64 @@ void ofxColorsBrowser::buildColors()
 		}
 		ofLogNotice(__FUNCTION__);
 	}
+
+	//----
+
+	// 6. OFX_CRAYOLA
+
+	else if (index_Library == OFX_CRAYOLA)
+	{
+		ofLogNotice(__FUNCTION__) << "OFX_CRAYOLA";
+
+		// ideal card size and layout
+		{
+			//TODO: responsive
+			int count = colors_STRUCT.size();
+			int w = ofGetWidth() - 300;
+			int h = ofGetHeight() - 200;
+
+			amtColorsInCard = 7;
+			amtCardsInRow = 3;
+
+			boxSize = 60;
+			boxPad = 1;
+
+			cardColor_size = 100;
+			cardColor_pad = 20;
+		}
+
+		//-
+
+		std::string name;
+		ofColor c;
+
+		for (int i = 0; i < colors_CrayolaNames.size(); i++)
+		{
+			name = colors_CrayolaNames[i];
+			c = colors_Crayola[i];
+			{
+				// 1. names map
+				colors_NamesMAP[name] = c;
+
+				// 2. struct
+				colorMapping_STRUCT myColor;
+				myColor.name = name;
+				myColor.color = c;
+				myColor.position = i;
+
+				// 3. add color to vector
+				colors_STRUCT.push_back(myColor);
+			}
+		}
+		ofLogNotice(__FUNCTION__);
+	}
+
+	// * add your new libs here!
 }
+
+//--
+
+// importers
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::load_Pantone_JSON()
@@ -612,7 +685,7 @@ void ofxColorsBrowser::load_SanzoWadaDictionary_JSON()
 	ofLogNotice(__FUNCTION__);
 
 	colors_SanzoWada.clear();
-	colorsNames_SanzoWada.clear();
+	colors_SanzoWadaNames.clear();
 
 	ofFile file(path_FileSanzoWada);
 	if (file.exists())
@@ -626,17 +699,76 @@ void ofxColorsBrowser::load_SanzoWadaDictionary_JSON()
 			string _name = jc["name"];
 			string _hex = jc["hex"];
 
-			colorsNames_SanzoWada.push_back(_name);
-
 			ofStringReplace(_hex, "#", "");
 			ofColor c;
 			hexToColor(c, _hex);
+
+			colors_SanzoWadaNames.push_back(_name);
 			colors_SanzoWada.push_back(c);
 		}
 	}
 	else
 	{
 		ofLogNotice(__FUNCTION__) << "FILE '" << path_FilePantone << "' NOT FOUND!";
+	}
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::load_Material_JSON()
+{
+	//TODO:
+
+	ofLogNotice(__FUNCTION__);
+
+	colors_MaterialNames.clear();
+	colors_Material.clear();
+
+	ofFile file(path_FileMaterial);
+	if (file.exists())
+	{
+		file >> js;
+		ofLogNotice(__FUNCTION__) << js;
+
+		int i = 0;
+		for (auto &jp : js)
+		{
+			//		ofLogNotice(__FUNCTION__) << "----------------------\n" << "SUB-PALETTE  [" << i << "] " << jp;
+			//		//ofLogNotice(__FUNCTION__) << ofToString(jp[i]); jp.get(i);
+			//		ofLogNotice(__FUNCTION__) << jp[i];
+
+			//		int c = 0;
+			//		for (auto &jc : jp)
+			//		{
+			//			ofLogNotice(__FUNCTION__) << "COLOR  [" << i << "] " << jc;// << " " << jp[i];
+
+			//			for (auto &jt : jc)
+			//			{
+			//				colors_MaterialNames.push_back(tagsMaterial[c]);
+			//				ofLogNotice(__FUNCTION__) << "Name:" << ofToString(tagsMaterial[c]) << " Hex:" << ofToString(jc);
+			//			}
+
+			//			//colors_MaterialNames.push_back(jsName);
+			//			c++;
+			//		}
+
+			//		//i = 0;
+			//		//for (auto &jsValues : js["values"])
+			//		//{
+			//		//	//ofLogNotice(__FUNCTION__) << "VALUES ["<<i<<"] "<<jsValues<<endl;
+			//		//	ofColor c;
+			//		//	std::string colorHEXcode = ofToString(jsValues);
+			//		//	vector<std::string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
+			//		//	std::string myCol = colorHEXcode_VEC[1];
+			//		//	vector<std::string> myCol2 = ofSplitString(myCol, "\"");
+			//		//	hexToColor(c, myCol2[0]);
+
+			//		//	colors_Pantone.push_back(c);
+			//		i++;
+		}
+	}
+	else
+	{
+		ofLogNotice(__FUNCTION__) << "FILE '" << path_FileMaterial << "' NOT FOUND!";
 	}
 }
 
@@ -648,7 +780,7 @@ void ofxColorsBrowser::load_Cheprasov_JSON()
 	ofLogNotice(__FUNCTION__);
 
 	colors_Cheprasov.clear();
-	colorsNames_Cheprasov.clear();
+	colors_CheprasovNames.clear();
 
 	ofFile file(path_FileCheprasov);
 	if (file.exists())
@@ -662,12 +794,11 @@ void ofxColorsBrowser::load_Cheprasov_JSON()
 			string _name = jc["name"];
 			string _hex = jc["hex"];
 
-			colorsNames_Cheprasov.push_back(_name);
-
 			ofStringReplace(_hex, "#", "");
 			ofColor c;
 			hexToColor(c, _hex);
 
+			colors_CheprasovNames.push_back(_name);
 			colors_Cheprasov.push_back(c);
 		}
 	}
@@ -678,64 +809,39 @@ void ofxColorsBrowser::load_Cheprasov_JSON()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::load_Material_JSON()
+void ofxColorsBrowser::load_Crayola_JSON()
 {
-	//TODO:
+	// Taken from here: https://gist.github.com/jjdelc/1868136
 
-	//ofLogNotice(__FUNCTION__);
+	ofLogNotice(__FUNCTION__);
 
-	//colors_MaterialNames.clear();
-	//colors_Material.clear();
+	colors_Crayola.clear();
+	colors_CrayolaNames.clear();
 
-	//ofFile file(path_FileMaterial);
-	//if (file.exists())
-	//{
-	//	file >> js;
-	//	ofLogNotice(__FUNCTION__) << js;
+	ofFile file(path_FileCrayola);
+	if (file.exists())
+	{
+		file >> jCrayola;
+		ofLogNotice(__FUNCTION__) << jCrayola;
+		ofLogNotice(__FUNCTION__) << endl;
 
-	//	int i = 0;
-	//	for (auto &jp : js)
-	//	{
-	//		//TODO: parse palette colors json...
+		for (auto &jc : jCrayola)
+		{
+			string _name = jc["name"];
+			string _hex = jc["hex"];
 
-	//		ofLogNotice(__FUNCTION__) << "----------------------\n" << "SUB-PALETTE  [" << i << "] " << jp;
-	//		//ofLogNotice(__FUNCTION__) << ofToString(jp[i]); jp.get(i);
-	//		ofLogNotice(__FUNCTION__) << jp[i];
+			ofStringReplace(_hex, "#", "");
+			ofColor c;
+			hexToColor(c, _hex);
 
-	//		int c = 0;
-	//		for (auto &jc : jp)
-	//		{
-	//			ofLogNotice(__FUNCTION__) << "COLOR  [" << i << "] " << jc;// << " " << jp[i];
-
-	//			for (auto &jt : jc)
-	//			{
-	//				colors_MaterialNames.push_back(tagsMaterial[c]);
-	//				ofLogNotice(__FUNCTION__) << "Name:" << ofToString(tagsMaterial[c]) << " Hex:" << ofToString(jc);
-	//			}
-
-	//			//colors_MaterialNames.push_back(jsName);
-	//			c++;
-	//		}
-
-	//		//i = 0;
-	//		//for (auto &jsValues : js["values"])
-	//		//{
-	//		//	//ofLogNotice(__FUNCTION__) << "VALUES ["<<i<<"] "<<jsValues<<endl;
-	//		//	ofColor c;
-	//		//	std::string colorHEXcode = ofToString(jsValues);
-	//		//	vector<std::string> colorHEXcode_VEC = ofSplitString(colorHEXcode, "#");
-	//		//	std::string myCol = colorHEXcode_VEC[1];
-	//		//	vector<std::string> myCol2 = ofSplitString(myCol, "\"");
-	//		//	hexToColor(c, myCol2[0]);
-
-	//		//	colors_Pantone.push_back(c);
-	//		i++;
-	//	}
-	//}
-	//else
-	//{
-	//	ofLogNotice(__FUNCTION__) << "FILE '" << path_FileMaterial << "' NOT FOUND!";
-	//}
+			colors_CrayolaNames.push_back(_name);
+			colors_Crayola.push_back(c);
+		}
+	}
+	else
+	{
+		ofLogNotice(__FUNCTION__) << "FILE '" << path_FileCrayola << "' NOT FOUND!";
+	}
 }
 
 //--------------------------------------------------------------
@@ -766,6 +872,9 @@ void ofxColorsBrowser::setup()
 	// exclude
 	MODE_SORTING_name.setSerializable(false);
 	name_Library.setSerializable(false);
+	bShowCards.setSerializable(false);
+
+	//-
 
 	params.setName("ofxColorsBrowser");
 	paramsLayout.setName("Layout");
@@ -774,14 +883,11 @@ void ofxColorsBrowser::setup()
 	params.add(MODE_SORTING);
 	//paramsLayout.add(boxSize);
 	//paramsLayout.add(boxPad);
-	//paramsLayout.add(cardSize);
-	//paramsLayout.add(cardsPerRow);
+	//paramsLayout.add(amtColorsInCard);
+	//paramsLayout.add(amtCardsInRow);
 	//paramsLayout.add(bShowCards);
 	params.add(paramsLayout);
 	params.add(ENABLE_keys);
-
-
-	bShowCards.setSerializable(false);
 
 	//-
 
@@ -792,7 +898,7 @@ void ofxColorsBrowser::setup()
 	//-
 
 	//--------------------------------------------------------------
-	listener_ModeSorting = MODE_SORTING.newListener([this](int &i) 
+	listener_ModeSorting = MODE_SORTING.newListener([this](int &i)
 	{
 		ofLogNotice("MODE_SORTING: ") << i;
 
@@ -824,70 +930,94 @@ void ofxColorsBrowser::setup()
 
 		switch (index_Library)
 		{
-		case OFX_PANTONE_COLORS:
+		case OFX_PANTONE_COLORS:	 // 0
 			ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
 			name_Library = "Pantone";
 			break;
 
-		case OFX_SANZOWADA_COLORS:
+		case OFX_SANZOWADA_COLORS:	// 1
 			ofLogNotice(__FUNCTION__) << "OFX_SANZOWADA_COLORS";
 			name_Library = "Sanzo Wada";
 			break;
 
-		case OFX_COLOR_NATIVE:
+		case OFX_COLOR_NATIVE:		// 2
 			ofLogNotice(__FUNCTION__) << "OFX_COLOR_NATIVE";
 			name_Library = "OF Native";
 			break;
 
-		case OFX_MATERIAL_COLOR:
+		case OFX_MATERIAL_COLOR:	// 3
 			ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
 			name_Library = "Material";
 			break;
 
-		case OFX_OPEN_COLOR:
+		case OFX_OPEN_COLOR:		// 4
 			ofLogNotice(__FUNCTION__) << "OFX_OPEN_COLOR";
 			name_Library = "Open Color";
 			break;
 
-		case OFX_CHEPRASOV:
+		case OFX_CHEPRASOV:			// 5
 			ofLogNotice(__FUNCTION__) << "OFX_CHEPRASOV";
 			name_Library = "Cheprasov";
 			break;
+
+		case OFX_CRAYOLA:			// 6
+			ofLogNotice(__FUNCTION__) << "OFX_CRAYOLA";
+			name_Library = "Crayola";
+			break;
+
+			// * add your new libs here!
+
+			//
 		}
 
 		//-
 
+		// build
 		clearInterface();
 		buildColors();
 		buildRectangles();
 
 		//workflow
 		// refresh
-		MODE_SORTING = 0; // A. reset
-		//MODE_SORTING = MODE_SORTING; // B. mantain previous
+		//MODE_SORTING = 0; // A. reset
+		MODE_SORTING = MODE_SORTING; // B. mantain previous
 	});
 
 	//----
 
+	index_Library.setMax(OFXCOLORSBROWSER__COUNT - 1);
+
+
+	//----
+
 	// read json files
-	index_Library.setMax(5);
 
-	//-
-
-	// 1. pantone colors
+	// 0. pantone colors
 	load_Pantone_JSON();
 
-	// 2. sanzo colors
+	// 1. sanzo colors
 	load_SanzoWadaDictionary_JSON();
+
+	// 2. native OF colors
+	// uses an addon instead of a json
+
+	//TODO: fix
+	// 3. material colors
+	load_Material_JSON(); // -> crashes
+
+	// 4. open colors
+	// uses an addon instead of a json
 
 	// 5. cheprasov colors
 	load_Cheprasov_JSON();
 
-	//TODO:
-	// 4. material colors
-	load_Material_JSON(); // -> crashes
+	// 6. crayola colors
+	load_Crayola_JSON();
 
-	//--
+	// * add your new libs here!
+
+	//----
+
 
 	// 1. default sorting
 	MODE_SORTING = SORTING_ORIGINAL;
@@ -917,8 +1047,8 @@ void ofxColorsBrowser::setup()
 		setVisibleDebug(true);
 	}
 
-	//currColor = 0;
-	//cardNum = 0;
+	//index_Color = 0;
+	//index_Card = 0;
 	//refresh_Clicks();
 
 	// settings
@@ -936,7 +1066,7 @@ void ofxColorsBrowser::buildRectangles()
 	float x = positionRectangles.x;
 	float y = positionRectangles.y;
 
-	perRow = cardSize * cardsPerRow;
+	perRow = amtColorsInCard * amtCardsInRow;
 
 	isSelecting = false;
 	draggingRectPtr = NULL;
@@ -966,8 +1096,8 @@ void ofxColorsBrowser::buildRectangles()
 
 	// workflow
 	// startup
-	currColor = 0;
-	cardNum = 0;
+	index_Color = 0;
+	index_Card = 0;
 	refresh_Clicks();
 
 #endif
@@ -993,7 +1123,7 @@ void ofxColorsBrowser::update()
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
-	if (SHOW_Gui)
+	if (bGui)
 	{
 		ofPushMatrix();
 		ofPushStyle();
@@ -1002,13 +1132,11 @@ void ofxColorsBrowser::draw()
 		float _x = 20;
 		float _y = 40;
 
-		//TODO: add more pages...
-
 		//-
 
 		// 1. draw all the colors names
 
-		int maxLinesThatFitsScreen = 42;
+		int maxLinesThatFitsScreen = 42; // related to font size..
 		bool bColorizeLabel = false;
 		bool bColorizeBg = true;
 
@@ -1016,30 +1144,54 @@ void ofxColorsBrowser::draw()
 		int line;
 		int lineBegin;
 		int lineEnd;
-		int maxCards = maxLinesThatFitsScreen / cardSize;
-		int linesPage = cardSize * maxCards;
+		int maxCards = maxLinesThatFitsScreen / amtColorsInCard;
+		int linesPage = amtColorsInCard * maxCards;
 		int pageNum;
-
-		pageNum = (int)currColor / linesPage;
-		lineBegin = pageNum * linesPage;
-		lineEnd = lineBegin + linesPage - 1;//-1
 
 		std::string str;
 		ofColor c;
 
 		//--
 
-		// draw all color names marking the one selected
+		// calculate layout
+		pageNum = (int)index_Color / linesPage;
+		lineBegin = pageNum * linesPage;
+		lineEnd = lineBegin + linesPage - 1;
 
-		//TODO:
+		//--
+
+		// 0. draw all color names marking the one selected
+
+		//--
+
+		// avoid crashes
 		if (colors_STRUCT.size() == 0) return;
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+
+		//--
 
 		// 1. left lateral list
 
 		if (SHOW_debugText)
 		{
+			float fontSize = 20;
+			float x = _x;
+			float rectWidth = 200;
+			int margin = 6;
+
+			//-
+
+			// 0.0  background rectangle
+			ofSetColor(255); // white
+			ofFill();
+			float _h = linesPage * fontSize;
+			int _dim = 10;
+			ofDrawRectRounded(x - _dim, _y - fontSize + margin - _dim, rectWidth + 2 * _dim, _h + 2 * _dim, 5);
+			//ofDrawRectRounded(x, _y - fontSize + margin, rectWidth, _h, 5);
+
+			//-
+
 			for (int i = lineBegin; i <= lineEnd; i++)
 			{
 				//i = ofClamp(i, 0, colors_STRUCT.size() - 1);
@@ -1048,34 +1200,25 @@ void ofxColorsBrowser::draw()
 				if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size()) str = colors_STRUCT[line].name;
 				else str = "";
 
-				if (pageNum == 0)
-				{
-					iPadded = i;
-				}
-				else
-				{
-					iPadded = i - lineBegin;
-				}
+				if (pageNum == 0) iPadded = i;
+				else iPadded = i - lineBegin;
 
-				// all marked names
-
-				float fontSize = 20;
-				float fontMargin = 10;
-				float x = _x;
-				float y = _y + iPadded * 20;
-				float rectWidth = 200;
-				int margin = 6;
+				float y = _y + iPadded * fontSize;
 
 				//-
 
 				// 1. selected color
 
-				if (i == currColor)
+				if (i == index_Color)
 				{
-					// rectangle
+					// 1.1 rectangle selector
+
 					if (!bColorizeBg) ofSetColor(0);//black
 					else ofSetColor(colors_STRUCT[i].color);
-					ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
+					ofDrawRectRounded(x, y - fontSize + margin, rectWidth, fontSize, 5);
+					//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
 					//// border
 					//ofNoFill();
 					//ofSetLineWidth(2);
@@ -1109,14 +1252,21 @@ void ofxColorsBrowser::draw()
 					//ofDrawBitmapStringHighlight(str, x, y, c, ofColor::black);
 				}
 
-				// 2. all colors. not selected
-				
+				// 1.2. all colors. not selected
+
 				else
 				{
-					// back light
-					ofSetColor(255);//white
-					ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+					//// 1.2.1 background rectangle
 
+					////TODO:
+					//// this is very low performant bc we draw a rectangle for each name!
+					//// should draw a bigger bg rectangle
+					//ofSetColor(255); // white
+					//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
+					//-
+
+					// 1.2.2 label
 					if (bColorizeLabel) c = colors_STRUCT[i].color;
 					else c = ofColor::black;
 
@@ -1133,10 +1283,12 @@ void ofxColorsBrowser::draw()
 					);
 				}
 
-				// 3. line to mark first color on each card
+				//-
 
-				if (cardSize != 1)
-					if (i % cardSize == 0 && i < colors_STRUCT.size())
+				// 1.3. line to mark first color on each card
+
+				if (amtColorsInCard != 1)
+					if (i % amtColorsInCard == 0 && i < colors_STRUCT.size())
 					{
 						int lineSize = 2;
 						//int lineSize = 3;
@@ -1152,7 +1304,10 @@ void ofxColorsBrowser::draw()
 
 		//--
 
-		// 2. MONITOR COLOR SELECTED: name & position in vector
+		// help info
+
+		// 2. monitor color selected: 
+		// name & index
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 		if (SHOW_debugText)
@@ -1161,18 +1316,18 @@ void ofxColorsBrowser::draw()
 			//str += "DEBUG";
 			//str += "\n";
 
-			str += "Library       ";
+			str += "Library            ";
 			str += ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
 			str += "\n";
-			str += "Color         " + ofToString(currColor_OriginalPos + 1) + "/" + ofToString(colors_STRUCT.size());
+			str += "Color              " + ofToString(currColor_OriginalPos + 1) + "/" + ofToString(colors_STRUCT.size());
 			str += "\n";
-			str += "Card          " + ofToString(cardNum + 1);
+			str += "Card               " + ofToString(index_Card + 1);
 			str += "\n";
-			str += "Page          " + ofToString(pageNum + 1);
+			str += "Page               " + ofToString(pageNum + 1);
 			str += "\n";
-			str += "Card Size     " + ofToString(cardSize);
+			str += "Colors/Card        " + ofToString(amtColorsInCard);
 			str += "\n";
-			str += "Cards/Row     " + ofToString(cardsPerRow);
+			str += "Cards/Row          " + ofToString(amtCardsInRow);
 			//str += "\n";
 
 			//float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str));
@@ -1188,7 +1343,7 @@ void ofxColorsBrowser::draw()
 
 		//--
 
-		// 3. MONITOR APP MODES
+		// 3. monitor selected library
 
 		if (SHOW_InterfaceColors)
 		{
@@ -1215,7 +1370,7 @@ void ofxColorsBrowser::draw()
 					break;
 
 				case OFX_SANZOWADA_COLORS:
-					str1 += "SANZO WADA DICTIONARY";
+					str1 += "SANZO WADA";
 					break;
 
 				case OFX_COLOR_NATIVE:
@@ -1232,6 +1387,10 @@ void ofxColorsBrowser::draw()
 
 				case OFX_CHEPRASOV:
 					str1 += "CHEPRASOV";
+					break;
+
+				case OFX_CRAYOLA:
+					str1 += "CRAYOLA";
 					break;
 				}
 
@@ -1283,7 +1442,7 @@ void ofxColorsBrowser::draw()
 
 			//--
 
-			// 4. DRAW COLOR BOXES
+			// 4. draw all clickable color boxes
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 			drawRectangles();
@@ -1292,15 +1451,15 @@ void ofxColorsBrowser::draw()
 			// extra interface is
 			// rectangles with mouse management and draggables..
 #endif
-		//--
 		}
 
 		ofPopMatrix();
 		ofPopStyle();
 
-		//-
+		//-----
 
-		if (bGui) gui.draw();
+		// debug gui
+		if (bGuiDebug) gui.draw();
 	}
 }
 
@@ -1335,43 +1494,45 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
 		else if (key == 'G')
 		{
-			bGui = !bGui;
+			bGuiDebug = !bGuiDebug;
 		}
 
 		// 0. card selector
 
-		else if (key == OF_KEY_RIGHT_SHIFT || key == 'd')//prev card
+		//next card
+		else if (/*key == OF_KEY_RIGHT_SHIFT ||*/ key == 'd' || key == ' ')
 		{
-			cardNum++;
-			if (cardSize * cardNum + cardSize > colors_STRUCT.size())
-				cardNum = 0;
+			index_Card++;
+			if (amtColorsInCard * index_Card + amtColorsInCard > colors_STRUCT.size())
+				index_Card = 0;
 
-			currColor = cardSize * cardNum;
+			index_Color = amtColorsInCard * index_Card;
 			refresh_Clicks();
 		}
-		else if (key == OF_KEY_LEFT_SHIFT || key == 'a')//next card
+		//prev card
+		else if (/*key == OF_KEY_LEFT_SHIFT ||*/ key == 'a')
 		{
-			cardNum--;
-			if (cardNum < 0)
-				cardNum = (colors_STRUCT.size() - 1) / cardSize;
+			index_Card--;
+			if (index_Card < 0)
+				index_Card = (colors_STRUCT.size() - 1) / amtColorsInCard;
 
-			currColor = cardSize * cardNum;
+			index_Color = amtColorsInCard * index_Card;
 			refresh_Clicks();
 		}
 		else if (key == 's')//prev card
 		{
-			currColor += cardsPerRow * cardSize;
-			if (currColor > colors_STRUCT.size() - 1)
-				currColor = 0;
-			cardNum = currColor / cardSize;
+			index_Color += amtCardsInRow * amtColorsInCard;
+			if (index_Color > colors_STRUCT.size() - 1)
+				index_Color = 0;
+			index_Card = index_Color / amtColorsInCard;
 			refresh_Clicks();
 		}
 		else if (key == 'w')//prev card
 		{
-			currColor -= cardsPerRow * cardSize;
-			if (currColor < 0)
-				currColor = colors_STRUCT.size() - 1 - cardSize;
-			cardNum = currColor / cardSize;
+			index_Color -= amtCardsInRow * amtColorsInCard;
+			if (index_Color < 0)
+				index_Color = colors_STRUCT.size() - 1 - amtColorsInCard;
+			index_Card = index_Color / amtColorsInCard;
 			refresh_Clicks();
 		}
 
@@ -1379,8 +1540,8 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
 		else if (key == 'r')//random to one card
 		{
-			cardNum = (int)ofRandom((colors_STRUCT.size()) / cardSize);
-			currColor = cardSize * cardNum;
+			index_Card = (int)ofRandom((colors_STRUCT.size()) / amtColorsInCard);
+			index_Color = amtColorsInCard * index_Card;
 			refresh_Clicks();
 		}
 		//-
@@ -1388,36 +1549,36 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		// 1. slelect colors 
 		else if (key == OF_KEY_RIGHT)
 		{
-			currColor++;
+			index_Color++;
 			int sizeCols = colors_STRUCT.size();
-			if (currColor > sizeCols - 1)
-				currColor = 0;
-			cardNum = currColor / cardSize;
+			if (index_Color > sizeCols - 1)
+				index_Color = 0;
+			index_Card = index_Color / amtColorsInCard;
 			refresh_Clicks();
 		}
 		else if (key == OF_KEY_LEFT)
 		{
-			currColor--;
-			if (currColor < 0)
-				currColor = colors_STRUCT.size() - 1;
-			cardNum = currColor / cardSize;
+			index_Color--;
+			if (index_Color < 0)
+				index_Color = colors_STRUCT.size() - 1;
+			index_Card = index_Color / amtColorsInCard;
 			refresh_Clicks();
 		}
 		else if (key == OF_KEY_DOWN)
 		{
-			currColor = currColor + perRow;
+			index_Color = index_Color + perRow;
 			int sizeCols = colors_STRUCT.size();
-			if (currColor > sizeCols - 1)
-				currColor = sizeCols - 1;
-			cardNum = currColor / cardSize;
+			if (index_Color > sizeCols - 1)
+				index_Color = sizeCols - 1;
+			index_Card = index_Color / amtColorsInCard;
 			refresh_Clicks();
 		}
 		else if (key == OF_KEY_UP)
 		{
-			currColor = currColor - perRow;
-			if (currColor < 0)
-				currColor = 0;
-			cardNum = currColor / cardSize;
+			index_Color = index_Color - perRow;
+			if (index_Color < 0)
+				index_Color = 0;
+			index_Card = index_Color / amtColorsInCard;
 			refresh_Clicks();
 		}
 #endif
@@ -1769,26 +1930,26 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 						// 2. apply color pointer back
 
 						color_BACK = ofColor(cRect);
-						// ofColor c = colors_STRUCT[currColor].color;
+						// ofColor c = colors_STRUCT[index_Color].color;
 						// color_BACK = ofColor( c );
 
 						//-
 
 						// 3. update browsing grid
 
-						currColor = i;
-						ofLogNotice(__FUNCTION__) << "currColor [" << currColor << "]";
+						index_Color = i;
+						ofLogNotice(__FUNCTION__) << "index_Color [" << index_Color << "]";
 
-						currName = colors_STRUCT[currColor].name;
+						currName = colors_STRUCT[index_Color].name;
 						ofLogNotice(__FUNCTION__) << "currName [" << currName << "]";
 
-						currColor_OriginalPos = colors_STRUCT[currColor].position;
+						currColor_OriginalPos = colors_STRUCT[index_Color].position;
 						ofLogNotice(__FUNCTION__) << "originalPos[" << currColor_OriginalPos << "]";
 
 						//-
 
 						// 4. update selected card
-						cardNum = currColor / cardSize;
+						index_Card = index_Color / amtColorsInCard;
 						//refresh_Clicks();
 					}
 				}
@@ -1820,7 +1981,7 @@ void ofxColorsBrowser::refresh_Clicks()//over rectangles
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
-	ofLogNotice(__FUNCTION__) << "make clicked box by keys following currColor: [" << currColor << "]";
+	ofLogNotice(__FUNCTION__) << "make clicked box by keys following index_Color: [" << index_Color << "]";
 
 	//-
 
@@ -1834,25 +1995,25 @@ void ofxColorsBrowser::refresh_Clicks()//over rectangles
 		rectangles[i].isSelected = false; // assume none
 	}
 
-	if (currColor < rectangles.size())
+	if (index_Color < rectangles.size())
 	{
 		// select current color
-		rectangles[currColor].isSelected = true;
+		rectangles[index_Color].isSelected = true;
 	}
 
 	//-
 
-	if (currColor < colors_STRUCT.size())
+	if (index_Color < colors_STRUCT.size())
 	{
-		ofColor c = colors_STRUCT[currColor].color;
+		ofColor c = colors_STRUCT[index_Color].color;
 		color_BACK = ofColor(c);
 
-		ofLogNotice(__FUNCTION__) << "currColor is [" << currColor << "]";
+		ofLogNotice(__FUNCTION__) << "index_Color is [" << index_Color << "]";
 
-		currName = colors_STRUCT[currColor].name;
+		currName = colors_STRUCT[index_Color].name;
 		ofLogNotice(__FUNCTION__) << "currName is [" << currName << "]";
 
-		currColor_OriginalPos = colors_STRUCT[currColor].position;
+		currColor_OriginalPos = colors_STRUCT[index_Color].position;
 		ofLogNotice(__FUNCTION__) << "originalPos was [" << currColor_OriginalPos << "]";
 	}
 
@@ -2070,8 +2231,8 @@ void ofxColorsBrowser::rectangles_update()
 void ofxColorsBrowser::drawRectangles()
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-
 	ofPushStyle();
+	//-
 
 	// 0. debug rectangles manager
 	//ofPoint mouse(ofGetMouseX(), ofGetMouseY());
@@ -2086,7 +2247,7 @@ void ofxColorsBrowser::drawRectangles()
 
 	//--
 
-	// cards enabled:
+	// card of colors
 
 	// 1. draw card rectangles
 
@@ -2097,7 +2258,6 @@ void ofxColorsBrowser::drawRectangles()
 
 		int letterPad = 15;
 		float fontSize = 16;
-		//float fontSize = 12;
 		float fontPad = 5;
 
 		float x;
@@ -2123,7 +2283,7 @@ void ofxColorsBrowser::drawRectangles()
 				glm::vec2(
 					positionCards.x - padding,
 					yBg),
-					(cardColor_size + cardColor_pad) * (cardSize)+padding,
+					(cardColor_size + cardColor_pad) * (amtColorsInCard)+padding,
 				hBg
 				, 5
 			);
@@ -2132,7 +2292,7 @@ void ofxColorsBrowser::drawRectangles()
 			//    glm::vec2(
 			//        positionCards.x - padding,
 			//        positionCards.y - padding),
-			//    (cardColor_size + cardColor_pad) * (cardSize) + 2 * padding,
+			//    (cardColor_size + cardColor_pad) * (amtColorsInCard) + 2 * padding,
 			//    (cardColor_size * 1.1 + cardColor_pad) + 2 * padding + 25,
 			//    5,
 			//    5,
@@ -2142,12 +2302,12 @@ void ofxColorsBrowser::drawRectangles()
 
 			//-
 
-			// 2. each color in card
+			// 2. each color in current card
 
-			int colorBegin = cardSize * cardNum;
-			int colorEnd = colorBegin + cardSize;
+			int colorBegin = amtColorsInCard * index_Card;
+			int colorEnd = colorBegin + amtColorsInCard;
 
-			for (int i = 0; i < cardSize; i++)
+			for (int i = 0; i < amtColorsInCard; i++)
 			{
 				int iPad = i + colorBegin;
 				if (iPad < colors_STRUCT.size())
@@ -2226,7 +2386,7 @@ void ofxColorsBrowser::drawRectangles()
 					if (index_Library == OFX_PANTONE_COLORS) str += "PANTONE\n";
 
 					string _n = colors_STRUCT[iPad].name;
-					//ofStringReplace(_n, " ", "\n"); // break lines when space
+					ofStringReplace(_n, " ", "\n"); // break lines when space
 					ofStringReplace(_n, "-", "\n"); // break lines when space
 					str += _n;
 
@@ -2352,9 +2512,7 @@ void ofxColorsBrowser::drawRectangles()
 	}
 
 	//-
-
 	ofPopStyle();
-
 #endif
 }
 
@@ -2407,9 +2565,9 @@ vector<std::string> ofxColorsBrowser::getNames()
 //--------------------------------------------------------------
 void ofxColorsBrowser::setVisible(bool b)
 {
-	ofLogNotice(__FUNCTION__) << "SHOW_Gui: " << SHOW_Gui;
+	ofLogNotice(__FUNCTION__) << "bGui: " << bGui;
 
-	SHOW_Gui = b;
+	bGui = b;
 
 	SHOW_InterfaceColors = b;
 
