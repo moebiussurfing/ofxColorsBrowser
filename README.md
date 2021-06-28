@@ -2,7 +2,7 @@ ofxColorsBrowser
 =============================
 
 # Overview
-**ofxColorsBrowser** is an **openFrameworks** addon to browse color libraries and help integration to your OF app.
+An **openFrameworks** add-on to browse color libraries from JSON files.  
 
 ## Screenshot
 #### Pantone  
@@ -50,7 +50,8 @@ ofApp::update()
 
 ofApp::draw()
 {
-  ofBackground( ofColor( color_BACK )); // auto updated when changes
+  ofColor colorBg = ofColor(color_BACK); // auto updated when a color is picked
+  ofBackground(colorBg);
   colorBrowser.draw();
 }
 ```
