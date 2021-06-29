@@ -19,6 +19,10 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+
+#ifndef USE_OFX_COLOR_BROWSER_INTERFACE
+	colorBrowser.loa
+#endif	
 }
 
 //--------------------------------------------------------------

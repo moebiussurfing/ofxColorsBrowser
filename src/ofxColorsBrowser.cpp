@@ -1,5 +1,7 @@
 #include "ofxColorsBrowser.h"
 
+// sorting map tools
+
 //--------------------------------------------------------------
 // comparing colors to sorting methods
 
@@ -29,6 +31,7 @@ bool comparePosition(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s
 }
 
 //----
+
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::windowResized(int w, int h) {
@@ -916,7 +919,7 @@ void ofxColorsBrowser::setup()
 		else if (MODE_SORTING == 3) { ofSort(colors_STRUCT, compareBrightness); MODE_SORTING_name = "Brightness"; }
 		else if (MODE_SORTING == 4) { ofSort(colors_STRUCT, compareSaturation); MODE_SORTING_name = "Saturation"; }
 
-		clearInterface();
+		clearRectangles();
 		buildRectangles();
 	});
 
@@ -982,7 +985,7 @@ void ofxColorsBrowser::setup()
 		//-
 
 		// build
-		clearInterface();
+		clearRectangles();
 		buildColors();
 		buildRectangles();
 
@@ -1132,6 +1135,10 @@ void ofxColorsBrowser::update(ofEventArgs & args)
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw(ofEventArgs & args)
 {
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+	return;
+#endif	
+
 	//--
 
 	if (colors_STRUCT.size() != 0) // bypass if it's empty. avoid crashes
@@ -1178,9 +1185,9 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 
 		//--
 
-		// 1. left lateral list
+		// 1. left lateral names list
 
-			if (bDebugText)
+			if (bShowNamesList)
 			{
 				float fontSize = 20;
 				float x = _x;
@@ -1317,7 +1324,7 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 			// name & index
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-			if (bDebugText)
+			if (bShowNamesList)
 			{
 				std::string str = "";
 				//str += "DEBUG";
@@ -1352,9 +1359,9 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 
 			// 3. monitor selected library
 
-			if (bShowInterfaceColors)
+			if (bShowRectangles)
 			{
-				if (bDebugText)
+				if (bShowNamesList)
 				{
 					std::string str1;
 					str1 = "";
@@ -1511,89 +1518,54 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			bGuiDebug = !bGuiDebug;
 		}
 
+		//--
+
 		// 0. card selector
 
-		//next card
-		else if (/*key == OF_KEY_RIGHT_SHIFT ||*/ key == 'd' || key == ' ')
+		// next card
+		else if (key == 'd' || key == ' ')
 		{
-			index_Card++;
-			if (amtColorsInCard * index_Card + amtColorsInCard > colors_STRUCT.size())
-				index_Card = 0;
-
-			index_Color = amtColorsInCard * index_Card;
-			refreshRectanglesClicks();
+			setNextCard();
 		}
-		//prev card
-		else if (/*key == OF_KEY_LEFT_SHIFT ||*/ key == 'a')
+		// prev card
+		else if (key == 'a')
 		{
-			index_Card--;
-			if (index_Card < 0)
-				index_Card = (colors_STRUCT.size() - 1) / amtColorsInCard;
-
-			index_Color = amtColorsInCard * index_Card;
-			refreshRectanglesClicks();
+			setPreviousCard();
 		}
-		else if (key == 's')//prev card
+		// next card row
+		else if (key == 's')
 		{
-			index_Color += amtCardsInRow * amtColorsInCard;
-			if (index_Color > colors_STRUCT.size() - 1)
-				index_Color = 0;
-			index_Card = index_Color / amtColorsInCard;
-			refreshRectanglesClicks();
+			setNextCardRow();
 		}
-		else if (key == 'w')//prev card
+		// prev card row 
+		else if (key == 'w')
 		{
-			index_Color -= amtCardsInRow * amtColorsInCard;
-			if (index_Color < 0)
-				index_Color = colors_STRUCT.size() - 1 - amtColorsInCard;
-			index_Card = index_Color / amtColorsInCard;
-			refreshRectanglesClicks();
+			setPreviousCardRow();
+		}
+		// random to one card
+		else if (key == 'r')
+		{
+			setRandomCard();
 		}
 
 		//-
 
-		else if (key == 'r')//random to one card
-		{
-			index_Card = (int)ofRandom((colors_STRUCT.size()) / amtColorsInCard);
-			index_Color = amtColorsInCard * index_Card;
-			refreshRectanglesClicks();
-		}
-		//-
-
-		// 1. slelect colors 
+		// 1. select colors 
 		else if (key == OF_KEY_RIGHT)
 		{
-			index_Color++;
-			int sizeCols = colors_STRUCT.size();
-			if (index_Color > sizeCols - 1)
-				index_Color = 0;
-			index_Card = index_Color / amtColorsInCard;
-			refreshRectanglesClicks();
+			setNextColor();
 		}
 		else if (key == OF_KEY_LEFT)
 		{
-			index_Color--;
-			if (index_Color < 0)
-				index_Color = colors_STRUCT.size() - 1;
-			index_Card = index_Color / amtColorsInCard;
-			refreshRectanglesClicks();
+			setPreviousColor();
 		}
 		else if (key == OF_KEY_DOWN)
 		{
-			index_Color = index_Color + perRow;
-			int sizeCols = colors_STRUCT.size();
-			if (index_Color > sizeCols - 1)
-				index_Color = sizeCols - 1;
-			index_Card = index_Color / amtColorsInCard;
-			refreshRectanglesClicks();
+			setNextColorRow();
 		}
 		else if (key == OF_KEY_UP)
 		{
-			index_Color = index_Color - perRow;
-			if (index_Color < 0)
-				index_Color = 0;
-			index_Card = index_Color / amtColorsInCard;
-			refreshRectanglesClicks();
+			setPreviousColorRow();
 		}
 #endif
 
@@ -1603,8 +1575,10 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
 		if (key == OF_KEY_BACKSPACE)
 		{
-			if (index_Library < index_Library.getMax()) index_Library++;
-			else index_Library = index_Library.getMin();
+			setNextLibrary();
+
+			//if (index_Library < index_Library.getMax()) index_Library++;
+			//else index_Library = index_Library.getMin();
 		}
 
 		//-
@@ -1648,7 +1622,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		}
 		else if (key == OF_KEY_TAB)
 		{
-			nextSortType();
+			setNextSortType();
 		}
 
 		//--
@@ -1801,7 +1775,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::clearInterface()
+void ofxColorsBrowser::clearRectangles()
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	ofLogNotice(__FUNCTION__);
@@ -2079,7 +2053,7 @@ void ofxColorsBrowser::exit()
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	removeKeysListeners();
 	removeMouseListeners();
-	
+
 	ofRemoveListener(ofEvents().update, this, &ofxColorsBrowser::update);
 	ofRemoveListener(ofEvents().draw, this, &ofxColorsBrowser::draw);
 
@@ -2128,14 +2102,93 @@ void ofxColorsBrowser::setNextLibrary()
 	ofLogNotice(__FUNCTION__) << index_Library;
 }
 
+// browse
+
 //--------------------------------------------------------------
-void ofxColorsBrowser::nextSortType()
+void ofxColorsBrowser::setNextColor() {
+
+	index_Color++;
+	int sizeCols = colors_STRUCT.size();
+	if (index_Color > sizeCols - 1)
+		index_Color = 0;
+	index_Card = index_Color / amtColorsInCard;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setPreviousColor() {
+	index_Color--;
+	if (index_Color < 0)
+		index_Color = colors_STRUCT.size() - 1;
+	index_Card = index_Color / amtColorsInCard;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setNextColorRow() {
+	index_Color = index_Color + perRow;
+	int sizeCols = colors_STRUCT.size();
+	if (index_Color > sizeCols - 1)
+		index_Color = sizeCols - 1;
+	index_Card = index_Color / amtColorsInCard;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setPreviousColorRow() {
+	index_Color = index_Color - perRow;
+	if (index_Color < 0)
+		index_Color = 0;
+	index_Card = index_Color / amtColorsInCard;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setNextCard() {
+	index_Card++;
+	if (amtColorsInCard * index_Card + amtColorsInCard > colors_STRUCT.size())
+		index_Card = 0;
+
+	index_Color = amtColorsInCard * index_Card;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setPreviousCard() {
+	index_Card--;
+	if (index_Card < 0)
+		index_Card = (colors_STRUCT.size() - 1) / amtColorsInCard;
+
+	index_Color = amtColorsInCard * index_Card;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setNextCardRow() {
+	index_Color += amtCardsInRow * amtColorsInCard;
+	if (index_Color > colors_STRUCT.size() - 1)
+		index_Color = 0;
+	index_Card = index_Color / amtColorsInCard;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setPreviousCardRow() {
+	index_Color -= amtCardsInRow * amtColorsInCard;
+	if (index_Color < 0)
+		index_Color = colors_STRUCT.size() - 1 - amtColorsInCard;
+	index_Card = index_Color / amtColorsInCard;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setRandomCard() {
+	index_Card = (int)ofRandom((colors_STRUCT.size()) / amtColorsInCard);
+	index_Color = amtColorsInCard * index_Card;
+	refreshRectanglesClicks();
+}
+
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setNextSortType()
 {
 	MODE_SORTING++;
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setPaletteType(int p)
+void ofxColorsBrowser::setLibraryType(int p)
 {
 	index_Library = p;
 }
@@ -2166,7 +2219,7 @@ void ofxColorsBrowser::setSortingType(int p)
 
 	if (p >= 0 && p <= 4)
 	{
-		clearInterface();
+		clearRectangles();
 		buildRectangles();
 	}
 }
@@ -2586,7 +2639,7 @@ void ofxColorsBrowser::setVisible(bool b)
 
 	bGui = b;
 
-	bShowInterfaceColors = b;
+	bShowRectangles = b;
 
 	setEnableInterfaceClicks(b);
 }
@@ -2594,12 +2647,12 @@ void ofxColorsBrowser::setVisible(bool b)
 //--------------------------------------------------------------
 void ofxColorsBrowser::setVisibleDebug(bool b)
 {
-	bDebugText = b;
+	bShowNamesList = b;
 }
 //--------------------------------------------------------------
 void ofxColorsBrowser::setToggleVisibleDebug()
 {
-	bDebugText = !bDebugText;
+	bShowNamesList = !bShowNamesList;
 }
 
 

@@ -21,7 +21,7 @@ TODO:
 //	OPTIONAL
 
 // uncomment to run the bundled example!
-#define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
+#define USE_OFX_COLOR_BROWSER_INTERFACE // -> This includes the GUI: rectangle boxes, color names listing etc..
 
 //TODO: WIP
 //#define USE_OFX_MATERIAL_COLOR
@@ -122,7 +122,7 @@ private:
 	//----
 
 	// API
-	
+
 	//-
 
 public:
@@ -132,11 +132,34 @@ public:
 		positionHelper = p;
 	};
 
+	//--
+
+	// brwose
+
+	// to use externally by the code
+
 public:
-	void setNextLibrary(); // to use externally by the code
-	void nextSortType();
-	void setPaletteType(int p);
+	// colors
+	void setNextColor();
+	void setPreviousColor();
+	void setNextColorRow();
+	void setPreviousColorRow();
+	// cards
+	void setNextCard();
+	void setPreviousCard();
+	void setNextCardRow();
+	void setPreviousCardRow();
+	void setRandomCard();
+	// library
+	void setNextLibrary();
+	void setLibraryType(int p);
+	// sorting
+	void setNextSortType();
 	void setSortingType(int p);
+
+	//--
+
+	// gui
 
 	// TODO: resize buttons to fit..
 	//void setSize(glm::vec2 size);
@@ -163,8 +186,8 @@ public:
 
 		setVisible(bGui);
 
-		//bShowInterfaceColors = !bShowInterfaceColors;
-		//setVisible(bShowInterfaceColors);
+		//bShowRectangles = !bShowRectangles;
+		//setVisible(bShowRectangles);
 	}
 
 	//--------------------------------------------------------------
@@ -303,7 +326,7 @@ private:
 	ofJson jCrayola;
 	vector<ofColor> colors_Crayola;
 	vector<std::string> colors_CrayolaNames;
-	
+
 	// material
 	ofJson jMaterial;
 	vector<ofColor> colors_Material;
@@ -391,9 +414,9 @@ public:
 	ofParameter<bool> bKeys{ "Enable Keys", false };
 
 private:
-	bool bDebugText = false;
+	bool bShowNamesList = false;
 	bool bShowDebug = false;//for rectangle manager
-	bool bShowInterfaceColors = true;
+	bool bShowRectangles = true;
 	bool bEnableClicks = true;
 
 	//-
@@ -409,7 +432,7 @@ private:
 	void buildColors();
 	void refreshRectanglesClicks(); // to browsing by keys
 	void buildRectangles();
-	void clearInterface();
+	void clearRectangles();
 
 	//-
 

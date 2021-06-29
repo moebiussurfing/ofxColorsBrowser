@@ -53,15 +53,9 @@ ofApp::setup()
 	colorBrowser.setup();
 }
 
-ofApp::update()
-{
-  ofxColorsBrowser.update();
-}
-
 ofApp::draw()
 {
  	ofBackground(colorBg); // auto updated when changes
-  colorBrowser.draw();
 }
 ```
 
