@@ -4,8 +4,8 @@
 void ofApp::setup(){
 	ofSetFrameRate(60);
 
-	colorBrowser.setupColorPtr(colorBg); // set local target color receiver
-	colorBrowser.setup();
+	surfingColors.setupColorPtr(colorBg); // set local target color receiver
+	surfingColors.setup();
 }
 
 //--------------------------------------------------------------
@@ -20,12 +20,15 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
-#ifndef USE_OFX_COLOR_BROWSER_INTERFACE
-	colorBrowser.loa
-#endif	
+	//if (key == OF_KEY_F1) colorBrowser.setNextColor();
+	//if (key == OF_KEY_F2) colorBrowser.setNextColorRow();
+	//if (key == OF_KEY_F3) colorBrowser.setNextCard();
+	//if (key == OF_KEY_F4) colorBrowser.setNextCardRow();
+	//if (key == OF_KEY_F5) colorBrowser.setRandomColor();
+	//if (key == OF_KEY_F6) colorBrowser.setRandomCard();
 }
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
-	colorBrowser.windowResized(w, h);
+	surfingColors.windowResized(w, h);
 }

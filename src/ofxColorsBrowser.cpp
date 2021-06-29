@@ -1078,15 +1078,15 @@ void ofxColorsBrowser::buildRectangles()
 	float x = positionRectangles.x;
 	float y = positionRectangles.y;
 
-	perRow = amtColorsInCard * amtCardsInRow;
+	amtColorsPerRow = amtColorsInCard * amtCardsInRow;
 
 	isSelecting = false;
 	draggingRectPtr = NULL;
 
 	for (int i = 0; i < colors_STRUCT.size(); i++)
 	{
-		float xBtn = x + (i % perRow) * (boxSize + boxPad);
-		float yBtn = y + (i / perRow) * (boxSize + boxPad);
+		float xBtn = x + (i % amtColorsPerRow) * (boxSize + boxPad);
+		float yBtn = y + (i / amtColorsPerRow) * (boxSize + boxPad);
 
 		ofColor c = colors_STRUCT[i].color;
 
@@ -1135,7 +1135,9 @@ void ofxColorsBrowser::update(ofEventArgs & args)
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw(ofEventArgs & args)
 {
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+	// When mode without GUI do not draw nothing. We just want to acces the colors.
+
+#ifndef USE_OFX_COLOR_BROWSER_INTERFACE
 	return;
 #endif	
 
@@ -1542,8 +1544,8 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		{
 			setPreviousCardRow();
 		}
-		// random to one card
-		else if (key == 'r')
+		// random to select one card
+		else if (key == 'R')
 		{
 			setRandomCard();
 		}
@@ -1566,6 +1568,11 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		else if (key == OF_KEY_UP)
 		{
 			setPreviousColorRow();
+		}
+		// random to select one card
+		else if (key == 'r')
+		{
+			setRandomColor();
 		}
 #endif
 
@@ -1634,57 +1641,57 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		////    // show debug
 		////else if (key == 'd')
 		////{
-		////    bShowDebug = !bShowDebug;
+		////    bShowDebugRectangles = !bShowDebugRectangles;
 		////
 		////    for (int i = 0; i < rectangles.size(); i++)
 		////    {
-		////        rectangles[i].setDebug(bShowDebug);
+		////        rectangles[i].setDebug(bShowDebugRectangles);
 		////    }
 		////}
 		////
 		////else if (key == 'p')
 		////{
-		////    RectangleUtils::pack(selectedRects, ofRectangle(0,
+		////    RectangleUtils::pack(rectanglesSelected, ofRectangle(0,
 		////        0,
 		////        ofRandom(500),
 		////        ofRandom(500)));
 		////}
 		//
 		//    // debug ofxRectangle handling
-		//else if (bShowDebug)
+		//else if (bShowDebugRectangles)
 		//{
 		//
 		//    //    if (key == OF_KEY_UP) {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_TOP;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->vAlign = OF_ALIGN_VERT_TOP;
 		//    //        }
 		//    //    } else if (key == OF_KEY_DOWN) {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_BOTTOM;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->vAlign = OF_ALIGN_VERT_BOTTOM;
 		//    //        }
 		//    //    } else if (key == OF_KEY_LEFT) {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_LEFT;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->hAlign = OF_ALIGN_HORZ_LEFT;
 		//    //        }
 		//    //    } else if (key == OF_KEY_RIGHT) {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_RIGHT;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->hAlign = OF_ALIGN_HORZ_RIGHT;
 		//    //        }
 		//    //    } else if (key == 'c') {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_CENTER;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->hAlign = OF_ALIGN_HORZ_CENTER;
 		//    //        }
 		//    //    } else if (key == 'C') {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_CENTER;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->vAlign = OF_ALIGN_VERT_CENTER;
 		//    //        }
 		//    //    } else if (key == 'i') {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->hAlign = OF_ALIGN_HORZ_IGNORE;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->hAlign = OF_ALIGN_HORZ_IGNORE;
 		//    //        }
 		//    //    } else if (key == 'I') {
-		//    //        for(size_t i = 0; i < selectedRects.boxSize(); i++) {
-		//    //            selectedRects[i]->vAlign = OF_ALIGN_VERT_IGNORE;
+		//    //        for(size_t i = 0; i < rectanglesSelected.boxSize(); i++) {
+		//    //            rectanglesSelected[i]->vAlign = OF_ALIGN_VERT_IGNORE;
 		//    //        }
 		//    //
 		//    /*} else */ if (key == 'a')
@@ -1727,41 +1734,41 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		//    }
 		//    else if (key == 'W')
 		//    {
-		//        RectangleUtils::sortByAbsWidth(selectedRects);
+		//        RectangleUtils::sortByAbsWidth(rectanglesSelected);
 		//    }
 		//    else if (key == 'A')
 		//    {
-		//        RectangleUtils::sortByArea(selectedRects);
+		//        RectangleUtils::sortByArea(rectanglesSelected);
 		//    }
 		//    else if (key == 'H')
 		//    {
-		//        RectangleUtils::sortByAbsHeight(selectedRects);
+		//        RectangleUtils::sortByAbsHeight(rectanglesSelected);
 		//    }
 		//    else if (key == 'c')
 		//    {
-		//        RectangleUtils::cascade(selectedRects, ofRectangle(0, 0, ofGetWidth(), ofGetHeight()), glm::vec2(30, 30));
+		//        RectangleUtils::cascade(rectanglesSelected, ofRectangle(0, 0, ofGetWidth(), ofGetHeight()), glm::vec2(30, 30));
 		//    }
 		//    else if (key == 'v')
 		//    {
-		//        RectangleUtils::alignVert(selectedRects, vAlign);
+		//        RectangleUtils::alignVert(rectanglesSelected, vAlign);
 		//    }
 		//    else if (key == 'h')
 		//    {
 		//        // horizontal align selection
-		//        RectangleUtils::alignHorz(selectedRects, hAlign);
+		//        RectangleUtils::alignHorz(rectanglesSelected, hAlign);
 		//    }
 		//    else if (key == 'x')
 		//    {
 		//        // distribute in x
-		//        RectangleUtils::distributeHorz(selectedRects, hAlign);
+		//        RectangleUtils::distributeHorz(rectanglesSelected, hAlign);
 		//    }
 		//    else if (key == 'y')
 		//    {
-		//        RectangleUtils::distributeVert(selectedRects, vAlign);
+		//        RectangleUtils::distributeVert(rectanglesSelected, vAlign);
 		//    }
 		//    else if (key == 'p')
 		//    {
-		//        RectangleUtils::pack(selectedRects, ofRectangle(0,
+		//        RectangleUtils::pack(rectanglesSelected, ofRectangle(0,
 		//            0,
 		//            ofGetWidth(),
 		//            ofGetHeight()));
@@ -1806,7 +1813,7 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs)
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
-	if (bShowDebug)
+	if (bShowDebugRectangles)
 	{
 		const int &x = eventArgs.x;
 		const int &y = eventArgs.y;
@@ -1859,10 +1866,10 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 			bool foundAClickTarget = false;
 
 			// first check to see if we are in the bounding box
-			if (!selectedRects.empty() &&
+			if (!rectanglesSelected.empty() &&
 				selectedRectsBoundingBox.inside(dragStart))
 			{
-				if (bShowDebug)
+				if (bShowDebugRectangles)
 				{
 					draggingRectPtr = &selectedRectsBoundingBox;
 					//selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
@@ -1886,7 +1893,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 			else
 			{
 
-				selectedRects.clear();
+				rectanglesSelected.clear();
 				// otherwise, go through all of the rects and see if we can drag one
 				for (size_t i = 0; i < rectangles.size(); i++)
 				{
@@ -1953,7 +1960,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 				anchorRect = nullptr;
 			}
 
-			if (bShowDebug)
+			if (bShowDebugRectangles)
 			{
 				anchorRect = new ofRectangle(dragStart, 0, 0);
 			}
@@ -1975,7 +1982,7 @@ void ofxColorsBrowser::refreshRectanglesClicks() // over rectangles
 
 	// handle rectangles
 
-	selectedRects.clear();//clear drag and deselect
+	rectanglesSelected.clear();//clear drag and deselect
 
 	//deselect all
 	for (size_t i = 0; i < rectangles.size(); i++)
@@ -2014,7 +2021,6 @@ void ofxColorsBrowser::mouseReleased(ofMouseEventArgs &eventArgs)
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	if (bEnableClicks)
 	{
-
 		const int &x = eventArgs.x;
 		const int &y = eventArgs.y;
 		const int &button = eventArgs.button;
@@ -2023,7 +2029,6 @@ void ofxColorsBrowser::mouseReleased(ofMouseEventArgs &eventArgs)
 		draggingRectPtr = nullptr;
 		isSelecting = false;
 	}
-
 #endif
 }
 
@@ -2090,7 +2095,7 @@ void ofxColorsBrowser::setBoxSize(float _size)
 //--------------------------------------------------------------
 void ofxColorsBrowser::setRowsSize(int rows)
 {
-	perRow = rows;
+	amtColorsPerRow = rows;
 }
 
 //--------------------------------------------------------------
@@ -2104,9 +2109,9 @@ void ofxColorsBrowser::setNextLibrary()
 
 // browse
 
+//colors
 //--------------------------------------------------------------
 void ofxColorsBrowser::setNextColor() {
-
 	index_Color++;
 	int sizeCols = colors_STRUCT.size();
 	if (index_Color > sizeCols - 1)
@@ -2124,7 +2129,7 @@ void ofxColorsBrowser::setPreviousColor() {
 }
 //--------------------------------------------------------------
 void ofxColorsBrowser::setNextColorRow() {
-	index_Color = index_Color + perRow;
+	index_Color = index_Color + amtColorsPerRow;
 	int sizeCols = colors_STRUCT.size();
 	if (index_Color > sizeCols - 1)
 		index_Color = sizeCols - 1;
@@ -2133,12 +2138,19 @@ void ofxColorsBrowser::setNextColorRow() {
 }
 //--------------------------------------------------------------
 void ofxColorsBrowser::setPreviousColorRow() {
-	index_Color = index_Color - perRow;
+	index_Color = index_Color - amtColorsPerRow;
 	if (index_Color < 0)
 		index_Color = 0;
 	index_Card = index_Color / amtColorsInCard;
 	refreshRectanglesClicks();
 }
+//--------------------------------------------------------------
+void ofxColorsBrowser::setRandomColor() {
+	index_Color = (int)ofRandom((colors_STRUCT.size()));
+	refreshRectanglesClicks();
+}
+
+// cards
 //--------------------------------------------------------------
 void ofxColorsBrowser::setNextCard() {
 	index_Card++;
@@ -2180,19 +2192,19 @@ void ofxColorsBrowser::setRandomCard() {
 	refreshRectanglesClicks();
 }
 
-
-//--------------------------------------------------------------
-void ofxColorsBrowser::setNextSortType()
-{
-	MODE_SORTING++;
-}
-
+// library
 //--------------------------------------------------------------
 void ofxColorsBrowser::setLibraryType(int p)
 {
 	index_Library = p;
 }
 
+// sort
+//--------------------------------------------------------------
+void ofxColorsBrowser::setNextSortType()
+{
+	MODE_SORTING++;
+}
 //--------------------------------------------------------------
 void ofxColorsBrowser::setSortingType(int p)
 {
@@ -2224,6 +2236,8 @@ void ofxColorsBrowser::setSortingType(int p)
 	}
 }
 
+//--
+
 //--------------------------------------------------------------
 void ofxColorsBrowser::updateRectangles()
 {
@@ -2239,7 +2253,7 @@ void ofxColorsBrowser::updateRectangles()
 
 		if (draggingRectPtr == NULL)
 		{
-			selectedRects.clear();
+			rectanglesSelected.clear();
 		}
 
 		for (size_t i = 0; i < rectangles.size(); ++i)
@@ -2265,14 +2279,14 @@ void ofxColorsBrowser::updateRectangles()
 						selectedRectsBoundingBox.growToInclude(rectangles[i]);
 					}
 
-					selectedRects.push_back(&rectangles[i]);
+					rectanglesSelected.push_back(&rectangles[i]);
 					hasFirstSelection = true;
 				}
 			}
 
 			// check is over -- only set isOver if other things aren't happening
 			if (!foundIsOver &&
-				/*selectedRects.empty() &&
+				/*rectanglesSelected.empty() &&
 				!rectangles[i].isSelected && */
 				(draggingRectPtr == NULL ||
 					draggingRectPtr == &rectangles[i] ||
@@ -2300,13 +2314,20 @@ void ofxColorsBrowser::updateRectangles()
 //--------------------------------------------------------------
 void ofxColorsBrowser::drawRectangles()
 {
+	// NOTE:
+	// All the rectangles engine is a bit dirty here,
+	// bc I was mixing with the ofxInterface alternative..
+
+	//-
+	
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	ofPushStyle();
+
 	//-
 
 	// 0. debug rectangles manager
 	//ofPoint mouse(ofGetMouseX(), ofGetMouseY());
-	//if (bShowDebug)
+	//if (bShowDebugRectangles)
 	//{
 	//	ofFill();
 	//	ofSetColor(255, showKeyboardCommands ? 255 : 127);
@@ -2317,9 +2338,9 @@ void ofxColorsBrowser::drawRectangles()
 
 	//--
 
-	// card of colors
+	// 1 card of colors
 
-	// 1. draw card rectangles
+	// draw each card.
 
 	if (bShowCards)
 	{
@@ -2478,41 +2499,58 @@ void ofxColorsBrowser::drawRectangles()
 
 	// 1.2 draw all of our rectangles system
 
-	//else if (!bShowCards)
+	for (size_t i = 0; i < rectangles.size(); ++i)
 	{
-		for (size_t i = 0; i < rectangles.size(); ++i)
+		ofRectangle *rect = (ofRectangle *)&rectangles[i];
+		unsigned int selectionIndex = ofFind(rectanglesSelected, rect);
+		//rectangles[i].draw(i, selectionIndex == rectanglesSelected.size() ? -1 : selectionIndex);
+		if (selectionIndex == rectanglesSelected.size())
 		{
-			ofRectangle *rect = (ofRectangle *)&rectangles[i];
-			unsigned int selectionIndex = ofFind(selectedRects, rect);
-			rectangles[i].draw(i, selectionIndex == selectedRects.size() ? -1 : selectionIndex);
+			rectangles[i].draw(i, -1);
 		}
+		else
+		{
+			rectangles[i].draw(i, selectionIndex);
+		}
+	}
+
+	// draw border for all colors
+	ofSetColor(ofColor(0, 32));
+	ofNoFill();
+	for (size_t i = 0; i < rectangles.size(); ++i)
+	{
+		ofDrawRectRounded(rectangles[i], 2);
+		//ofDrawRectangle(rectangles[i]);
 	}
 
 	//--
 
+	//TDOO: 
+	// some lines are not required (?) and came from ofxInterface toucheable GUI that now is hidden 
 	// rectangles management ?
 
-	// 2. draw border on color
+	// 2. draw border on selected color
 	// draw our bounding box rectangle
-	if (!isSelecting && !selectedRects.empty())
+	if (!isSelecting && !rectanglesSelected.empty())
 	{
 		ofNoFill();
-		ofSetColor(0, 255);//full black
+		ofSetColor(ofColor(0, 100)); // full black
+		//ofDrawRectRounded(selectedRectsBoundingBox, 2);
 		ofDrawRectangle(selectedRectsBoundingBox);
 	}
 
-	// 3. draw border on selected color box
-	if (isSelecting && bShowDebug)
-	{
-		ofNoFill();
-		ofSetColor(ofColor(ofColor::black, 200));
-		ofDrawRectangle(selectionRect);
-	}
+	//// 3. draw border on selected color box
+	//if (isSelecting && bShowDebugRectangles)
+	//{
+	//	ofNoFill();
+	//	ofSetColor(ofColor(ofColor::black, 200));
+	//	ofDrawRectangle(selectionRect);
+	//}
 
 	//--
 
 	// 4. rectangles management debug
-	if (bShowDebug)
+	if (bShowDebugRectangles)
 	{
 		stringstream ss;
 		ss << "Keyboard [(Spacebar) to hide]" << endl;
@@ -2573,27 +2611,27 @@ void ofxColorsBrowser::drawRectangles()
 		ofDrawBitmapString("Press (A) to toggle selection vAlign : " + vAlignString, 10, ofGetHeight() - 10);
 	}
 
-	ofNoFill();
-	ofSetColor(255, 255, 0);
-
-	for (int i = 0; i < packedRects.size(); i++)
-	{
-		ofDrawRectangle(packedRects[i]);
-	}
+	//ofNoFill();
+	//ofSetColor(255, 255, 0);
+	//for (int i = 0; i < packedRects.size(); i++)
+	//{
+	//	ofDrawRectangle(packedRects[i]);
+	//}
 
 	//-
+
 	ofPopStyle();
 #endif
 }
 
 //--------------------------------------------------------------
-int ofxColorsBrowser::getSize() {
+int ofxColorsBrowser::getAmountcolors() {
 	ofLogNotice(__FUNCTION__) << colors_STRUCT.size();
 	return colors_STRUCT.size();
 }
 
 //--------------------------------------------------------------
-vector<ofColor> ofxColorsBrowser::getPalette()
+vector<ofColor> ofxColorsBrowser::getLibraryColors()
 {
 	ofLogNotice(__FUNCTION__);
 

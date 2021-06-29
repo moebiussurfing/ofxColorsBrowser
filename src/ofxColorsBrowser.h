@@ -21,17 +21,17 @@ TODO:
 //	OPTIONAL
 
 // uncomment to run the bundled example!
-#define USE_OFX_COLOR_BROWSER_INTERFACE // -> This includes the GUI: rectangle boxes, color names listing etc..
+#define USE_OFX_COLOR_BROWSER_INTERFACE // -> This includes the GUI: rectangle boxes, color names listing, keys/mouse browsing etc..
 
-//TODO: WIP
+//TODO: WIP. adding this library
 //#define USE_OFX_MATERIAL_COLOR
 
 //----------
 
 
 #include "ofxSurfingHelpers.h"
+#include "ofxGui.h"
 #include "ofxSurfing_ofxGui.h"
-#include "ofxOpenColor.h"
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 #include "ofxRectangleUtils.h"
@@ -40,7 +40,7 @@ TODO:
 using namespace ofx;
 #endif
 
-#include "ofxGui.h"
+#include "ofxOpenColor.h"
 
 // internal shorcuts no add listeners or remove
 #define KEY_SHORTCUTS_ENABLE
@@ -86,18 +86,23 @@ colorMapping_STRUCT;
 class ofxColorsBrowser
 {
 
+	// text render
 private:
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	ofxFontStash font;
 #endif
-
 	ofTrueTypeFont font2;
 	string helpInfo;
 
-	ofxPanel gui;
-	bool bGuiDebug = false;
+	//--
 
-	//-
+	// debug gui
+	ofxPanel gui;
+public:
+	//bool bGuiDebug = false;
+	ofParameter<bool> bGuiDebug{ "GUI Debug", false };
+
+	//--
 
 public:
 	ofxColorsBrowser();
@@ -109,7 +114,7 @@ public:
 	void exit();
 	void windowResized(int w, int h);
 
-	//-
+	//--
 
 private:
 	// importers
@@ -144,6 +149,7 @@ public:
 	void setPreviousColor();
 	void setNextColorRow();
 	void setPreviousColorRow();
+	void setRandomColor();
 	// cards
 	void setNextCard();
 	void setPreviousCard();
@@ -177,7 +183,6 @@ public:
 	bool isVisible() {
 		return bGui.get();
 	}
-
 	//--------------------------------------------------------------
 	void setToggleVisible()
 	{
@@ -208,14 +213,12 @@ public:
 		}
 #endif
 	}
-
 	//--------------------------------------------------------------
 	void setToggleEnableKeys() {
 		bKeys = !bKeys;
 
 		setEnableKeys(bKeys);
 	}
-
 	//--------------------------------------------------------------
 	void setEnableKeys(bool b)
 	{
@@ -226,7 +229,6 @@ public:
 		else removeKeysListeners();
 #endif
 	}
-
 	//--------------------------------------------------------------
 	void setActive(bool b)
 	{
@@ -242,22 +244,25 @@ public:
 
 	//----
 
-	// pointer back
+	// referenced pointer back
 	void setupColorPtr(ofFloatColor &c); // to reference a pointer and autoupdate referenced local color when the user picks a color inside the add-on scope
 
+	//-
 
 public:
-	// main palette getter
-	vector<ofColor> getPalette();
+	// main library getter
+	vector<ofColor> getLibraryColors();
+	
 	vector<std::string> getNames();
-	int getSize();
-	int getLibIndex() {
+
+	int getAmountcolors();
+	int getLibraryIndex() {
 		return index_Library.get();
 	}
-	int getSizeCards() {
+	int getCardsAmountcolors() {
 		return amtColorsInCard.get();
 	}
-	std::string getNameLib() {
+	std::string getLibraryName() {
 		return name_Library.get();
 	}
 
@@ -285,7 +290,7 @@ private:
 	ofParameter<int> amtColorsInCard{ "CARD SIZE", 7, 2, 100 };// minimal card of colors
 	ofParameter<int> amtCardsInRow{ "CARDS PER ROW", 4, 2, 100 };
 	ofParameter<bool> bShowCards{ "SHOW CARDS", true };
-	int perRow = 10;
+	int amtColorsPerRow;
 
 	int index_Card = 0;
 	int cardColor_size = 100;
@@ -296,10 +301,10 @@ private:
 
 	// main storage
 
+private:
 	map<std::string, ofColor> colors_NamesMAP;
 
-	//-
-
+//TODO:	
 public:
 	vector<colorMapping_STRUCT> colors_STRUCT;
 
@@ -343,10 +348,11 @@ private:
 	//-
 
 private:
-	//draggable, sortable, align...
+	// TODO:
+	// draggable, sortable, align...
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	std::vector<ofxRectangle> rectangles;
-	std::vector<ofRectangle *> selectedRects;
+	std::vector<ofRectangle *> rectanglesSelected;
 	ofxRectangle selectedRectsBoundingBox;
 	ofxRectangle *draggingRectPtr;
 	glm::vec2 dragStart;
@@ -415,7 +421,7 @@ public:
 
 private:
 	bool bShowNamesList = false;
-	bool bShowDebug = false;//for rectangle manager
+	bool bShowDebugRectangles = false;//for rectangle manager
 	bool bShowRectangles = true;
 	bool bEnableClicks = true;
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
 
-#include "ofxColorsBrowser.h"
+#include "ofxSurfingColors.h"
 
 /*
 
@@ -24,7 +24,7 @@ public:
 	void keyPressed(int key);
 	void windowResized(int w, int h);
 
-	ofxColorsBrowser colorBrowser;
+	ofxSurfingColors surfingColors;
 
 	ofFloatColor colorBg;
 };
