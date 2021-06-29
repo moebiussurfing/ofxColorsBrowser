@@ -109,7 +109,7 @@ public:
 private:
 	// importers
 	void load_Pantone_JSON();
-	void load_SanzoWadaDictionary_JSON();
+	void load_SanzoWada_JSON();
 	void load_Material_JSON();
 	void load_Cheprasov_JSON();
 	void load_Crayola_JSON();
@@ -128,10 +128,10 @@ public:
 	};
 
 public:
-	void switch_palette_Type(); // to use externally by the code
+	void setNextLibrary(); // to use externally by the code
 	void nextSortType();
-	void set_palette_Type(int p);
-	void set_sorted_Type(int p);
+	void setPaletteType(int p);
+	void setSortingType(int p);
 
 	// TODO: resize buttons to fit..
 	//void setSize(glm::vec2 size);
@@ -158,14 +158,14 @@ public:
 
 		setVisible(bGui);
 
-		//SHOW_InterfaceColors = !SHOW_InterfaceColors;
-		//setVisible(SHOW_InterfaceColors);
+		//bShowInterfaceColors = !bShowInterfaceColors;
+		//setVisible(bShowInterfaceColors);
 	}
 
 	//--------------------------------------------------------------
 	void setEnableInterfaceClicks(bool b)
 	{
-		ENABLE_clicks = b;
+		bEnableClicks = b;
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 		if (b)
@@ -183,18 +183,18 @@ public:
 
 	//--------------------------------------------------------------
 	void setToggleEnableKeys() {
-		ENABLE_keys = !ENABLE_keys;
+		bKeys = !bKeys;
 
-		setEnableKeys(ENABLE_keys);
+		setEnableKeys(bKeys);
 	}
 
 	//--------------------------------------------------------------
 	void setEnableKeys(bool b)
 	{
-		ENABLE_keys = b;
+		bKeys = b;
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-		if (ENABLE_keys) addKeysListeners();
+		if (bKeys) addKeysListeners();
 		else removeKeysListeners();
 #endif
 	}
@@ -202,10 +202,10 @@ public:
 	//--------------------------------------------------------------
 	void setActive(bool b)
 	{
-		ENABLE_keys = b;
+		bKeys = b;
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-		if (ENABLE_keys) addKeysListeners();
+		if (bKeys) addKeysListeners();
 		else removeKeysListeners();
 #endif
 
@@ -215,7 +215,7 @@ public:
 	//----
 
 	// pointer back
-	void setup_colorBACK(ofFloatColor &c);
+	void setupColorPtr(ofFloatColor &c);
 
 
 public:
@@ -233,20 +233,13 @@ public:
 		return name_Library.get();
 	}
 
-public:
-	vector<std::string> colors_PantoneNames;
-	vector<std::string> colors_MaterialNames;
-	vector<string> tagsMaterial{
-		"50", "100", "200", "300", "400", "500",
-		"600", "700", "800", "900",
-		"a100", "a200", "a400", "a700" };
-
 	//--
 
 private:
 
 	std::string path_Global;
 	std::string path_FileSettings;
+	std::string path_Jsons;
 
 	// path for json colors files
 	std::string path_FilePantone;
@@ -287,9 +280,9 @@ public:
 private:
 
 	// pantone colors
-	ofJson js;
+	ofJson jsPantone;
 	vector<ofColor> colors_Pantone;
-	vector<ofColor> colors_Material;
+	vector<std::string> colors_PantoneNames;
 
 	// snazo wada
 	ofJson jSanzoWada;
@@ -305,6 +298,15 @@ private:
 	ofJson jCrayola;
 	vector<ofColor> colors_Crayola;
 	vector<std::string> colors_CrayolaNames;
+	
+	// material
+	ofJson jMaterial;
+	vector<ofColor> colors_Material;
+	vector<std::string> colors_MaterialNames;
+	vector<string> tagsMaterial{
+		"50", "100", "200", "300", "400", "500",
+		"600", "700", "800", "900",
+		"a100", "a200", "a400", "a700" };
 
 	//----
 
@@ -312,6 +314,7 @@ private:
 
 	//-
 
+private:
 	//draggable, sortable, align...
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	std::vector<ofxRectangle> rectangles;
@@ -332,7 +335,7 @@ private:
 	//-
 
 private:
-	void rectangles_update();
+	void updateRectangles();
 	void drawRectangles();
 
 	//-
@@ -380,15 +383,13 @@ private:
 	// modes and states
 
 public:
-	ofParameter<bool> ENABLE_keys{ "Enable Keys", false };
+	ofParameter<bool> bKeys{ "Enable Keys", false };
 
 private:
-	bool SHOW_debugText = false;
-	bool SHOW_InterfaceColors = true;
-	bool ENABLE_clicks = true;
-	//bool ENABLE_keys = false;
-
+	bool bDebugText = false;
 	bool bShowDebug = false;//for rectangle manager
+	bool bShowInterfaceColors = true;
+	bool bEnableClicks = true;
 
 	//-
 
@@ -401,7 +402,7 @@ private:
 	//-
 
 	void buildColors();
-	void refresh_Clicks(); // to browsing by keys
+	void refreshRectanglesClicks(); // to browsing by keys
 	void buildRectangles();
 	void clearInterface();
 

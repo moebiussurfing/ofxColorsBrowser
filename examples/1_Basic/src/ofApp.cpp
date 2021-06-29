@@ -4,7 +4,7 @@
 void ofApp::setup(){
 	ofSetFrameRate(60);
 
-	colorBrowser.setup_colorBACK(color_BACK);// set local target color receiver
+	colorBrowser.setupColorPtr(color_BACK);// set local target color receiver
 	colorBrowser.setup();
 	colorBrowser.setVisible(true);
 }

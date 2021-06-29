@@ -54,15 +54,16 @@ ofxColorsBrowser::ofxColorsBrowser()
 
 	path_Global = "ofxColorsBrowser/";
 	path_FileSettings = path_Global + "AppSettings.xml";
+	path_Jsons = "jsonFiles/";
 
 	//-
 
 	// library files
-	path_FilePantone = path_Global + "pantone-colors.json";
-	path_FileSanzoWada = path_Global + "SANZO_WADA_Library.json";
-	path_FileMaterial = path_Global + "material-colors.json";
-	path_FileCheprasov = path_Global + "cheprasov-colors.json";
-	path_FileCrayola = path_Global + "crayola.json";
+	path_FilePantone = path_Global + path_Jsons + "pantone-colors.json";
+	path_FileSanzoWada = path_Global + path_Jsons + "SANZO_WADA_Library.json";
+	path_FileMaterial = path_Global + path_Jsons + "material-colors.json";
+	path_FileCheprasov = path_Global + path_Jsons + "cheprasov-colors.json";
+	path_FileCrayola = path_Global + path_Jsons + "crayola.json";
 	// * add your new libs here!
 
 	//-
@@ -97,8 +98,6 @@ ofxColorsBrowser::ofxColorsBrowser()
 	helpInfo += "\n";
 	helpInfo += "g                     Gui     ";
 	helpInfo += "\n";
-	//helpInfo += "G                     Gui Panel";
-	//helpInfo += "\n";
 }
 
 //--------------------------------------------------------------
@@ -129,7 +128,7 @@ void ofxColorsBrowser::buildColors()
 			amtCardsInRow = 10;
 
 			boxSize = 15;
-			boxPad = 0.5;
+			boxPad = 0.0;
 
 			cardColor_size = 100;
 			cardColor_pad = 20;
@@ -175,8 +174,8 @@ void ofxColorsBrowser::buildColors()
 			amtCardsInRow = 2;
 
 			boxSize = 52;
-			boxPad = 1;
-			
+			boxPad = 0.0;
+
 			cardColor_size = 100;
 			cardColor_pad = 20;
 		}
@@ -388,7 +387,7 @@ void ofxColorsBrowser::buildColors()
 			amtCardsInRow = 2;
 
 			boxSize = 50;
-			boxPad = 2;
+			boxPad = 0.0;
 
 			cardColor_size = 100;
 			cardColor_pad = 10;
@@ -416,7 +415,7 @@ void ofxColorsBrowser::buildColors()
 
 #define NUM_COLORS_ROW 10
 		// that's the ideal distribution for open color palette
-		
+
 		bool flipOrder = true;
 		int iFlip;
 		int pos = 0;//-1? to set correlative positions...
@@ -524,7 +523,7 @@ void ofxColorsBrowser::buildColors()
 			amtCardsInRow = 1;
 
 			boxSize = 50;
-			boxPad = 1;
+			boxPad = 0.0;
 
 			cardColor_size = 70;
 			cardColor_pad = 5;
@@ -545,7 +544,7 @@ void ofxColorsBrowser::buildColors()
 			amtCardsInRow = 9;
 
 			boxSize = 20;
-			boxPad = 1;
+			boxPad = 0.0;
 
 			cardColor_size = 100;
 			cardColor_pad = 20;
@@ -596,7 +595,7 @@ void ofxColorsBrowser::buildColors()
 			amtCardsInRow = 3;
 
 			boxSize = 60;
-			boxPad = 1;
+			boxPad = 0.0;
 
 			cardColor_size = 100;
 			cardColor_pad = 20;
@@ -646,12 +645,12 @@ void ofxColorsBrowser::load_Pantone_JSON()
 	ofFile file(path_FilePantone);
 	if (file.exists())
 	{
-		file >> js;
-		ofLogNotice(__FUNCTION__) << js;
+		file >> jsPantone;
+		ofLogNotice(__FUNCTION__) << jsPantone;
 		ofLogNotice(__FUNCTION__) << endl;
 
 		int i = 0;
-		for (auto &jsName : js["names"])
+		for (auto &jsName : jsPantone["names"])
 		{
 			//ofLogNotice(__FUNCTION__) << "NAMES  ["<<i<<"] "<<jsName<<endl;
 			colors_PantoneNames.push_back(jsName);
@@ -659,7 +658,7 @@ void ofxColorsBrowser::load_Pantone_JSON()
 		}
 
 		i = 0;
-		for (auto &jsValues : js["values"])
+		for (auto &jsValues : jsPantone["values"])
 		{
 			//ofLogNotice(__FUNCTION__) << "VALUES ["<<i<<"] "<<jsValues<<endl;
 			ofColor c;
@@ -680,7 +679,7 @@ void ofxColorsBrowser::load_Pantone_JSON()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::load_SanzoWadaDictionary_JSON()
+void ofxColorsBrowser::load_SanzoWada_JSON()
 {
 	ofLogNotice(__FUNCTION__);
 
@@ -726,11 +725,11 @@ void ofxColorsBrowser::load_Material_JSON()
 	ofFile file(path_FileMaterial);
 	if (file.exists())
 	{
-		file >> js;
-		ofLogNotice(__FUNCTION__) << js;
+		file >> jMaterial;
+		ofLogNotice(__FUNCTION__) << jMaterial;
 
 		int i = 0;
-		for (auto &jp : js)
+		for (auto &jp : jMaterial)
 		{
 			//		ofLogNotice(__FUNCTION__) << "----------------------\n" << "SUB-PALETTE  [" << i << "] " << jp;
 			//		//ofLogNotice(__FUNCTION__) << ofToString(jp[i]); jp.get(i);
@@ -881,13 +880,15 @@ void ofxColorsBrowser::setup()
 	params.add(index_Library);
 	params.add(name_Library);
 	params.add(MODE_SORTING);
+	params.add(MODE_SORTING_name);
+	// layout
 	//paramsLayout.add(boxSize);
 	//paramsLayout.add(boxPad);
 	//paramsLayout.add(amtColorsInCard);
 	//paramsLayout.add(amtCardsInRow);
 	//paramsLayout.add(bShowCards);
-	params.add(paramsLayout);
-	params.add(ENABLE_keys);
+	//params.add(paramsLayout);
+	params.add(bKeys);
 
 	//-
 
@@ -996,7 +997,7 @@ void ofxColorsBrowser::setup()
 	load_Pantone_JSON();
 
 	// 1. sanzo colors
-	load_SanzoWadaDictionary_JSON();
+	load_SanzoWada_JSON();
 
 	// 2. native OF colors
 	// uses an addon instead of a json
@@ -1049,7 +1050,7 @@ void ofxColorsBrowser::setup()
 
 	//index_Color = 0;
 	//index_Card = 0;
-	//refresh_Clicks();
+	//refreshRectanglesClicks();
 
 	// settings
 	ofxSurfingHelpers::loadGroup(params, path_FileSettings);
@@ -1098,7 +1099,7 @@ void ofxColorsBrowser::buildRectangles()
 	// startup
 	index_Color = 0;
 	index_Card = 0;
-	refresh_Clicks();
+	refreshRectanglesClicks();
 
 #endif
 }
@@ -1116,56 +1117,54 @@ void ofxColorsBrowser::update()
 	//-
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	rectangles_update();
+	updateRectangles();
 #endif
 }
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::draw()
 {
-	if (bGui)
-	{
-		ofPushMatrix();
-		ofPushStyle();
+	//--
 
-		//position
-		float _x = 20;
-		float _y = 40;
+	if (colors_STRUCT.size() != 0) // bypass if it's empty. avoid crashes
+		if (bGui)
+		{
+			ofPushMatrix();
+			ofPushStyle();
 
-		//-
+			//position
+			float _x = 20;
+			float _y = 40;
 
-		// 1. draw all the colors names
+			//-
 
-		int maxLinesThatFitsScreen = 42; // related to font size..
-		bool bColorizeLabel = false;
-		bool bColorizeBg = true;
+			// 1. draw all the colors names
 
-		int iPadded;
-		int line;
-		int lineBegin;
-		int lineEnd;
-		int maxCards = maxLinesThatFitsScreen / amtColorsInCard;
-		int linesPage = amtColorsInCard * maxCards;
-		int pageNum;
+			int maxLinesThatFitsScreen = 42; // related to font size..
+			bool bColorizeLabel = false;
+			bool bColorizeBg = true;
 
-		std::string str;
-		ofColor c;
+			int iPadded;
+			int line;
+			int lineBegin;
+			int lineEnd;
+			int maxCards = maxLinesThatFitsScreen / amtColorsInCard;
+			int linesPage = amtColorsInCard * maxCards;
+			int pageNum;
 
-		//--
+			std::string str;
+			ofColor c;
 
-		// calculate layout
-		pageNum = (int)index_Color / linesPage;
-		lineBegin = pageNum * linesPage;
-		lineEnd = lineBegin + linesPage - 1;
+			//--
 
-		//--
+			// calculate layout
+			pageNum = (int)index_Color / linesPage;
+			lineBegin = pageNum * linesPage;
+			lineEnd = lineBegin + linesPage - 1;
 
-		// 0. draw all color names marking the one selected
+			//--
 
-		//--
-
-		// avoid crashes
-		if (colors_STRUCT.size() == 0) return;
+			// 0. draw all color names marking the one selected
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
@@ -1173,291 +1172,296 @@ void ofxColorsBrowser::draw()
 
 		// 1. left lateral list
 
-		if (SHOW_debugText)
-		{
-			float fontSize = 20;
-			float x = _x;
-			float rectWidth = 200;
-			int margin = 6;
-
-			//-
-
-			// 0.0  background rectangle
-			ofSetColor(255); // white
-			ofFill();
-			float _h = linesPage * fontSize;
-			int _dim = 10;
-			ofDrawRectRounded(x - _dim, _y - fontSize + margin - _dim, rectWidth + 2 * _dim, _h + 2 * _dim, 5);
-			//ofDrawRectRounded(x, _y - fontSize + margin, rectWidth, _h, 5);
-
-			//-
-
-			for (int i = lineBegin; i <= lineEnd; i++)
+			if (bDebugText)
 			{
-				//i = ofClamp(i, 0, colors_STRUCT.size() - 1);
-				line = i;
-
-				if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size()) str = colors_STRUCT[line].name;
-				else str = "";
-
-				if (pageNum == 0) iPadded = i;
-				else iPadded = i - lineBegin;
-
-				float y = _y + iPadded * fontSize;
+				float fontSize = 20;
+				float x = _x;
+				float rectWidth = 200;
+				int margin = 6;
 
 				//-
 
-				// 1. selected color
+				// 0.0  background rectangle
+				ofSetColor(255); // white
+				ofFill();
+				float _h = linesPage * fontSize;
+				int _dim = 10;
+				ofDrawRectRounded(x - _dim, _y - fontSize + margin - _dim, rectWidth + 2 * _dim, _h + 2 * _dim, 5);
+				//ofDrawRectRounded(x, _y - fontSize + margin, rectWidth, _h, 5);
 
-				if (i == index_Color)
+				//-
+
+				for (int i = lineBegin; i <= lineEnd; i++)
 				{
-					// 1.1 rectangle selector
+					//i = ofClamp(i, 0, colors_STRUCT.size() - 1);
+					line = i;
 
-					if (!bColorizeBg) ofSetColor(0);//black
-					else ofSetColor(colors_STRUCT[i].color);
+					if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size()) str = colors_STRUCT[line].name;
+					else str = "";
 
-					ofDrawRectRounded(x, y - fontSize + margin, rectWidth, fontSize, 5);
-					//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+					if (pageNum == 0) iPadded = i;
+					else iPadded = i - lineBegin;
 
-					//// border
-					//ofNoFill();
-					//ofSetLineWidth(2);
-					//ofSetColor(0);
-					//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
-					//ofFill();
-
-					// text
-					if (bColorizeLabel) c = colors_STRUCT[i].color;
-					else c = ofColor::white;
-
-					// A
-					//// shadow
-					//ofSetColor(ofColor(ofColor::black, 200));
-					//font.draw(
-					//	str,
-					//	fontSize,
-					//	x + margin + 1,
-					//	y + 1
-					//);
-					// body
-					ofSetColor(c);
-					font.draw(
-						str,
-						fontSize,
-						x + margin,
-						y
-					);
-
-					// B
-					//ofDrawBitmapStringHighlight(str, x, y, c, ofColor::black);
-				}
-
-				// 1.2. all colors. not selected
-
-				else
-				{
-					//// 1.2.1 background rectangle
-
-					////TODO:
-					//// this is very low performant bc we draw a rectangle for each name!
-					//// should draw a bigger bg rectangle
-					//ofSetColor(255); // white
-					//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+					float y = _y + iPadded * fontSize;
 
 					//-
 
-					// 1.2.2 label
-					if (bColorizeLabel) c = colors_STRUCT[i].color;
-					else c = ofColor::black;
+					// 1. selected color
 
-					//A
-					//ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
-
-					//B
-					ofSetColor(c);
-					font.draw(
-						str,
-						fontSize,
-						x + margin,
-						y
-					);
-				}
-
-				//-
-
-				// 1.3. line to mark first color on each card
-
-				if (amtColorsInCard != 1)
-					if (i % amtColorsInCard == 0 && i < colors_STRUCT.size())
+					if (i == index_Color)
 					{
-						int lineSize = 2;
-						//int lineSize = 3;
-						//int px = x + 0;
-						int px = x + 2;
-						int py = y - 4;
-						ofSetLineWidth(2.0);
-						ofDrawLine(px, py, px + lineSize, py);
+						// 1.1 rectangle selector
+
+						if (!bColorizeBg) ofSetColor(0);//black
+						else ofSetColor(colors_STRUCT[i].color);
+
+						ofDrawRectRounded(x, y - fontSize + margin, rectWidth, fontSize, 5);
+						//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+
+						//// border
+						//ofNoFill();
+						//ofSetLineWidth(2);
+						//ofSetColor(0);
+						//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
+						//ofFill();
+
+						// text
+						if (bColorizeLabel) c = colors_STRUCT[i].color;
+						else c = ofColor::white;
+
+						// A
+						//// shadow
+						//ofSetColor(ofColor(ofColor::black, 200));
+						//font.draw(
+						//	str,
+						//	fontSize,
+						//	x + margin + 1,
+						//	y + 1
+						//);
+						// body
+						ofSetColor(c);
+						font.draw(
+							str,
+							fontSize,
+							x + margin,
+							y
+						);
+
+						// B
+						//ofDrawBitmapStringHighlight(str, x, y, c, ofColor::black);
 					}
-			}
-		}
-#endif
 
-		//--
+					// 1.2. all colors. not selected
 
-		// help info
+					else
+					{
+						//// 1.2.1 background rectangle
 
-		// 2. monitor color selected: 
-		// name & index
+						////TODO:
+						//// this is very low performant bc we draw a rectangle for each name!
+						//// should draw a bigger bg rectangle
+						//ofSetColor(255); // white
+						//ofDrawRectangle(x, y - fontSize + margin, rectWidth, fontSize);
 
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-		if (SHOW_debugText)
-		{
-			std::string str = "";
-			//str += "DEBUG";
-			//str += "\n";
+						//-
 
-			str += "Library            ";
-			str += ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
-			str += "\n";
-			str += "Color              " + ofToString(currColor_OriginalPos + 1) + "/" + ofToString(colors_STRUCT.size());
-			str += "\n";
-			str += "Card               " + ofToString(index_Card + 1);
-			str += "\n";
-			str += "Page               " + ofToString(pageNum + 1);
-			str += "\n";
-			str += "Colors/Card        " + ofToString(amtColorsInCard);
-			str += "\n";
-			str += "Cards/Row          " + ofToString(amtCardsInRow);
-			//str += "\n";
+						// 1.2.2 label
+						if (bColorizeLabel) c = colors_STRUCT[i].color;
+						else c = ofColor::black;
 
-			//float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str));
+						//A
+						//ofDrawBitmapStringHighlight(str, 10, 20 + iPadded * 20, c, ofColor::white);
 
-			//position
-			int x = positionRectangles.x + 0;
-			int y = 15;
+						//B
+						ofSetColor(c);
+						font.draw(
+							str,
+							fontSize,
+							x + margin,
+							y
+						);
+					}
 
-			ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str), x, y,
-				ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
-		}
-#endif
+					//-
 
-		//--
+					// 1.3. line to mark first color on each card
 
-		// 3. monitor selected library
-
-		if (SHOW_InterfaceColors)
-		{
-			if (SHOW_debugText)
-			{
-				std::string str1;
-				str1 = "";
-				str1 += "\n";
-
-				//str1 += "MONITOR";
-				//str1 += "\n";
-				//str1 += "\n";
-				//str1 += "LIBRARY: ";
-				//str1 += " " + ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
-
-				//-
-
-				str1 += "LIBRARY: ";
-
-				switch (index_Library)
-				{
-				case OFX_PANTONE_COLORS:
-					str1 += "PANTONE";
-					break;
-
-				case OFX_SANZOWADA_COLORS:
-					str1 += "SANZO WADA";
-					break;
-
-				case OFX_COLOR_NATIVE:
-					str1 += "OF NATIVE";
-					break;
-
-				case OFX_OPEN_COLOR:
-					str1 += "OPEN COLOR";
-					break;
-
-				case OFX_MATERIAL_COLOR:
-					str1 += "MATERIAL COLORS";
-					break;
-
-				case OFX_CHEPRASOV:
-					str1 += "CHEPRASOV";
-					break;
-
-				case OFX_CRAYOLA:
-					str1 += "CRAYOLA";
-					break;
+					if (amtColorsInCard != 1)
+						if (i % amtColorsInCard == 0 && i < colors_STRUCT.size())
+						{
+							int lineSize = 2;
+							//int lineSize = 3;
+							//int px = x + 0;
+							int px = x + 2;
+							int py = y - 4;
+							ofSetLineWidth(2.0);
+							ofDrawLine(px, py, px + lineSize, py);
+						}
 				}
-
-				//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
-
-				//-
-
-				str1 += "\n";
-				str1 += "SORTING: ";
-
-				switch (MODE_SORTING)
-				{
-				case 0:
-					str1 += "ORIGINAL";
-					break;
-
-				case 1:
-					str1 += "NAME";
-					break;
-
-				case 2:
-					str1 += "HUE";
-					break;
-
-				case 3:
-					str1 += "BRIGHTNESS";
-					break;
-
-				case 4:
-					str1 += "SATURATION";
-					break;
-				}
-
-				//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
-
-				//-
-
-				str1 += "\n";
-
-				std::string str2 = str1 + helpInfo;
-
-				float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str2)) + 10;
-
-				setPositionHelper(glm::vec2(ofGetWidth() - w, 5));
-
-				ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str2), positionHelper.x, positionHelper.y,
-					ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
 			}
+#endif
 
 			//--
 
-			// 4. draw all clickable color boxes
+			// help info
+
+			// 2. monitor color selected: 
+			// name & index
 
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-			drawRectangles();
+			if (bDebugText)
+			{
+				std::string str = "";
+				//str += "DEBUG";
+				//str += "\n";
 
-			//TODO:
-			// extra interface is
-			// rectangles with mouse management and draggables..
+				str += "Library            ";
+				str += ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
+				str += "\n";
+				str += "Color              " + ofToString(currColor_OriginalPos + 1) + "/" + ofToString(colors_STRUCT.size());
+				str += "\n";
+				str += "Card               " + ofToString(index_Card + 1);
+				str += "\n";
+				str += "Page               " + ofToString(pageNum + 1);
+				str += "\n";
+				str += "Colors/Card        " + ofToString(amtColorsInCard);
+				str += "\n";
+				str += "Cards/Row          " + ofToString(amtCardsInRow);
+				//str += "\n";
+
+				//float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str));
+
+				//position
+				int x = positionRectangles.x + 0;
+				int y = 15;
+
+				ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str), x, y,
+					ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
+			}
 #endif
+
+			//--
+
+			// 3. monitor selected library
+
+			if (bShowInterfaceColors)
+			{
+				if (bDebugText)
+				{
+					std::string str1;
+					str1 = "";
+					str1 += "\n";
+
+					//str1 += "MONITOR";
+					//str1 += "\n";
+					//str1 += "\n";
+					//str1 += "LIBRARY: ";
+					//str1 += " " + ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
+
+					//-
+
+					str1 += "LIBRARY: ";
+
+					switch (index_Library)
+					{
+					case OFX_PANTONE_COLORS:
+						str1 += "PANTONE";
+						break;
+
+					case OFX_SANZOWADA_COLORS:
+						str1 += "SANZO WADA";
+						break;
+
+					case OFX_COLOR_NATIVE:
+						str1 += "OF NATIVE";
+						break;
+
+					case OFX_OPEN_COLOR:
+						str1 += "OPEN COLOR";
+						break;
+
+					case OFX_MATERIAL_COLOR:
+						str1 += "MATERIAL COLORS";
+						break;
+
+					case OFX_CHEPRASOV:
+						str1 += "CHEPRASOV";
+						break;
+
+					case OFX_CRAYOLA:
+						str1 += "CRAYOLA";
+						break;
+					}
+
+					//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
+
+					//-
+
+					str1 += "\n";
+					str1 += "SORTING: ";
+
+					switch (MODE_SORTING)
+					{
+					case 0:
+						str1 += "ORIGINAL";
+						break;
+
+					case 1:
+						str1 += "NAME";
+						break;
+
+					case 2:
+						str1 += "HUE";
+						break;
+
+					case 3:
+						str1 += "BRIGHTNESS";
+						break;
+
+					case 4:
+						str1 += "SATURATION";
+						break;
+					}
+
+					//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
+
+					//-
+
+					str1 += "\n";
+
+					std::string str2 = str1 + helpInfo;
+
+					float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str2)) + 10;
+
+					setPositionHelper(glm::vec2(ofGetWidth() - w, 5));
+
+					ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str2), positionHelper.x, positionHelper.y,
+						ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
+				}
+
+				//--
+
+				// 4. draw all clickable color boxes
+
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+				drawRectangles();
+
+				//TODO:
+				// extra interface is
+				// rectangles with mouse management and draggables..
+#endif
+			}
+
+			ofPopMatrix();
+			ofPopStyle();
+
+			//-----
 		}
 
-		ofPopMatrix();
-		ofPopStyle();
+		//--
 
-		//-----
-
+	if (bGui)
+	{
 		// debug gui
 		if (bGuiDebug) gui.draw();
 	}
@@ -1476,7 +1480,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 
 	//-
 
-	if (ENABLE_keys)
+	if (bKeys)
 	{
 		//-
 
@@ -1507,7 +1511,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 				index_Card = 0;
 
 			index_Color = amtColorsInCard * index_Card;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 		//prev card
 		else if (/*key == OF_KEY_LEFT_SHIFT ||*/ key == 'a')
@@ -1517,7 +1521,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 				index_Card = (colors_STRUCT.size() - 1) / amtColorsInCard;
 
 			index_Color = amtColorsInCard * index_Card;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 		else if (key == 's')//prev card
 		{
@@ -1525,7 +1529,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			if (index_Color > colors_STRUCT.size() - 1)
 				index_Color = 0;
 			index_Card = index_Color / amtColorsInCard;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 		else if (key == 'w')//prev card
 		{
@@ -1533,7 +1537,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			if (index_Color < 0)
 				index_Color = colors_STRUCT.size() - 1 - amtColorsInCard;
 			index_Card = index_Color / amtColorsInCard;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 
 		//-
@@ -1542,7 +1546,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 		{
 			index_Card = (int)ofRandom((colors_STRUCT.size()) / amtColorsInCard);
 			index_Color = amtColorsInCard * index_Card;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 		//-
 
@@ -1554,7 +1558,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			if (index_Color > sizeCols - 1)
 				index_Color = 0;
 			index_Card = index_Color / amtColorsInCard;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 		else if (key == OF_KEY_LEFT)
 		{
@@ -1562,7 +1566,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			if (index_Color < 0)
 				index_Color = colors_STRUCT.size() - 1;
 			index_Card = index_Color / amtColorsInCard;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 		else if (key == OF_KEY_DOWN)
 		{
@@ -1571,7 +1575,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			if (index_Color > sizeCols - 1)
 				index_Color = sizeCols - 1;
 			index_Card = index_Color / amtColorsInCard;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 		else if (key == OF_KEY_UP)
 		{
@@ -1579,7 +1583,7 @@ void ofxColorsBrowser::keyPressed(ofKeyEventArgs &eventArgs)
 			if (index_Color < 0)
 				index_Color = 0;
 			index_Card = index_Color / amtColorsInCard;
-			refresh_Clicks();
+			refreshRectanglesClicks();
 		}
 #endif
 
@@ -1850,7 +1854,7 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs)
 void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	if (ENABLE_clicks)
+	if (bEnableClicks)
 	{
 		const int &x = eventArgs.x;
 		const int &y = eventArgs.y;
@@ -1950,7 +1954,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 
 						// 4. update selected card
 						index_Card = index_Color / amtColorsInCard;
-						//refresh_Clicks();
+						//refreshRectanglesClicks();
 					}
 				}
 			}
@@ -1977,7 +1981,7 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::refresh_Clicks()//over rectangles
+void ofxColorsBrowser::refreshRectanglesClicks() // over rectangles
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
@@ -2024,7 +2028,7 @@ void ofxColorsBrowser::refresh_Clicks()//over rectangles
 void ofxColorsBrowser::mouseReleased(ofMouseEventArgs &eventArgs)
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	if (ENABLE_clicks)
+	if (bEnableClicks)
 	{
 
 		const int &x = eventArgs.x;
@@ -2078,7 +2082,7 @@ ofxColorsBrowser::~ofxColorsBrowser()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::setup_colorBACK(ofFloatColor &c)
+void ofxColorsBrowser::setupColorPtr(ofFloatColor &c)
 {
 	//color_BACK = c;
 	color_BACK_OFAPP = &c;
@@ -2103,7 +2107,7 @@ void ofxColorsBrowser::setRowsSize(int rows)
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::switch_palette_Type()
+void ofxColorsBrowser::setNextLibrary()
 {
 	if (index_Library < index_Library.getMax()) index_Library++;
 	else index_Library = index_Library.getMin();
@@ -2118,13 +2122,13 @@ void ofxColorsBrowser::nextSortType()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::set_palette_Type(int p)
+void ofxColorsBrowser::setPaletteType(int p)
 {
 	index_Library = p;
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::set_sorted_Type(int p)
+void ofxColorsBrowser::setSortingType(int p)
 {
 	MODE_SORTING = p;
 
@@ -2155,11 +2159,11 @@ void ofxColorsBrowser::set_sorted_Type(int p)
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::rectangles_update()
+void ofxColorsBrowser::updateRectangles()
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 
-	if (ENABLE_clicks)
+	if (bEnableClicks)
 	{
 		ofPoint mouse(ofGetMouseX(), ofGetMouseY());
 
@@ -2569,7 +2573,7 @@ void ofxColorsBrowser::setVisible(bool b)
 
 	bGui = b;
 
-	SHOW_InterfaceColors = b;
+	bShowInterfaceColors = b;
 
 	setEnableInterfaceClicks(b);
 }
@@ -2577,12 +2581,12 @@ void ofxColorsBrowser::setVisible(bool b)
 //--------------------------------------------------------------
 void ofxColorsBrowser::setVisibleDebug(bool b)
 {
-	SHOW_debugText = b;
+	bDebugText = b;
 }
 //--------------------------------------------------------------
 void ofxColorsBrowser::setToggleVisibleDebug()
 {
-	SHOW_debugText = !SHOW_debugText;
+	bDebugText = !bDebugText;
 }
 
 
