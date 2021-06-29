@@ -1,7 +1,10 @@
 #pragma once
+
 #include "ofMain.h"
 
 #include "ofxSurfingColors.h"
+#include "ofxWindowApp.h"
+
 
 /*
 
@@ -15,9 +18,11 @@ This is to enable the user GUI.
 
 */
 
+
 class ofApp : public ofBaseApp {
 
 public:
+
 	void setup();
 	void update();
 	void draw();
@@ -27,4 +32,6 @@ public:
 	ofxSurfingColors surfingColors;
 
 	ofFloatColor colorBg;
+
+	ofxWindowApp windowApp;
 };

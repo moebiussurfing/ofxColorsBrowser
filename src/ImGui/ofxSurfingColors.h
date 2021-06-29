@@ -2,9 +2,26 @@
 
 #include "ofMain.h"
 
-#include "ofxSurfingImGui.h"
+
+/*
+
+	TODO:
+
+	+ fix index clicker. link index params
+	+ add labels on gui
+	+ add color + card colors preview?
+	+ hide basic gui with defines
+
+*/
+
 
 #include "ofxColorsBrowser.h"
+
+#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+#undef USE_OFX_COLOR_BROWSER_INTERFACE
+#endif
+
+#include "ofxSurfingImGui.h"
 
 class ofxSurfingColors
 {
@@ -14,8 +31,8 @@ public:
 	ofFloatColor *color_BACK_OFAPP;
 	void setupColorPtr(ofFloatColor &c);
 	ofFloatColor colorBg;
-	
-	void gui_Library();
+
+	void drawImGuiLibrary();
 
 	//-
 
@@ -33,14 +50,15 @@ public:
 	void setBool(bool b);
 	bool getBool();
 
-	ofxSurfing_ImGui_Manager guiManager; 
+	ofxSurfing_ImGui_Manager guiManager;
 	void drawImGui();
+
 private:
+	ofParameterGroup params;
+	std::string path_Global;
+	std::string path_FileSettings;
 
 public:
-
-
-
 
 	//----
 
@@ -48,15 +66,15 @@ public:
 	// using colorBrowser
 private:
 
-//#ifdef USE_OFX_COLOR_BROWSER
-//	ofxColorsBrowser colorBrowser;
-//#endif
+	//#ifdef USE_OFX_COLOR_BROWSER
+	//	ofxColorsBrowser colorBrowser;
+	//#endif
 
 	vector<ofColor> palette_Lib_Cols;
 	vector<std::string> palette_Lib_Names;
 
 	ofEventListener listener_Library;
-	ofEventListener listener_ModeSorting;
+	//ofEventListener listener_ModeSorting;
 
 	void refresh_Libs();
 	void refresh_Kits();
@@ -123,8 +141,9 @@ private:
 	int last_Lib_Index = -1; // last library picked color
 
 
-					ImGuiStyle *style = nullptr;
+	ImGuiStyle *style = nullptr;
 
+	ofParameter<float> scale_ColRange;
 
 
 

@@ -5,13 +5,14 @@
 
 /*
 
-TODO:
+	TODO:
 
-+ add ImGui gui
-+ more responsive, variable sizes..
-+ make a base class to imrpove adding more libraries?
-+ add more browseable pages
-+ split build from resize responsive layout
+	+ add pointer back
+	+ move layout settings on a float window to not deform grid while editing
+	+ make a base class to improve adding more libraries?
+	+ add more browseable pages on basic gui
+	+ more responsive, variable sizes..
+	+ split build from resize responsive layout. to allow live rescaling
 
 */
 
@@ -252,7 +253,7 @@ public:
 public:
 	// main library getter
 	vector<ofColor> getLibraryColors();
-	
+
 	vector<std::string> getNames();
 
 	int getAmountcolors();
@@ -304,7 +305,7 @@ private:
 private:
 	map<std::string, ofColor> colors_NamesMAP;
 
-//TODO:	
+	//TODO:	
 public:
 	vector<colorMapping_STRUCT> colors_STRUCT;
 
@@ -442,14 +443,16 @@ private:
 
 	//-
 
-	// grid position
+	// rectangles position
 	glm::vec2 positionRectangles;
 
 	// text debug positions
 	glm::vec2 positionHelper;
 
-public:
+	//--
 
+public:
+//private:
 	ofParameter<int> index_Library{ "Library", 0, 0, 0 };
 	ofParameter<std::string> name_Library{ " ", "" };
 
@@ -457,6 +460,7 @@ public:
 	ofParameter<int> MODE_SORTING{ "Sorting Mode", 0, 0, 4 };
 	ofParameter<std::string> MODE_SORTING_name{ " ", "" };
 
+public:
 	ofParameterGroup params;
 	ofParameterGroup paramsLayout;
 

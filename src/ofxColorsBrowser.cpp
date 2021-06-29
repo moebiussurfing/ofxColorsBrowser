@@ -1,34 +1,29 @@
 #include "ofxColorsBrowser.h"
 
 // sorting map tools
-
-//--------------------------------------------------------------
 // comparing colors to sorting methods
-
+//--------------------------------------------------------------
 bool compareName(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
 {
 	return s1.name < s2.name;
 }
-
 bool compareBrightness(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
 {
 	return s1.color.getBrightness() < s2.color.getBrightness();
 }
-
 bool compareHue(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
 {
 	return s1.color.getHue() < s2.color.getHue();
 }
-
 bool compareSaturation(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
 {
 	return s1.color.getSaturation() < s2.color.getSaturation();
 }
-
 bool comparePosition(const colorMapping_STRUCT &s1, const colorMapping_STRUCT &s2)
 {
 	return s1.position < s2.position;
 }
+
 
 //----
 
@@ -888,14 +883,16 @@ void ofxColorsBrowser::setup()
 	params.add(name_Library);
 	params.add(MODE_SORTING);
 	params.add(MODE_SORTING_name);
-	// layout
-	//paramsLayout.add(boxSize);
-	//paramsLayout.add(boxPad);
-	//paramsLayout.add(amtColorsInCard);
-	//paramsLayout.add(amtCardsInRow);
-	//paramsLayout.add(bShowCards);
-	//params.add(paramsLayout);
 	params.add(bKeys);
+	params.add(bGui);
+
+	// layout
+	paramsLayout.add(boxSize);
+	paramsLayout.add(boxPad);
+	paramsLayout.add(amtColorsInCard);
+	paramsLayout.add(amtCardsInRow);
+	paramsLayout.add(bShowCards);
+	//params.add(paramsLayout);
 
 	//-
 
@@ -2504,6 +2501,7 @@ void ofxColorsBrowser::drawRectangles()
 		ofRectangle *rect = (ofRectangle *)&rectangles[i];
 		unsigned int selectionIndex = ofFind(rectanglesSelected, rect);
 		//rectangles[i].draw(i, selectionIndex == rectanglesSelected.size() ? -1 : selectionIndex);
+
 		if (selectionIndex == rectanglesSelected.size())
 		{
 			rectangles[i].draw(i, -1);
@@ -2515,7 +2513,7 @@ void ofxColorsBrowser::drawRectangles()
 	}
 
 	// draw border for all colors
-	ofSetColor(ofColor(0, 32));
+	ofSetColor(ofColor(0, 16));
 	ofNoFill();
 	for (size_t i = 0; i < rectangles.size(); ++i)
 	{
