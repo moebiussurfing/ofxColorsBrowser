@@ -40,6 +40,9 @@ ofxColorsBrowser::ofxColorsBrowser()
 {
 	ofxSurfingHelpers::setThemeDark_ofxGui();
 
+	ofAddListener(ofEvents().update, this, &ofxColorsBrowser::update);
+	ofAddListener(ofEvents().draw, this, &ofxColorsBrowser::draw);
+
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	addMouseListeners();
 #endif
@@ -397,13 +400,14 @@ void ofxColorsBrowser::buildColors()
 	//----
 
 	// 3. OFX_MATERIAL_COLOR
-
+#ifdef USE_OFX_MATERIAL_COLOR
 	//TODO:
 	else if (index_Library == OFX_MATERIAL_COLOR)
 	{
 		ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
 
 	}
+#endif
 
 	//----
 
@@ -925,9 +929,11 @@ void ofxColorsBrowser::setup()
 
 		index_Library = ofClamp(index_Library, index_Library.getMin(), index_Library.getMax());
 
+#ifdef USE_OFX_MATERIAL_COLOR
 		// exclude. skip material
 		if (index_Library == OFX_MATERIAL_COLOR) index_Library++;
 		//if (index_Library == OFX_MATERIAL_COLOR) index_Library = OFX_PANTONE_COLORS;
+#endif
 
 		switch (index_Library)
 		{
@@ -946,10 +952,12 @@ void ofxColorsBrowser::setup()
 			name_Library = "OF Native";
 			break;
 
+#ifdef USE_OFX_MATERIAL_COLOR
 		case OFX_MATERIAL_COLOR:	// 3
 			ofLogNotice(__FUNCTION__) << "OFX_MATERIAL_COLOR";
 			name_Library = "Material";
 			break;
+#endif
 
 		case OFX_OPEN_COLOR:		// 4
 			ofLogNotice(__FUNCTION__) << "OFX_OPEN_COLOR";
@@ -1106,7 +1114,7 @@ void ofxColorsBrowser::buildRectangles()
 
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::update()
+void ofxColorsBrowser::update(ofEventArgs & args)
 {
 	if (color_BACK != color_BACK_PRE)
 	{
@@ -1122,7 +1130,7 @@ void ofxColorsBrowser::update()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::draw()
+void ofxColorsBrowser::draw(ofEventArgs & args)
 {
 	//--
 
@@ -1380,9 +1388,11 @@ void ofxColorsBrowser::draw()
 						str1 += "OPEN COLOR";
 						break;
 
+#ifdef USE_OFX_MATERIAL_COLOR
 					case OFX_MATERIAL_COLOR:
 						str1 += "MATERIAL COLORS";
 						break;
+#endif
 
 					case OFX_CHEPRASOV:
 						str1 += "CHEPRASOV";
@@ -1458,7 +1468,7 @@ void ofxColorsBrowser::draw()
 			//-----
 		}
 
-		//--
+	//--
 
 	if (bGui)
 	{
@@ -2069,6 +2079,9 @@ void ofxColorsBrowser::exit()
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	removeKeysListeners();
 	removeMouseListeners();
+	
+	ofRemoveListener(ofEvents().update, this, &ofxColorsBrowser::update);
+	ofRemoveListener(ofEvents().draw, this, &ofxColorsBrowser::draw);
 
 	//setEnableInterfaceClicks(false);
 #endif

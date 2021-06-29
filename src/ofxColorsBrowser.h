@@ -23,6 +23,9 @@ TODO:
 // uncomment to run the bundled example!
 #define USE_OFX_COLOR_BROWSER_INTERFACE // include boxes interface
 
+//TODO: WIP
+//#define USE_OFX_MATERIAL_COLOR
+
 //----------
 
 
@@ -60,7 +63,9 @@ enum
 	OFX_PANTONE_COLORS,		// 0
 	OFX_SANZOWADA_COLORS,	// 1
 	OFX_COLOR_NATIVE,		// 2
+#ifdef USE_OFX_MATERIAL_COLOR
 	OFX_MATERIAL_COLOR,		// 3 TODO:
+#endif
 	OFX_OPEN_COLOR,			// 4
 	OFX_CHEPRASOV,			// 5
 	OFX_CRAYOLA,			// 6
@@ -99,8 +104,8 @@ public:
 	~ofxColorsBrowser();
 
 	void setup();
-	void update();
-	void draw();
+	void update(ofEventArgs & args);
+	void draw(ofEventArgs & args);
 	void exit();
 	void windowResized(int w, int h);
 
@@ -215,7 +220,7 @@ public:
 	//----
 
 	// pointer back
-	void setupColorPtr(ofFloatColor &c);
+	void setupColorPtr(ofFloatColor &c); // to reference a pointer and autoupdate referenced local color when the user picks a color inside the add-on scope
 
 
 public:

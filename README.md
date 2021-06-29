@@ -42,15 +42,15 @@ An **openFrameworks** add-on to browse many named color libraries imported from 
 #include "ofxColorsBrowser.h"
 
 ofxColorsBrowser colorBrowser;
-ofFloatColor color_BACK;
+ofFloatColor colorBg;
 ```
 
 ### ofApp.cpp
 ```.cpp
 ofApp::setup()
 {
-  colorBrowser.setup_colorBACK(color_BACK); // set local target color
-  colorBrowser.setup();
+	colorBrowser.setupColorPtr(colorBg); // set local target color "receiver"
+	colorBrowser.setup();
 }
 
 ofApp::update()
@@ -60,8 +60,7 @@ ofApp::update()
 
 ofApp::draw()
 {
-  ofColor colorBg = ofColor(color_BACK); // auto updated when a color is picked
-  ofBackground(colorBg);
+ 	ofBackground(colorBg); // auto updated when changes
   colorBrowser.draw();
 }
 ```

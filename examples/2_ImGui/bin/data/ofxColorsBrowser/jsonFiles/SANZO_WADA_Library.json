@@ -1,0 +1,638 @@
+[
+    {
+        "hex": "#f9c1ce",
+        "name": "Hermosa Pink"
+    },
+    {
+        "hex": "#f8b6ba",
+        "name": "Corinthian Pink"
+    },
+    {
+        "hex": "#e0b3b6",
+        "name": "Cameo Pink"
+    },
+    {
+        "hex": "#d1b0a7",
+        "name": "Fawn"
+    },
+    {
+        "hex": "#b59392",
+        "name": "Light Brown Drab"
+    },
+    {
+        "hex": "#f58e84",
+        "name": "Coral Red"
+    },
+    {
+        "hex": "#f6917e",
+        "name": "Fresh Color"
+    },
+    {
+        "hex": "#f48067",
+        "name": "Grenadine Pink"
+    },
+    {
+        "hex": "#f37f94",
+        "name": "Eosine Pink"
+    },
+    {
+        "hex": "#f27291",
+        "name": "Spinel Red"
+    },
+    {
+        "hex": "#d46d7a",
+        "name": "Old Rose"
+    },
+    {
+        "hex": "#e2625e",
+        "name": "Eugenia Red | A"
+    },
+    {
+        "hex": "#da525d",
+        "name": "Eugenia Red | B"
+    },
+    {
+        "hex": "#bb7125",
+        "name": "Raw Sienna"
+    },
+    {
+        "hex": "#c56127",
+        "name": "Vinaceous Tawny"
+    },
+    {
+        "hex": "#eb5324",
+        "name": "Jasper Red"
+    },
+    {
+        "hex": "#e31f26",
+        "name": "Spectrum Red"
+    },
+    {
+        "hex": "#dd4027",
+        "name": "Red Orange"
+    },
+    {
+        "hex": "#c55347",
+        "name": "Etruscan Red"
+    },
+    {
+        "hex": "#ae5224",
+        "name": "Burnt Sienna"
+    },
+    {
+        "hex": "#ab544d",
+        "name": "Ochre Red"
+    },
+    {
+        "hex": "#cb2f43",
+        "name": "Scarlet"
+    },
+    {
+        "hex": "#cc1236",
+        "name": "Carmine"
+    },
+    {
+        "hex": "#c53c69",
+        "name": "Indian Lake"
+    },
+    {
+        "hex": "#b73f74",
+        "name": "Rosolanc Purple"
+    },
+    {
+        "hex": "#b71f57",
+        "name": "Pomegranite Purple"
+    },
+    {
+        "hex": "#a94151",
+        "name": "Hydrangea Red"
+    },
+    {
+        "hex": "#a84222",
+        "name": "Brick Red"
+    },
+    {
+        "hex": "#a62c37",
+        "name": "Carmine Red"
+    },
+    {
+        "hex": "#ab2439",
+        "name": "Pompeian Red"
+    },
+    {
+        "hex": "#a72144",
+        "name": "Red"
+    },
+    {
+        "hex": "#7c4226",
+        "name": "Brown"
+    },
+    {
+        "hex": "#793327",
+        "name": "Hay's Russet"
+    },
+    {
+        "hex": "#82241f",
+        "name": "Vandyke Red"
+    },
+    {
+        "hex": "#7d133a",
+        "name": "Pansy Purple"
+    },
+    {
+        "hex": "#802626",
+        "name": "Pale Burnt Lake"
+    },
+    {
+        "hex": "#642d5e",
+        "name": "Violet Red"
+    },
+    {
+        "hex": "#6d4145",
+        "name": "Vistoris Lake"
+    },
+    {
+        "hex": "#f5ecc2",
+        "name": "Sulpher Yellow"
+    },
+    {
+        "hex": "#ffefae",
+        "name": "Pale Lemon Yellow"
+    },
+    {
+        "hex": "#fbe6a0",
+        "name": "Naples Yellow"
+    },
+    {
+        "hex": "#ebd3a2",
+        "name": "Ivory Buff"
+    },
+    {
+        "hex": "#fdd4bd",
+        "name": "Seashell Pink"
+    },
+    {
+        "hex": "#fcc79b",
+        "name": "Light Pinkish Cinnamon"
+    },
+    {
+        "hex": "#eeb480",
+        "name": "Pinkish Cinnamon"
+    },
+    {
+        "hex": "#fdc57e",
+        "name": "Cinnamon Buff"
+    },
+    {
+        "hex": "#fdbf68",
+        "name": "Cream Yellow"
+    },
+    {
+        "hex": "#f3a257",
+        "name": "Golden Yellow"
+    },
+    {
+        "hex": "#eea78c",
+        "name": "Vinaceous Cinnamon"
+    },
+    {
+        "hex": "#d8a37b",
+        "name": "Ochraceous Salmon"
+    },
+    {
+        "hex": "#c5a56e",
+        "name": "Isabella Color"
+    },
+    {
+        "hex": "#c59f6b",
+        "name": "Maple"
+    },
+    {
+        "hex": "#c1c494",
+        "name": "Olive Buff"
+    },
+    {
+        "hex": "#c2ae93",
+        "name": "Ecru"
+    },
+    {
+        "hex": "#fff200",
+        "name": "Yellow"
+    },
+    {
+        "hex": "#f8ed43",
+        "name": "Lemon Yellow"
+    },
+    {
+        "hex": "#ffdd00",
+        "name": "Apricot Yellow"
+    },
+    {
+        "hex": "#cab356",
+        "name": "Pyrite Yellow"
+    },
+    {
+        "hex": "#d6b43e",
+        "name": "Olive Ocher"
+    },
+    {
+        "hex": "#e2b540",
+        "name": "Yellow Ocher"
+    },
+    {
+        "hex": "#fcb315",
+        "name": "Orange Yellow"
+    },
+    {
+        "hex": "#f99d1b",
+        "name": "Yellow Orange"
+    },
+    {
+        "hex": "#f68c50",
+        "name": "Apricot Orange"
+    },
+    {
+        "hex": "#f37420",
+        "name": "Orange"
+    },
+    {
+        "hex": "#f15a30",
+        "name": "Peach Red"
+    },
+    {
+        "hex": "#d96629",
+        "name": "English Red"
+    },
+    {
+        "hex": "#c27544",
+        "name": "Cinnamon Rufous"
+    },
+    {
+        "hex": "#c16b27",
+        "name": "Orange Rufous"
+    },
+    {
+        "hex": "#c19f2c",
+        "name": "Sulphine Yellow"
+    },
+    {
+        "hex": "#bc892b",
+        "name": "Khaki"
+    },
+    {
+        "hex": "#b2b73e",
+        "name": "Citron Yellow"
+    },
+    {
+        "hex": "#b09f36",
+        "name": "Citrine"
+    },
+    {
+        "hex": "#96874d",
+        "name": "Buffy Citrine"
+    },
+    {
+        "hex": "#8b835b",
+        "name": "Dark Citrine"
+    },
+    {
+        "hex": "#848061",
+        "name": "Light Grayish Olive"
+    },
+    {
+        "hex": "#84875e",
+        "name": "Krongbergs Green"
+    },
+    {
+        "hex": "#837e31",
+        "name": "Olive"
+    },
+    {
+        "hex": "#986f2d",
+        "name": "Orange Citrine"
+    },
+    {
+        "hex": "#a36752",
+        "name": "Sudan Brown"
+    },
+    {
+        "hex": "#6b7140",
+        "name": "Olive Green"
+    },
+    {
+        "hex": "#806e4b",
+        "name": "Light Brownish Olive"
+    },
+    {
+        "hex": "#635a3a",
+        "name": "Deep Grayish Olive"
+    },
+    {
+        "hex": "#71502f",
+        "name": "Pale Raw Umber"
+    },
+    {
+        "hex": "#644b1e",
+        "name": "Sepia"
+    },
+    {
+        "hex": "#762c19",
+        "name": "Madder Brown"
+    },
+    {
+        "hex": "#653514",
+        "name": "Mars Brown Tobacco"
+    },
+    {
+        "hex": "#4b3317",
+        "name": "Vandyke Brown"
+    },
+    {
+        "hex": "#b5decc",
+        "name": "Turquoise Green"
+    },
+    {
+        "hex": "#b4cdc2",
+        "name": "Glaucous Green"
+    },
+    {
+        "hex": "#b7c2a9",
+        "name": "Dark Greenish Glaucous"
+    },
+    {
+        "hex": "#afd472",
+        "name": "Yellow Green"
+    },
+    {
+        "hex": "#c7d14f",
+        "name": "Light Green Yellow"
+    },
+    {
+        "hex": "#87c540",
+        "name": "Night Green"
+    },
+    {
+        "hex": "#a6a159",
+        "name": "Olive Yellow"
+    },
+    {
+        "hex": "#709390",
+        "name": "Artemesia Green"
+    },
+    {
+        "hex": "#6d7e77",
+        "name": "Andover Green"
+    },
+    {
+        "hex": "#8fa071",
+        "name": "Rainette Green"
+    },
+    {
+        "hex": "#719470",
+        "name": "Chromium Green"
+    },
+    {
+        "hex": "#648f7b",
+        "name": "Pistachio Green"
+    },
+    {
+        "hex": "#00b49b",
+        "name": "Sea Green"
+    },
+    {
+        "hex": "#00978d",
+        "name": "Benzol Green"
+    },
+    {
+        "hex": "#00908a",
+        "name": "Light Porcelain Green"
+    },
+    {
+        "hex": "#489b6e",
+        "name": "Green"
+    },
+    {
+        "hex": "#009465",
+        "name": "Dull Viridian Green"
+    },
+    {
+        "hex": "#819238",
+        "name": "Oil Green"
+    },
+    {
+        "hex": "#1a7444",
+        "name": "Diamine Green"
+    },
+    {
+        "hex": "#437742",
+        "name": "Cossack Green"
+    },
+    {
+        "hex": "#555832",
+        "name": "Lincoln Green"
+    },
+    {
+        "hex": "#42533e",
+        "name": "Blackish Olive"
+    },
+    {
+        "hex": "#253122",
+        "name": "Deep Slate Olive"
+    },
+    {
+        "hex": "#bce4e5",
+        "name": "Nile Blue"
+    },
+    {
+        "hex": "#a7d4e4",
+        "name": "Pale King's Blue"
+    },
+    {
+        "hex": "#a5c8d1",
+        "name": "Light Glaucous Blue"
+    },
+    {
+        "hex": "#97acc8",
+        "name": "Salvia Blue"
+    },
+    {
+        "hex": "#96d1aa",
+        "name": "Cobalt Green"
+    },
+    {
+        "hex": "#78cdd0",
+        "name": "Calamine BLue"
+    },
+    {
+        "hex": "#62c6bf",
+        "name": "Venice Green"
+    },
+    {
+        "hex": "#0093a5",
+        "name": "Cerulian Blue"
+    },
+    {
+        "hex": "#00939b",
+        "name": "Peacock Blue"
+    },
+    {
+        "hex": "#099197",
+        "name": "Green Blue"
+    },
+    {
+        "hex": "#5a82b3",
+        "name": "Olympic Blue"
+    },
+    {
+        "hex": "#006eb8",
+        "name": "Blue"
+    },
+    {
+        "hex": "#007190",
+        "name": "Antwarp Blue"
+    },
+    {
+        "hex": "#005b8d",
+        "name": "Helvetia Blue"
+    },
+    {
+        "hex": "#547076",
+        "name": "Dark Medici Blue"
+    },
+    {
+        "hex": "#004f46",
+        "name": "Dusky Green"
+    },
+    {
+        "hex": "#1c4286",
+        "name": "Deep Lyons Blue"
+    },
+    {
+        "hex": "#40456a",
+        "name": "Violet Blue"
+    },
+    {
+        "hex": "#064f6e",
+        "name": "Vandar Poel's Blue"
+    },
+    {
+        "hex": "#12354e",
+        "name": "Dark Tyrian Blue"
+    },
+    {
+        "hex": "#1e0e3f",
+        "name": "Dull Violet Black"
+    },
+    {
+        "hex": "#051230",
+        "name": "Deep Indigo"
+    },
+    {
+        "hex": "#112f2c",
+        "name": "Deep Slate Green"
+    },
+    {
+        "hex": "#b5b1d8",
+        "name": "Grayish Lavender - A"
+    },
+    {
+        "hex": "#c0a9b3",
+        "name": "Grayish Lavender - B"
+    },
+    {
+        "hex": "#ca92a8",
+        "name": "Laelia Pink"
+    },
+    {
+        "hex": "#b984af",
+        "name": "Lilac"
+    },
+    {
+        "hex": "#bf5892",
+        "name": "Eupatorium Purple"
+    },
+    {
+        "hex": "#9a72aa",
+        "name": "Light Mauve"
+    },
+    {
+        "hex": "#a36aa5",
+        "name": "Aconite Violet"
+    },
+    {
+        "hex": "#80719e",
+        "name": "Dull Blue Violet"
+    },
+    {
+        "hex": "#66629c",
+        "name": "Dark Soft Violet"
+    },
+    {
+        "hex": "#6450a1",
+        "name": "Blue Violet"
+    },
+    {
+        "hex": "#84565b",
+        "name": "Purple Drab"
+    },
+    {
+        "hex": "#70727c",
+        "name": "Deep Violet / Plumbeous"
+    },
+    {
+        "hex": "#8c4c62",
+        "name": "Veronia Purple"
+    },
+    {
+        "hex": "#704357",
+        "name": "Dark Slate Purple"
+    },
+    {
+        "hex": "#7a4456",
+        "name": "Taupe Brown"
+    },
+    {
+        "hex": "#713b4c",
+        "name": "Violet Carmine"
+    },
+    {
+        "hex": "#4f4086",
+        "name": "Violet"
+    },
+    {
+        "hex": "#59256a",
+        "name": "Red Violet"
+    },
+    {
+        "hex": "#501345",
+        "name": "Cotinga Purple"
+    },
+    {
+        "hex": "#4e1d4c",
+        "name": "Dusky Madder Violet"
+    },
+    {
+        "hex": "#ffffff",
+        "name": "White"
+    },
+    {
+        "hex": "#b6bfc1",
+        "name": "Neutral Gray"
+    },
+    {
+        "hex": "#a2b0ad",
+        "name": "Mineral Gray"
+    },
+    {
+        "hex": "#a1a39a",
+        "name": "Warm Gray"
+    },
+    {
+        "hex": "#34454c",
+        "name": "Slate Color"
+    },
+    {
+        "hex": "#111314",
+        "name": "Black"
+    }
+]
