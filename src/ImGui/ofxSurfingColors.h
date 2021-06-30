@@ -7,6 +7,7 @@
 
 	TODO:
 
+	+ library names combo
 	+ fix index clicker. link index params
 	+ add labels on gui
 	+ add color + card colors preview?
@@ -21,6 +22,8 @@
 #undef USE_OFX_COLOR_BROWSER_INTERFACE
 #endif
 
+//#define USE_EXTRA_LIBRARIES
+
 #include "ofxSurfingImGui.h"
 
 class ofxSurfingColors
@@ -32,7 +35,11 @@ public:
 	void setupColorPtr(ofFloatColor &c);
 	ofFloatColor colorBg;
 
+	ofxSurfing_ImGui_Manager guiManager;
+	void drawImGui();
+	void drawImGuiDebug();
 	void drawImGuiLibrary();
+	void drawImGuiResponsive();
 
 	//-
 
@@ -49,9 +56,6 @@ public:
 
 	void setBool(bool b);
 	bool getBool();
-
-	ofxSurfing_ImGui_Manager guiManager;
-	void drawImGui();
 
 private:
 	ofParameterGroup params;
@@ -146,6 +150,10 @@ private:
 	ofParameter<float> scale_ColRange;
 
 
+	ofParameter<bool> bShowResponsive{ "Setup Responsive", false };
+	ofParameter<bool> bShowDebug{ "Show Advanced", false };
+	//ofParameter<bool> bShowResponsive{ "Show Responsive", false };
+	//ofParameter<bool> bShowDebug{ "Show Debug", false };
 
 };
 

@@ -90,18 +90,18 @@ class ofxColorsBrowser
 	// text render
 private:
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	ofxFontStash font;
+	ofxFontStash fontNames;
 #endif
-	ofTrueTypeFont font2;
-	string helpInfo;
+	ofTrueTypeFont fontHelp;
+	std::string helpInfo;
+	std::string helpInfoFull;
 
 	//--
 
 	// debug gui
 	ofxPanel gui;
+
 public:
-	//bool bGuiDebug = false;
-	ofParameter<bool> bGuiDebug{ "GUI Debug", false };
 
 	//--
 
@@ -159,9 +159,11 @@ public:
 	void setRandomCard();
 	// library
 	void setNextLibrary();
+	void setPreviousLibrary();
 	void setLibraryType(int p);
 	// sorting
 	void setNextSortType();
+	void setPreviousSortType();
 	void setSortingType(int p);
 
 	//--
@@ -177,8 +179,6 @@ public:
 	void setVisible(bool b);
 	void setVisibleDebug(bool b);
 	void setToggleVisibleDebug();
-
-	ofParameter<bool> bGui{ "GUI", true };
 
 	//--------------------------------------------------------------
 	bool isVisible() {
@@ -265,6 +265,9 @@ public:
 	}
 	std::string getLibraryName() {
 		return name_Library.get();
+	}	
+	std::string getSortingTypeName() {
+		return MODE_SORTING_name.get();
 	}
 
 	//--
@@ -284,19 +287,36 @@ private:
 
 	//-
 
-private:
 	// grid layout
-	ofParameter<float> boxSize{ "BOX SIZE", 15, 10, 100 };//boxes
-	ofParameter<float> boxPad{ "PAD", 1, 0, 10 };
-	ofParameter<int> amtColorsInCard{ "CARD SIZE", 7, 2, 100 };// minimal card of colors
-	ofParameter<int> amtCardsInRow{ "CARDS PER ROW", 4, 2, 100 };
-	ofParameter<bool> bShowCards{ "SHOW CARDS", true };
-	int amtColorsPerRow;
 
+public:
+	//private:
+	ofParameter<float> boxSize{ "Box Size", 30, 10, 100 };//boxes
+	ofParameter<float> boxPad{ "Pad", 0, 0, 10 };
+	ofParameter<int> amtColorsInCard{ "Card Colors", 7, 2, 20 };// minimal card of colors
+	ofParameter<int> amtCardsInRow{ "Row Cards", 4, 2, 20 };
+	ofParameter<bool> bResetColorsBox{ "Reset Box", false };
+
+	ofParameter<bool> bLockLayout{ "Lock Layout", true };
+	ofParameter<bool> bShowCards{ "Show Cards", true };
+	ofParameter<bool> bShowRectangles{ "Show Rectangles", true };
+	ofParameter<bool> bShowDebugRectangles{ "Show Debug Rectangles", false };
+	ofParameter<bool> bShowHelp{ "Show Help", true };
+	ofParameter<bool> bShowNamesList{ "Show Names List", false };
+
+private:
+	int amtColorsPerRow;
 	int index_Card = 0;
 	int cardColor_size = 100;
 	int cardColor_pad = 20;
-	glm::vec2 positionCards;
+
+
+public:
+	ofParameter<bool> bKeys{ "Enable Keys", false };
+	ofParameter<bool> bGui{ "Gui Internal", true };
+	ofParameter<bool> bGuiDebug{ "Gui Debug", false };
+	//bool bGuiDebug = false;
+
 
 	//--
 
@@ -337,7 +357,7 @@ private:
 	ofJson jMaterial;
 	vector<ofColor> colors_Material;
 	vector<std::string> colors_MaterialNames;
-	vector<string> tagsMaterial{
+	vector<std::string> tagsMaterial{
 		"50", "100", "200", "300", "400", "500",
 		"600", "700", "800", "900",
 		"a100", "a200", "a400", "a700" };
@@ -372,6 +392,8 @@ private:
 private:
 	void updateRectangles();
 	void drawRectangles();
+
+	void drawHelp();
 
 	//-
 
@@ -417,13 +439,11 @@ private:
 
 	// modes and states
 
-public:
-	ofParameter<bool> bKeys{ "Enable Keys", false };
-
 private:
-	bool bShowNamesList = false;
-	bool bShowDebugRectangles = false;//for rectangle manager
-	bool bShowRectangles = true;
+	//bool bShowNamesList = false;
+	//bool bShowDebugRectangles = false;//for rectangle manager
+	//bool bShowRectangles = true;
+
 	bool bEnableClicks = true;
 
 	//-
@@ -436,23 +456,36 @@ private:
 
 	//-
 
-	void buildColors();
+	void buildLibraryColors();
 	void refreshRectanglesClicks(); // to browsing by keys
 	void buildRectangles();
 	void clearRectangles();
 
+	int pageNum;
+
 	//-
 
-	// rectangles position
-	glm::vec2 positionRectangles;
+	//// rectangles position
+	//glm::vec2 positionRectangles;
+	//// text debug positions
+	//glm::vec2 positionHelper;
+	//// cards list names
+	//glm::vec2 positionCards;
 
+	// rectangles position
+	ofParameter<glm::vec2> positionRectangles{ "position_Rectangles",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
 	// text debug positions
-	glm::vec2 positionHelper;
+	ofParameter<glm::vec2> positionHelper{ "position_Helper",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
+	// cards list names
+	ofParameter<glm::vec2> positionCards{ "position_Cards",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
+	// names list
+	ofParameter<glm::vec2> positionNames{ "position_Names",  glm::vec2(0), glm::vec2(0), glm::vec2(1920) };
+	ofParameter<bool> bResetLayout{ "Reset Layout", false };
 
 	//--
 
 public:
-//private:
+	//private:
 	ofParameter<int> index_Library{ "Library", 0, 0, 0 };
 	ofParameter<std::string> name_Library{ " ", "" };
 
@@ -462,7 +495,10 @@ public:
 
 public:
 	ofParameterGroup params;
-	ofParameterGroup paramsLayout;
+
+	ofParameterGroup params_Layout;
+	ofParameterGroup params_GuiPanels;
+	void Changed_Params(ofAbstractParameter &e);
 
 	ofEventListener listener_Library;
 	ofEventListener listener_ModeSorting;

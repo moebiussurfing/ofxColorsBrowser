@@ -1,7 +1,6 @@
 {
     "ofxSurfingColors": {
-        "ADVANCED": "1",
-        "GUI": "1",
+        "Gui_Internal": "1",
         "Library_Layout": {
             "Columns_Max": "7",
             "Mode_Cards": "0",
@@ -11,8 +10,8 @@
             "Responsive_Grid": "0",
             "Rows_Amnt": "14",
             "Scale": "25",
-            "Size_Lib": "25",
-            "UnknownName": "5.49437e+11"
+            "Size_Lib": "57",
+            "UnknownName": "-1.86265e-09"
         }
     }
 }

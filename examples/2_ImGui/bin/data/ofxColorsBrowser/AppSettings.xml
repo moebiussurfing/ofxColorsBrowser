@@ -1,8 +1,26 @@
 {
     "ofxColorsBrowser": {
+        "Card_Colors": "7",
         "Enable_Keys": "1",
-        "GUI": "1",
-        "Library": "5",
-        "Sorting_Mode": "0"
+        "Gui_Internal": "1",
+        "Layout_Gui_Internal": {
+            "Box_Size": "13.506",
+            "Card_Colors": "7",
+            "Lock_Layout": "1",
+            "Pad": "0",
+            "Reset_Box": "0",
+            "Row_Cards": "4"
+        },
+        "Library": "3",
+        "Panels": {
+            "Show_Help": "1",
+            "Show_Names_List": "0",
+            "Show_Rectangles": "1",
+            "position_Cards": "300, 50",
+            "position_Helper": "1596, 40",
+            "position_Names": "40, 50",
+            "position_Rectangles": "300, 300"
+        },
+        "Sorting_Mode": "1"
     }
 }

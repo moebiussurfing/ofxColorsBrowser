@@ -62,7 +62,7 @@ ofxColorsBrowser::ofxColorsBrowser()
 	// library files
 	path_FilePantone = path_Global + path_Jsons + "pantone-colors.json";
 	path_FileSanzoWada = path_Global + path_Jsons + "SANZO_WADA_Library.json";
-	path_FileMaterial = path_Global + path_Jsons + "material-colors.json";
+	path_FileMaterial = path_Global + path_Jsons + "material-colors.json";//TODO:
 	path_FileCheprasov = path_Global + path_Jsons + "cheprasov-colors.json";
 	path_FileCrayola = path_Global + path_Jsons + "crayola.json";
 	// * add your new libs here!
@@ -75,7 +75,8 @@ ofxColorsBrowser::ofxColorsBrowser()
 
 	helpInfo = "";
 	helpInfo += "\n";
-	helpInfo += "KEYS";
+	helpInfo += "\n";
+	helpInfo += "HELP KEYS";
 	helpInfo += "\n\n";
 	helpInfo += "Mouse Click           Colors  ";
 	helpInfo += "\n";
@@ -102,7 +103,7 @@ ofxColorsBrowser::ofxColorsBrowser()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::buildColors()
+void ofxColorsBrowser::buildLibraryColors()
 {
 	ofLogNotice(__FUNCTION__);
 
@@ -124,6 +125,7 @@ void ofxColorsBrowser::buildColors()
 		ofLogNotice(__FUNCTION__) << "OFX_PANTONE_COLORS";
 
 		// ideal card size and layout
+		if (!bLockLayout) // breaks
 		{
 			amtColorsInCard = 7;
 			amtCardsInRow = 10;
@@ -170,6 +172,7 @@ void ofxColorsBrowser::buildColors()
 		ofLogNotice(__FUNCTION__) << "OFX_SANZOWADA_COLORS";
 
 		// ideal card size and layout
+		if (!bLockLayout)
 		{
 			amtColorsInCard = 8;
 			amtCardsInRow = 2;
@@ -383,6 +386,7 @@ void ofxColorsBrowser::buildColors()
 		//--
 
 		// dessired distribution for this palette
+		if (!bLockLayout)
 		{
 			amtColorsInCard = 10;
 			amtCardsInRow = 2;
@@ -520,6 +524,7 @@ void ofxColorsBrowser::buildColors()
 		//-
 
 		// ideal card size and layout
+		if (!bLockLayout)
 		{
 			amtColorsInCard = 13; //  important to mantain gradient
 			amtCardsInRow = 1;
@@ -541,6 +546,7 @@ void ofxColorsBrowser::buildColors()
 		ofLogNotice(__FUNCTION__) << "OFX_CHEPRASOV";
 
 		// ideal card size and layout
+		if (!bLockLayout)
 		{
 			amtColorsInCard = 7;
 			amtCardsInRow = 9;
@@ -587,12 +593,12 @@ void ofxColorsBrowser::buildColors()
 		ofLogNotice(__FUNCTION__) << "OFX_CRAYOLA";
 
 		// ideal card size and layout
+		////TODO: responsive
+		//int count = colors_STRUCT.size();
+		//int w = ofGetWidth() - 300;
+		//int h = ofGetHeight() - 200;
+		if (!bLockLayout)
 		{
-			//TODO: responsive
-			int count = colors_STRUCT.size();
-			int w = ofGetWidth() - 300;
-			int h = ofGetHeight() - 200;
-
 			amtColorsInCard = 7;
 			amtCardsInRow = 3;
 
@@ -849,22 +855,23 @@ void ofxColorsBrowser::load_Crayola_JSON()
 void ofxColorsBrowser::setup()
 {
 	//position
-	setPositionRectangles(glm::vec2(250, 390)); // call before setup
+	//setPositionRectangles(glm::vec2(250, 390)); // call before setup
 
 	//--
 
+	// text fonts
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	std::string _path;
 	_path = "assets/fonts/Kazesawa-Extrabold.ttf";
-	font.setup(_path, 1.0, 1024, false, 8, 1.5);
-	font.setCharacterSpacing(0);
+	fontNames.setup(_path, 1.0, 1024, false, 8, 1.5);
+	fontNames.setCharacterSpacing(0);
 
 	//_path = "assets/fonts/mono.ttf";
-	//font2.load(_path, 10, true, true);
+	//fontHelp.load(_path, 10, true, true);
 
 	_path = "assets/fonts/overpass-mono-bold.otf";
 	//_path = "assets/fonts/telegrama_render.otf";
-	font2.load(_path, 8, true, true, true);
+	fontHelp.load(_path, 10, true, true, true);
 	// if font not present will draw rectangle box with a default font
 #endif
 
@@ -874,31 +881,52 @@ void ofxColorsBrowser::setup()
 	MODE_SORTING_name.setSerializable(false);
 	name_Library.setSerializable(false);
 	bShowCards.setSerializable(false);
+	bResetLayout.setSerializable(false);
 
 	//-
 
+	// params
 	params.setName("ofxColorsBrowser");
-	paramsLayout.setName("Layout");
 	params.add(index_Library);
 	params.add(name_Library);
 	params.add(MODE_SORTING);
 	params.add(MODE_SORTING_name);
+	params.add(amtColorsInCard);
 	params.add(bKeys);
 	params.add(bGui);
 
 	// layout
-	paramsLayout.add(boxSize);
-	paramsLayout.add(boxPad);
-	paramsLayout.add(amtColorsInCard);
-	paramsLayout.add(amtCardsInRow);
-	paramsLayout.add(bShowCards);
-	//params.add(paramsLayout);
+	params_Layout.setName("Layout Gui Internal");
+	params_Layout.add(boxSize);
+	params_Layout.add(boxPad);
+	params_Layout.add(amtColorsInCard);
+	params_Layout.add(amtCardsInRow);
+	params_Layout.add(bLockLayout);
+	params_Layout.add(bResetColorsBox);
+
+	params_GuiPanels.setName("Panels");
+	params_GuiPanels.add(bShowNamesList);
+	params_GuiPanels.add(bShowCards);
+	params_GuiPanels.add(bShowRectangles);
+	params_GuiPanels.add(bShowHelp);
+	//params_GuiPanels.add(bShowDebugRectangles);
+	params_GuiPanels.add(positionRectangles);
+	params_GuiPanels.add(positionHelper);
+	params_GuiPanels.add(positionCards);
+	params_GuiPanels.add(positionNames);
+	params_GuiPanels.add(bResetLayout);
+	//params_Layout.add(params_GuiPanels);
+	params.add(params_GuiPanels);
+	params.add(params_Layout);
+
+	ofAddListener(params.parameterChangedE(), this, &ofxColorsBrowser::Changed_Params);
 
 	//-
 
-	gui.setup("ofxColorsBrowser");
+	gui.setup("Debug ofxColorsBrowser");
 	gui.add(params);
-	gui.setPosition(ofGetWidth() * 0.5 - 100, 10);
+	gui.setPosition(20, 20);
+	//gui.setPosition(ofGetWidth() * 0.5 - 100, 10);
 
 	//-
 
@@ -975,15 +1003,13 @@ void ofxColorsBrowser::setup()
 			break;
 
 			// * add your new libs here!
-
-			//
 		}
 
 		//-
 
 		// build
 		clearRectangles();
-		buildColors();
+		buildLibraryColors();
 		buildRectangles();
 
 		//workflow
@@ -1038,7 +1064,7 @@ void ofxColorsBrowser::setup()
 	//--
 
 	// build current loaded library
-	buildColors();
+	buildLibraryColors();
 
 	//--
 
@@ -1072,8 +1098,8 @@ void ofxColorsBrowser::buildRectangles()
 
 	ofLogNotice(__FUNCTION__);
 
-	float x = positionRectangles.x;
-	float y = positionRectangles.y;
+	float x = positionRectangles.get().x;
+	float y = positionRectangles.get().y;
 
 	amtColorsPerRow = amtColorsInCard * amtCardsInRow;
 
@@ -1130,25 +1156,162 @@ void ofxColorsBrowser::update(ofEventArgs & args)
 }
 
 //--------------------------------------------------------------
+void ofxColorsBrowser::drawHelp()
+{
+	// help info
+	std::string str0 = "";
+	std::string str1 = "";
+	std::string str2 = "";
+
+	//-
+
+	str1 += "LIBRARY: ";
+
+	switch (index_Library)
+	{
+	case OFX_PANTONE_COLORS:
+		str1 += "PANTONE";
+		break;
+
+	case OFX_SANZOWADA_COLORS:
+		str1 += "SANZO WADA";
+		break;
+
+	case OFX_COLOR_NATIVE:
+		str1 += "OF NATIVE";
+		break;
+
+	case OFX_OPEN_COLOR:
+		str1 += "OPEN COLOR";
+		break;
+
+#ifdef USE_OFX_MATERIAL_COLOR
+	case OFX_MATERIAL_COLOR:
+		str1 += "MATERIAL COLORS";
+		break;
+#endif
+
+	case OFX_CHEPRASOV:
+		str1 += "CHEPRASOV";
+		break;
+
+	case OFX_CRAYOLA:
+		str1 += "CRAYOLA";
+		break;
+	}
+
+	//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
+
+	//-
+
+	// 2. monitor color selected: 
+	// name & index
+
+	str0 += "Library            ";
+	str0 += ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
+	str0 += "\n";
+	str0 += "Color              " + ofToString(currColor_OriginalPos + 1) + "/" + ofToString(colors_STRUCT.size());
+	str0 += "\n";
+	str0 += "Card               " + ofToString(index_Card + 1);
+	str0 += "\n";
+	str0 += "Page               " + ofToString(pageNum + 1);
+	str0 += "\n";
+	str0 += "Colors/Card        " + ofToString(amtColorsInCard);
+	str0 += "\n";
+	str0 += "Cards/Row          " + ofToString(amtCardsInRow);
+	str0 += "\n";
+
+	//float w = ofxSurfingHelpers::getWidthBBtextBoxed(fontHelp, ofToUpper(str0));
+	////position
+	//int x = positionRectangles.get().x + 0;
+	//int y = 15;
+	//ofxSurfingHelpers::drawTextBoxed(fontHelp, ofToUpper(str0), x, y,
+	//	ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
+
+	//--
+
+	// 3. monitor selected library
+
+	//-
+
+	str1 += "\n";
+	str1 += "SORTING: ";
+
+	switch (MODE_SORTING)
+	{
+	case 0:
+		str1 += "ORIGINAL";
+		break;
+
+	case 1:
+		str1 += "NAME";
+		break;
+
+	case 2:
+		str1 += "HUE";
+		break;
+
+	case 3:
+		str1 += "BRIGHTNESS";
+		break;
+
+	case 4:
+		str1 += "SATURATION";
+		break;
+	}
+
+	//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
+
+	str1 += "\n";
+	str1 += "\n";
+	//str1 += "\n";
+
+	//-
+
+	str2 = str1 + str0 + helpInfo;
+
+	helpInfoFull = str2;
+
+	//forced position
+	//float w = ofxSurfingHelpers::getWidthBBtextBoxed(fontHelp, ofToUpper(helpInfoFull)) + 10;
+	//setPositionHelper(glm::vec2(ofGetWidth() - w, 5));
+
+	ofxSurfingHelpers::drawTextBoxed(
+		fontHelp,
+		ofToUpper(helpInfoFull),
+		positionHelper.get().x, positionHelper.get().y,
+		ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
+}
+
+
+//--------------------------------------------------------------
 void ofxColorsBrowser::draw(ofEventArgs & args)
 {
 	// When mode without GUI do not draw nothing. We just want to acces the colors.
-
 #ifndef USE_OFX_COLOR_BROWSER_INTERFACE
 	return;
 #endif	
 
 	//--
 
-	if (colors_STRUCT.size() != 0) // bypass if it's empty. avoid crashes
-		if (bGui)
+	if (bGui)
+	{
+		//--
+
+		if (bShowHelp) drawHelp();
+
+		//----
+
+		// draw color names and clickble color rectangles
+
+		if (colors_STRUCT.size() != 0) // bypass if it's empty. avoid crashes
 		{
 			ofPushMatrix();
 			ofPushStyle();
 
 			//position
-			float _x = 20;
-			float _y = 40;
+			float _x = positionNames.get().x;
+			float _y = positionNames.get().y;
 
 			//-
 
@@ -1164,7 +1327,7 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 			int lineEnd;
 			int maxCards = maxLinesThatFitsScreen / amtColorsInCard;
 			int linesPage = amtColorsInCard * maxCards;
-			int pageNum;
+			//int pageNum;
 
 			std::string str;
 			ofColor c;
@@ -1180,11 +1343,9 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 
 			// 0. draw all color names marking the one selected
 
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
+			//--
 
-		//--
-
-		// 1. left lateral names list
+			// 1. left lateral names list
 
 			if (bShowNamesList)
 			{
@@ -1210,8 +1371,10 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 					//i = ofClamp(i, 0, colors_STRUCT.size() - 1);
 					line = i;
 
-					if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size()) str = colors_STRUCT[line].name;
-					else str = "";
+					if (colors_STRUCT.size() > 0 && line < colors_STRUCT.size() && line < colors_STRUCT.size())
+						str = colors_STRUCT[line].name;
+					else
+						str = "";
 
 					if (pageNum == 0) iPadded = i;
 					else iPadded = i - lineBegin;
@@ -1254,7 +1417,7 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 						//);
 						// body
 						ofSetColor(c);
-						font.draw(
+						fontNames.draw(
 							str,
 							fontSize,
 							x + margin,
@@ -1288,7 +1451,7 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 
 						//B
 						ofSetColor(c);
-						font.draw(
+						fontNames.draw(
 							str,
 							fontSize,
 							x + margin,
@@ -1313,174 +1476,26 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 						}
 				}
 			}
-#endif
 
 			//--
 
-			// help info
+			// 4. draw all clickable color boxes
 
-			// 2. monitor color selected: 
-			// name & index
+			drawRectangles();
 
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-			if (bShowNamesList)
-			{
-				std::string str = "";
-				//str += "DEBUG";
-				//str += "\n";
-
-				str += "Library            ";
-				str += ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
-				str += "\n";
-				str += "Color              " + ofToString(currColor_OriginalPos + 1) + "/" + ofToString(colors_STRUCT.size());
-				str += "\n";
-				str += "Card               " + ofToString(index_Card + 1);
-				str += "\n";
-				str += "Page               " + ofToString(pageNum + 1);
-				str += "\n";
-				str += "Colors/Card        " + ofToString(amtColorsInCard);
-				str += "\n";
-				str += "Cards/Row          " + ofToString(amtCardsInRow);
-				//str += "\n";
-
-				//float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str));
-
-				//position
-				int x = positionRectangles.x + 0;
-				int y = 15;
-
-				ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str), x, y,
-					ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
-			}
-#endif
-
-			//--
-
-			// 3. monitor selected library
-
-			if (bShowRectangles)
-			{
-				if (bShowNamesList)
-				{
-					std::string str1;
-					str1 = "";
-					str1 += "\n";
-
-					//str1 += "MONITOR";
-					//str1 += "\n";
-					//str1 += "\n";
-					//str1 += "LIBRARY: ";
-					//str1 += " " + ofToString(index_Library) + "/" + ofToString(index_Library.getMax()) + "  ";
-
-					//-
-
-					str1 += "LIBRARY: ";
-
-					switch (index_Library)
-					{
-					case OFX_PANTONE_COLORS:
-						str1 += "PANTONE";
-						break;
-
-					case OFX_SANZOWADA_COLORS:
-						str1 += "SANZO WADA";
-						break;
-
-					case OFX_COLOR_NATIVE:
-						str1 += "OF NATIVE";
-						break;
-
-					case OFX_OPEN_COLOR:
-						str1 += "OPEN COLOR";
-						break;
-
-#ifdef USE_OFX_MATERIAL_COLOR
-					case OFX_MATERIAL_COLOR:
-						str1 += "MATERIAL COLORS";
-						break;
-#endif
-
-					case OFX_CHEPRASOV:
-						str1 += "CHEPRASOV";
-						break;
-
-					case OFX_CRAYOLA:
-						str1 += "CRAYOLA";
-						break;
-					}
-
-					//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 20, ofColor::black, ofColor::white);
-
-					//-
-
-					str1 += "\n";
-					str1 += "SORTING: ";
-
-					switch (MODE_SORTING)
-					{
-					case 0:
-						str1 += "ORIGINAL";
-						break;
-
-					case 1:
-						str1 += "NAME";
-						break;
-
-					case 2:
-						str1 += "HUE";
-						break;
-
-					case 3:
-						str1 += "BRIGHTNESS";
-						break;
-
-					case 4:
-						str1 += "SATURATION";
-						break;
-					}
-
-					//ofDrawBitmapStringHighlight(str1, positionHelper.x, positionHelper.y + 50, ofColor::black, ofColor::white);
-
-					//-
-
-					str1 += "\n";
-
-					std::string str2 = str1 + helpInfo;
-
-					float w = ofxSurfingHelpers::getWidthBBtextBoxed(font2, ofToUpper(str2)) + 10;
-
-					setPositionHelper(glm::vec2(ofGetWidth() - w, 5));
-
-					ofxSurfingHelpers::drawTextBoxed(font2, ofToUpper(str2), positionHelper.x, positionHelper.y,
-						ofColor(255), ofColor(0, 247), false, ofColor(128), 50, 5);
-				}
-
-				//--
-
-				// 4. draw all clickable color boxes
-
-#ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-				drawRectangles();
-
-				//TODO:
-				// extra interface is
-				// rectangles with mouse management and draggables..
-#endif
-			}
+			//TODO:
+			// extra interface is
+			// rectangles with mouse management and draggables..
 
 			ofPopMatrix();
 			ofPopStyle();
-
-			//-----
 		}
+	}
 
 	//--
 
-	if (bGui)
-	{
-		// debug gui
-		if (bGuiDebug) gui.draw();
-	}
+	// debug gui
+	if (bGuiDebug) gui.draw();
 }
 
 //--------------------------------------------------------------
@@ -1806,15 +1821,96 @@ void ofxColorsBrowser::removeKeysListeners()
 }
 
 //--------------------------------------------------------------
+void ofxColorsBrowser::Changed_Params(ofAbstractParameter &e)
+{
+	//if (!DISABLE_Callbacks)
+	{
+		string name = e.getName();
+		ofLogNotice(__FUNCTION__) << name << " : " << e;
+
+		if (name == boxSize.getName() ||
+			name == boxPad.getName() ||
+			name == amtCardsInRow.getName() ||
+			name == positionRectangles.getName() ||
+			name == amtColorsInCard.getName()
+			)
+		{
+			// build
+			clearRectangles();
+			//buildLibraryColors();
+			buildRectangles();
+		}
+
+		//-
+
+		// gui panels
+
+		// gui internal
+		else if (name == bGui.getName())
+		{
+			if (!bGui)
+			{
+				bEnableClicks = false;
+			}
+			else
+			{
+				if (bShowRectangles) bEnableClicks = true;
+				else bEnableClicks = false;
+			}
+		}
+
+		// rectangles
+		else if (name == bShowRectangles.getName())
+		{
+			if (bShowRectangles && bGui)
+			{
+				bEnableClicks = true;
+			}
+			else
+			{
+				bEnableClicks = false;
+			}
+		}
+
+		// reset layout
+		else if (name == bResetLayout.getName() && bResetLayout)
+		{
+			bResetLayout = false;
+
+			positionNames = glm::vec2(40, 50);
+			positionCards = glm::vec2(300, 50);
+			positionRectangles = glm::vec2(300, 300);
+
+			float w = ofxSurfingHelpers::getWidthBBtextBoxed(fontHelp, ofToUpper(helpInfoFull)) + 30;
+			positionHelper = glm::vec2(ofGetWidth() - w, 40);
+			//positionHelper = glm::vec2(ofGetWidth() - 280, 40);
+		}
+
+		// reset box
+		else if (name == bResetColorsBox.getName() && bResetColorsBox)
+		{
+			bResetColorsBox = false;
+
+			//boxes
+			boxSize = 30;
+			boxPad = 0;
+			// minimal card of colors
+			amtColorsInCard = 7;
+			amtCardsInRow = 4;
+		}
+	}
+}
+
+//--------------------------------------------------------------
 void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs)
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-
 	if (bShowDebugRectangles)
 	{
 		const int &x = eventArgs.x;
 		const int &y = eventArgs.y;
 		const int &button = eventArgs.button;
+
 		//ofLogNotice(__FUNCTION__) << "mouseDragged " <<  x << ", " << y << ", " << button;
 
 		if (draggingRectPtr != NULL)
@@ -1833,10 +1929,8 @@ void ofxColorsBrowser::mouseDragged(ofMouseEventArgs &eventArgs)
 			}
 		}
 	}
-
 #endif
 }
-
 
 //--------------------------------------------------------------
 void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
@@ -1856,17 +1950,17 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 
 		dragStart = glm::vec2(x, y);  // set a new drag start point
 
-		// SHORTCUT MODE
+		// shortcut mode
 
 		if (!ofGetKeyPressed('A'))
 		{
 			bool foundAClickTarget = false;
 
-			// first check to see if we are in the bounding box
-			if (!rectanglesSelected.empty() &&
-				selectedRectsBoundingBox.inside(dragStart))
+			if (bShowDebugRectangles)
 			{
-				if (bShowDebugRectangles)
+				// first check to see if we are in the bounding box
+				if (!rectanglesSelected.empty() &&
+					selectedRectsBoundingBox.inside(dragStart))
 				{
 					draggingRectPtr = &selectedRectsBoundingBox;
 					//selectedRectsBoundingBox.dragOffset = dragStart - selectedRectsBoundingBox.getPosition().xy;
@@ -1886,10 +1980,9 @@ void ofxColorsBrowser::mousePressed(ofMouseEventArgs &eventArgs)
 				}
 			}
 
-			// RECTANGLE COLOR CLICKED
+			// rectangle color clicked
 			else
 			{
-
 				rectanglesSelected.clear();
 				// otherwise, go through all of the rects and see if we can drag one
 				for (size_t i = 0; i < rectangles.size(); i++)
@@ -2052,6 +2145,8 @@ void ofxColorsBrowser::removeMouseListeners()
 //--------------------------------------------------------------
 void ofxColorsBrowser::exit()
 {
+	ofRemoveListener(params.parameterChangedE(), this, &ofxColorsBrowser::Changed_Params);
+
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
 	removeKeysListeners();
 	removeMouseListeners();
@@ -2093,6 +2188,15 @@ void ofxColorsBrowser::setBoxSize(float _size)
 void ofxColorsBrowser::setRowsSize(int rows)
 {
 	amtColorsPerRow = rows;
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::setPreviousLibrary()
+{
+	if (index_Library <= index_Library.getMin()) index_Library = index_Library.getMax();
+	else index_Library--;
+
+	ofLogNotice(__FUNCTION__) << index_Library;
 }
 
 //--------------------------------------------------------------
@@ -2198,6 +2302,11 @@ void ofxColorsBrowser::setLibraryType(int p)
 
 // sort
 //--------------------------------------------------------------
+void ofxColorsBrowser::setPreviousSortType()
+{
+	MODE_SORTING--;
+}
+//--------------------------------------------------------------
 void ofxColorsBrowser::setNextSortType()
 {
 	MODE_SORTING++;
@@ -2239,7 +2348,6 @@ void ofxColorsBrowser::setSortingType(int p)
 void ofxColorsBrowser::updateRectangles()
 {
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-
 	if (bEnableClicks)
 	{
 		ofPoint mouse(ofGetMouseX(), ofGetMouseY());
@@ -2316,9 +2424,8 @@ void ofxColorsBrowser::drawRectangles()
 	// bc I was mixing with the ofxInterface alternative..
 
 	//-
-	
+
 #ifdef USE_OFX_COLOR_BROWSER_INTERFACE
-	ofPushStyle();
 
 	//-
 
@@ -2331,7 +2438,8 @@ void ofxColorsBrowser::drawRectangles()
 	//	ofDrawBitmapString(showKeyboardCommands ? keyboardCommands : "Press (Spacebar) for help.", 12, 16);
 	//}
 
-	positionCards = glm::vec2(positionRectangles.x + 15, 200);
+	// anchor linked
+	//positionCards = glm::vec2(positionRectangles.get().x + 15, 200);
 
 	//--
 
@@ -2363,13 +2471,13 @@ void ofxColorsBrowser::drawRectangles()
 
 			ofSetColor(colorBgCards);
 
-			float yBg = positionCards.y - padding;
+			float yBg = positionCards.get().y - padding;
 			float hBg = (cardColor_size + cardColor_pad) + 2 * padding + labelSize;
 			float ymaxBg = yBg + hBg;
 
 			ofDrawRectRounded(
 				glm::vec2(
-					positionCards.x - padding,
+					positionCards.get().x - padding,
 					yBg),
 					(cardColor_size + cardColor_pad) * (amtColorsInCard)+padding,
 				hBg
@@ -2413,8 +2521,8 @@ void ofxColorsBrowser::drawRectangles()
 
 					ofDrawRectRounded(
 						glm::vec2(
-							positionCards.x + i * (cardColor_size + cardColor_pad),
-							positionCards.y),
+							positionCards.get().x + i * (cardColor_size + cardColor_pad),
+							positionCards.get().y),
 						cardColor_size,
 						cardColor_size,
 						2.5,
@@ -2435,13 +2543,13 @@ void ofxColorsBrowser::drawRectangles()
 
 					// 2.2.1 text background
 					ofSetColor(colorBgCards);//white
-					float _yy = positionCards.y + cardColor_size;
+					float _yy = positionCards.get().y + cardColor_size;
 					float _hh = 50;
 					_yy = MIN(_yy, ymaxBg - _hh - 10); // limit inside
 
 					ofDrawRectangle(
 						glm::vec2(
-							positionCards.x + i * (cardColor_size + cardColor_pad),
+							positionCards.get().x + i * (cardColor_size + cardColor_pad),
 							_yy),
 						cardColor_size,
 						_hh
@@ -2456,8 +2564,8 @@ void ofxColorsBrowser::drawRectangles()
 					//y = positionCards.y + cardColor_size - 6;
 
 					// B.
-					x = positionCards.x + i * (cardColor_size + cardColor_pad) + 3;
-					y = positionCards.y + cardColor_size + letterPad;
+					x = positionCards.get().x + i * (cardColor_size + cardColor_pad) + 3;
+					y = positionCards.get().y + cardColor_size + letterPad;
 
 					// A.
 					//ofDrawBitmapStringHighlight(
@@ -2478,7 +2586,7 @@ void ofxColorsBrowser::drawRectangles()
 					ofStringReplace(_n, "-", "\n"); // break lines when space
 					str += _n;
 
-					font.drawMultiLine(
+					fontNames.drawMultiLine(
 						ofToUpper(str),
 						fontSize,
 						x + fontPad,
@@ -2488,138 +2596,177 @@ void ofxColorsBrowser::drawRectangles()
 				}
 			}
 
+			//--
+
 			ofPopStyle();
 		}
 	}
 
-	//--
+	//----
 
-	// 1.2 draw all of our rectangles system
-
-	for (size_t i = 0; i < rectangles.size(); ++i)
+	if (bShowRectangles)
 	{
-		ofRectangle *rect = (ofRectangle *)&rectangles[i];
-		unsigned int selectionIndex = ofFind(rectanglesSelected, rect);
-		//rectangles[i].draw(i, selectionIndex == rectanglesSelected.size() ? -1 : selectionIndex);
+		ofPushStyle();
 
-		if (selectionIndex == rectanglesSelected.size())
+		//-
+
+		// label name library
 		{
-			rectangles[i].draw(i, -1);
+			float __size = 40;
+			float __pad = 8; // make box bigger 
+			float __round = 3;
+			float __x = positionRectangles.get().x + __pad - 2;
+			float __y = positionRectangles.get().y - 20;
+			//float __y = positionRectangles.get().y - 14;
+
+			auto __bb = fontNames.getBBox(name_Library,__size,__x,__y);
+			__bb.x -= __pad;
+			__bb.y -= __pad;
+			__bb.width += 2 * __pad;
+			//__bb.height = __size; // force
+			__bb.height += 2 * __pad;
+
+			ofColor c1 = ofColor(0, 255);
+			ofSetColor(c1);
+			ofFill();
+			ofDrawRectRounded(__bb, __round);
+			ofColor c2 = ofColor(255, 255);
+			ofSetColor(c2);
+			fontNames.draw(name_Library, __size, __x, __y);
 		}
-		else
+
+		//-
+
+		// COLOR RECTANGLES
+
+		// 1.2 draw all of our rectangles system
+
+		for (size_t i = 0; i < rectangles.size(); ++i)
 		{
-			rectangles[i].draw(i, selectionIndex);
+			ofRectangle *rect = (ofRectangle *)&rectangles[i];
+			unsigned int selectionIndex = ofFind(rectanglesSelected, rect);
+			//rectangles[i].draw(i, selectionIndex == rectanglesSelected.size() ? -1 : selectionIndex);
+
+			if (selectionIndex == rectanglesSelected.size())
+			{
+				rectangles[i].draw(i, -1);
+			}
+			else
+			{
+				rectangles[i].draw(i, selectionIndex);
+			}
 		}
-	}
 
-	// draw border for all colors
-	ofSetColor(ofColor(0, 16));
-	ofNoFill();
-	for (size_t i = 0; i < rectangles.size(); ++i)
-	{
-		ofDrawRectRounded(rectangles[i], 2);
-		//ofDrawRectangle(rectangles[i]);
-	}
-
-	//--
-
-	//TDOO: 
-	// some lines are not required (?) and came from ofxInterface toucheable GUI that now is hidden 
-	// rectangles management ?
-
-	// 2. draw border on selected color
-	// draw our bounding box rectangle
-	if (!isSelecting && !rectanglesSelected.empty())
-	{
+		// draw border for all colors
+		ofSetColor(ofColor(0, 16));
 		ofNoFill();
-		ofSetColor(ofColor(0, 100)); // full black
-		//ofDrawRectRounded(selectedRectsBoundingBox, 2);
-		ofDrawRectangle(selectedRectsBoundingBox);
-	}
-
-	//// 3. draw border on selected color box
-	//if (isSelecting && bShowDebugRectangles)
-	//{
-	//	ofNoFill();
-	//	ofSetColor(ofColor(ofColor::black, 200));
-	//	ofDrawRectangle(selectionRect);
-	//}
-
-	//--
-
-	// 4. rectangles management debug
-	if (bShowDebugRectangles)
-	{
-		stringstream ss;
-		ss << "Keyboard [(Spacebar) to hide]" << endl;
-		ss << "W: sort by absolute width" << endl;
-		ss << "A: sort by area" << endl;
-		ss << "H: sort by absolute height" << endl;
-		ss << "c: cascade" << endl;
-		ss << "v: align vertical with current vAlign" << endl;
-		ss << "h: align horizontal with current hAlign" << endl;
-		ss << "x: distribute horizontal with current hAlign" << endl;
-		ss << "h: distribute vertical with current vAlign" << endl;
-		ss << "p: pack rectangles" << endl;
-		keyboardCommands = ss.str();
-
-		std::string hAlignString = "";
-		switch (hAlign)
+		for (size_t i = 0; i < rectangles.size(); ++i)
 		{
-		case OF_ALIGN_HORZ_LEFT:
-			hAlignString = "OF_ALIGN_HORZ_LEFT";
-			break;
-		case OF_ALIGN_HORZ_CENTER:
-			hAlignString = "OF_ALIGN_HORZ_CENTER";
-			break;
-		case OF_ALIGN_HORZ_RIGHT:
-			hAlignString = "OF_ALIGN_HORZ_RIGHT";
-			break;
-		case OF_ALIGN_HORZ_IGNORE:
-			hAlignString = "OF_ALIGN_HORZ_IGNORE";
-			break;
-		default:
-			hAlignString = "??";
-			break;
+			ofDrawRectRounded(rectangles[i], 2);
+			//ofDrawRectangle(rectangles[i]);
 		}
 
-		std::string vAlignString = "";
-		switch (vAlign)
+		//--
+
+		//TDOO: 
+		// some lines are not required (?) and came from ofxInterface toucheable GUI that now is hidden 
+		// rectangles management ?
+
+		// 2. draw border on selected color
+		// draw our bounding box rectangle
+		if (!isSelecting && !rectanglesSelected.empty())
 		{
-		case OF_ALIGN_VERT_TOP:
-			vAlignString = "OF_ALIGN_VERT_TOP";
-			break;
-		case OF_ALIGN_VERT_CENTER:
-			vAlignString = "OF_ALIGN_VERT_CENTER";
-			break;
-		case OF_ALIGN_VERT_BOTTOM:
-			vAlignString = "OF_ALIGN_VERT_BOTTOM";
-			break;
-		case OF_ALIGN_VERT_IGNORE:
-			vAlignString = "OF_ALIGN_VERT_IGNORE";
-			break;
-		default:
-			vAlignString = "??";
-			break;
+			ofNoFill();
+			ofSetColor(ofColor(0, 100)); // full black
+			//ofDrawRectRounded(selectedRectsBoundingBox, 2);
+			ofDrawRectangle(selectedRectsBoundingBox);
 		}
 
-		ofFill();
-		ofSetColor(255);
-		ofDrawBitmapString("Press (a) to toggle selection hAlign : " + hAlignString, 10, ofGetHeight() - 24);
-		ofDrawBitmapString("Press (A) to toggle selection vAlign : " + vAlignString, 10, ofGetHeight() - 10);
+		//// 3. draw border on selected color box
+		//if (isSelecting && bShowDebugRectangles)
+		//{
+		//	ofNoFill();
+		//	ofSetColor(ofColor(ofColor::black, 200));
+		//	ofDrawRectangle(selectionRect);
+		//}
+
+		//--
+
+		// 4. rectangles management debug
+		if (bShowDebugRectangles)
+		{
+			stringstream ss;
+			ss << "Keyboard [(Spacebar) to hide]" << endl;
+			ss << "W: sort by absolute width" << endl;
+			ss << "A: sort by area" << endl;
+			ss << "H: sort by absolute height" << endl;
+			ss << "c: cascade" << endl;
+			ss << "v: align vertical with current vAlign" << endl;
+			ss << "h: align horizontal with current hAlign" << endl;
+			ss << "x: distribute horizontal with current hAlign" << endl;
+			ss << "h: distribute vertical with current vAlign" << endl;
+			ss << "p: pack rectangles" << endl;
+			keyboardCommands = ss.str();
+
+			std::string hAlignString = "";
+			switch (hAlign)
+			{
+			case OF_ALIGN_HORZ_LEFT:
+				hAlignString = "OF_ALIGN_HORZ_LEFT";
+				break;
+			case OF_ALIGN_HORZ_CENTER:
+				hAlignString = "OF_ALIGN_HORZ_CENTER";
+				break;
+			case OF_ALIGN_HORZ_RIGHT:
+				hAlignString = "OF_ALIGN_HORZ_RIGHT";
+				break;
+			case OF_ALIGN_HORZ_IGNORE:
+				hAlignString = "OF_ALIGN_HORZ_IGNORE";
+				break;
+			default:
+				hAlignString = "??";
+				break;
+			}
+
+			std::string vAlignString = "";
+			switch (vAlign)
+			{
+			case OF_ALIGN_VERT_TOP:
+				vAlignString = "OF_ALIGN_VERT_TOP";
+				break;
+			case OF_ALIGN_VERT_CENTER:
+				vAlignString = "OF_ALIGN_VERT_CENTER";
+				break;
+			case OF_ALIGN_VERT_BOTTOM:
+				vAlignString = "OF_ALIGN_VERT_BOTTOM";
+				break;
+			case OF_ALIGN_VERT_IGNORE:
+				vAlignString = "OF_ALIGN_VERT_IGNORE";
+				break;
+			default:
+				vAlignString = "??";
+				break;
+			}
+
+			ofFill();
+			ofSetColor(255);
+			ofDrawBitmapString("Press (a) to toggle selection hAlign : " + hAlignString, 10, ofGetHeight() - 24);
+			ofDrawBitmapString("Press (A) to toggle selection vAlign : " + vAlignString, 10, ofGetHeight() - 10);
+		}
+
+		//ofNoFill();
+		//ofSetColor(255, 255, 0);
+		//for (int i = 0; i < packedRects.size(); i++)
+		//{
+		//	ofDrawRectangle(packedRects[i]);
+		//}
+
+		//-
+
+		ofPopStyle();
 	}
-
-	//ofNoFill();
-	//ofSetColor(255, 255, 0);
-	//for (int i = 0; i < packedRects.size(); i++)
-	//{
-	//	ofDrawRectangle(packedRects[i]);
-	//}
-
-	//-
-
-	ofPopStyle();
 #endif
+
 }
 
 //--------------------------------------------------------------

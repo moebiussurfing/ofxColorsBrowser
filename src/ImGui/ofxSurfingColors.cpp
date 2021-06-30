@@ -61,7 +61,7 @@ void ofxSurfingColors::setup() {
 
 	params.setName("ofxSurfingColors");
 	params.add(colorBrowser.bGui);
-	params.add(SHOW_Advanced);
+	//params.add(SHOW_Advanced);
 	params.add(colorBrowser.bGui);
 	params.add(params_Library);
 
@@ -124,12 +124,12 @@ void ofxSurfingColors::keyPressed(ofKeyEventArgs &eventArgs)
 	{
 	}
 
-	if (key == OF_KEY_F1) colorBrowser.setNextColor();
-	if (key == OF_KEY_F2) colorBrowser.setNextColorRow();
-	if (key == OF_KEY_F3) colorBrowser.setNextCard();
-	if (key == OF_KEY_F4) colorBrowser.setNextCardRow();
-	if (key == OF_KEY_F5) colorBrowser.setRandomColor();
-	if (key == OF_KEY_F6) colorBrowser.setRandomCard();
+	//if (key == OF_KEY_F1) colorBrowser.setNextColor();
+	//if (key == OF_KEY_F2) colorBrowser.setNextColorRow();
+	//if (key == OF_KEY_F3) colorBrowser.setNextCard();
+	//if (key == OF_KEY_F4) colorBrowser.setNextCardRow();
+	//if (key == OF_KEY_F5) colorBrowser.setRandomColor();
+	//if (key == OF_KEY_F6) colorBrowser.setRandomCard();
 
 	//TODO:
 	refresh_Libs();
@@ -155,24 +155,16 @@ void ofxSurfingColors::drawImGui()
 {
 	guiManager.begin();
 	{
-		static bool bOpen0 = true;
-		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-			if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+		// window panels
 
-			guiManager.beginWindow("ofxSurfingColors", NULL, window_flags);
-			{
-				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bGui);
-				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bGuiDebug);
-				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bKeys);
-				ofxImGuiSurfing::AddToggleRoundedButton(SHOW_Advanced);
-			}
-			guiManager.endWindow();
-		}
-
-		//--
-
+		// 1. library
 		drawImGuiLibrary();
+
+		// 2. debug
+		if (bShowDebug)drawImGuiDebug();
+
+		// 3. responsive
+		if (bShowResponsive) drawImGuiResponsive();
 	}
 	guiManager.end();
 }
@@ -183,9 +175,9 @@ void ofxSurfingColors::windowResized(int w, int h) {
 }
 
 //--------------------------------------------------------------
-void ofxSurfingColors::drawImGuiLibrary()
+void ofxSurfingColors::drawImGuiResponsive()
 {
-	static bool auto_resize = false;
+	static ofParameter<bool> auto_resize{ "Auto Resize", true };
 
 	//--
 
@@ -195,14 +187,187 @@ void ofxSurfingColors::drawImGuiLibrary()
 	float yy = 10;
 	float ww = 250;
 	float hh = 600;
-	
+
 	ImGuiCond flagsCond = ImGuiCond_None;
 	flagsCond |= ImGuiCond_FirstUseEver;
 	//flagsCond |= ImGuiCond_Appearing;
 
 	ImGui::SetNextWindowSize(ImVec2(ww, hh), flagsCond);
 	ImGui::SetNextWindowPos(ImVec2(xx, yy), flagsCond);
-	
+
+	//--
+
+	ImGuiWindowFlags flagsw;
+	flagsw = auto_resize ? ImGuiWindowFlags_AlwaysAutoResize : ImGuiWindowFlags_None;
+	//flagsw |= flagsWindowsLocked;
+
+	guiManager.beginWindow("RESPONSIVE", NULL, flagsw);
+	{
+		//--
+
+		// advanced
+
+		//#ifdef USE_EXTRA_LIBRARIES
+		//	if (ImGui::CollapsingHeader("Advanced"))
+		//#endif
+		{
+			//if (SHOW_Advanced)
+			{
+				//if (ImGui::CollapsingHeader("LAYOUT"))
+				{
+					// layout
+					float _h = WIDGETS_HEIGHT;
+					float _hh = _h / 2;
+					float _spcx = ImGui::GetStyle().ItemSpacing.x;
+					float _spcy = ImGui::GetStyle().ItemSpacing.y;
+					float _w100 = ofxImGuiSurfing::getWidgetsWidth(1); // 1 widget full width
+					float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);  // 2 widgets half width
+					float _w33 = ofxImGuiSurfing::getWidgetsWidth(3);  // 3 widgets third width
+					float _w25 = ofxImGuiSurfing::getWidgetsWidth(4);  // 4 widgets quarter width
+					float _hitem = SLIDER_HEIGHT;
+
+					//-
+
+					//ImGui::Dummy(ImVec2(0, 20));
+
+					//ImGui::PushItemWidth(_w33);
+
+					ofxImGuiSurfing::AddBigToggle(lib_Responsive_ModeFit, _w100, _hh);
+
+					if (!lib_Responsive_ModeFit)
+					{
+						ofxImGuiSurfing::AddBigToggle(lib_Responsive_ModeGrid, _w100, _hh);
+
+						ImGui::InputInt(sizeLibColBox.getName().c_str(), (int*)&sizeLibColBox.get(), 1, 5);
+						ofxImGuiSurfing::AddParameter(bPagerized);
+					}
+
+					//-
+
+					// responsive
+
+					if (lib_Responsive_ModeFit)
+					{
+						ImGui::InputInt(lib_NumRows.getName().c_str(), (int*)&lib_NumRows.get(), 1, 5);
+						ImGui::InputInt(lib_MaxColumns.getName().c_str(), (int*)&lib_MaxColumns.get(), 1, 5);
+					}
+					else if (!lib_Responsive_ModeGrid)
+					{
+						ofxImGuiSurfing::AddParameter(lib_CardsMode);
+						ImGui::InputFloat(scale_LibCol.getName().c_str(), (float *)&scale_LibCol.get(), 0.02f, 0.1f);
+
+						if (!lib_CardsMode)
+						{
+							ImGui::InputInt(lib_NumRows.getName().c_str(), (int*)&lib_NumRows.get(), 1, 5);
+							ImGui::InputInt(lib_MaxColumns.getName().c_str(), (int*)&lib_MaxColumns.get(), 1, 5);
+						}
+					}
+					else if (lib_Responsive_ModeGrid)
+					{
+						ofxImGuiSurfing::AddParameter(lib_CardsMode);
+						ImGui::InputFloat(scale_LibCol.getName().c_str(), (float *)&scale_LibCol.get(), 0.02f, 0.1f);
+					}
+
+					lib_MaxColumns = ofClamp(lib_MaxColumns, 1, 100);
+					lib_NumRows = ofClamp(lib_NumRows, 1, 100);
+
+					//ImGui::PopItemWidth();
+
+					//--
+
+					ImGui::Dummy(ImVec2(0, 2));
+
+					if (ImGui::Button("Reset", ImVec2(_w100, _hh))) {
+						resetLibraryLayout();
+					}
+				}
+
+				ImGui::Dummy(ImVec2(0, 5));
+
+				ofxImGuiSurfing::AddToggleRoundedButton(auto_resize);
+			}
+		}
+	}
+	guiManager.endWindow();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingColors::drawImGuiDebug()
+{
+	static bool bOpen0 = true;
+	{
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+		if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+
+		guiManager.beginWindow("ADVANCED SURFING COLORS", NULL, window_flags);
+		{
+			ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bGui);
+			//ImGui::Dummy(ImVec2(0, 5));
+
+			//-----
+
+			// simple gui layout
+
+			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+			flags |= ImGuiTreeNodeFlags_Framed; // uncomment to draw dark tittle bar
+			//flags |= ImGuiTreeNodeFlags_DefaultOpen; // comment to start closed
+
+			if (colorBrowser.bGui) ofxImGuiSurfing::AddGroup(colorBrowser.params_Layout, flags);
+
+			//ImGui::Dummy(ImVec2(0, 5));
+			if (colorBrowser.bGui) ofxImGuiSurfing::AddGroup(colorBrowser.params_GuiPanels, flags);
+
+			//---
+
+			// extra and advanced menu
+			{
+				ImGui::Dummy(ImVec2(0, 5)); // spacing
+				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bKeys);
+				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bGuiDebug);
+				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
+				if (guiManager.bExtra)
+				{
+					ImGui::Indent();
+					{
+						// add your extra (hidden by default) controls
+						//ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+
+						//--
+
+						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+						if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
+					}
+					ImGui::Unindent();
+				}
+			}
+		}
+		guiManager.endWindow();
+	}
+}
+
+//--------------------------------------------------------------
+void ofxSurfingColors::drawImGuiLibrary()
+{
+	static bool auto_resize = false;
+
+	std::string strIndexColor;
+
+	//--
+
+	// set position and size of a window panel
+
+	float xx = 10;
+	float yy = 10;
+	float ww = 250;
+	float hh = 600;
+
+	ImGuiCond flagsCond = ImGuiCond_None;
+	flagsCond |= ImGuiCond_FirstUseEver;
+	//flagsCond |= ImGuiCond_Appearing;
+
+	ImGui::SetNextWindowSize(ImVec2(ww, hh), flagsCond);
+	ImGui::SetNextWindowPos(ImVec2(xx, yy), flagsCond);
+
 	// xx + = ww + pad;
 
 	//--
@@ -223,9 +388,10 @@ void ofxSurfingColors::drawImGuiLibrary()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
 
-	guiManager.beginWindow("LIBRARY", NULL, flagsw);
+	guiManager.beginWindow("SURFING COLORS", NULL, flagsw);
 	{
 		bool bUpdate = false;
+		string s;
 
 		//--
 
@@ -241,60 +407,260 @@ void ofxSurfingColors::drawImGuiLibrary()
 
 		//-----
 
-		// Or using raw ImGui
-		// Three widgets and fit width in one line
-		if (ImGui::Button("LIBRARY", ImVec2(_w100, _h))) {
+		ImGui::Dummy(ImVec2(0, 5));
+
+		// lib name (ie: pantone)
+		s = colorBrowser.getLibraryName();
+		ImGui::Text(s.c_str());
+
+		// sorting
+		s = "Sorting " + colorBrowser.getSortingTypeName();
+		ImGui::Text(s.c_str());
+
+		ImGui::Dummy(ImVec2(0, 5));
+
+		// index color
+		s = "";
+		if (last_Lib_Index == -1) s += " ";
+		else
+		{
+			if (lib_TotalColors > 1000)
+			{
+				if (last_Lib_Index < 1000) s += "0";
+				if (last_Lib_Index < 100) s += "0";
+				if (last_Lib_Index < 10) s += "0";
+			}
+			else if (lib_TotalColors > 100)
+			{
+				if (last_Lib_Index < 100) s += "0";
+				if (last_Lib_Index < 10) s += "0";
+			}
+			s += ofToString(last_Lib_Index) + " / " + ofToString(lib_TotalColors - 1);
+		}
+		strIndexColor = s;
+		ImGui::Text(strIndexColor.c_str());
+
+		// color name
+		ImGui::Text(last_Lib_NameColor.c_str());
+
+		ImGui::Dummy(ImVec2(0, 5));
+
+		//----
+
+			// colors
+
+		ImGui::PushButtonRepeat(true);
+		{
+			float wb, hb;
+			wb = _w50;
+			hb = SLIDER_HEIGHT;
+
+			// 1.1 prev
+			if (ImGui::ArrowButtonEx("##leftColor", ImGuiDir_Left, ImVec2(wb, hb)))
+			{
+				colorBrowser.setPreviousColor();
+
+			}
+
+			ImGui::SameLine(0, _spcy);
+
+			// 1.2 next
+			if (ImGui::ArrowButtonEx("##rightColor", ImGuiDir_Right, ImVec2(wb, hb)))
+			{
+				colorBrowser.setNextColor();
+
+			}
+		}
+		ImGui::PopButtonRepeat();
+
+		//// color slider
+		//ImGui::SameLine();
+		//ImGui::PushItemWidth(-50);
+		//ofxImGuiSurfing::AddParameter(last_Lib_Index);//page slider selector
+		//ImGui::PopItemWidth();
+		//last_Lib_Index = ofClamp(last_Lib_Index.get(), 0, last_Lib_Index.getMax());
+
+		//-
+
+		// pages. arrow buttons
+
+		if (bPagerized)
+		{
+			ImGui::PushButtonRepeat(true);
+			{
+				float wb, hb;
+				wb = 40;
+				hb = SLIDER_HEIGHT;
+
+				// 1.1 prev
+				if (ImGui::ArrowButtonEx("##leftPage", ImGuiDir_Left, ImVec2(wb, hb)))
+				{
+					if (lib_Page_Index > 0)
+					{
+						lib_Page_Index--;
+					}
+				}
+
+				ImGui::SameLine(0, _spcy);
+
+				// 1.2 next
+				if (ImGui::ArrowButtonEx("##rightPage", ImGuiDir_Right, ImVec2(wb, hb)))
+				{
+					if (lib_Page_Index < lib_Page_Max)
+					{
+						lib_Page_Index++;
+					}
+				}
+			}
+			ImGui::PopButtonRepeat();
+
+			//-
+
+			// page slider
+			ImGui::SameLine();
+			ImGui::PushItemWidth(-50);
+			ofxImGuiSurfing::AddParameter(lib_Page_Index);//page slider selector
+			ImGui::PopItemWidth();
+			lib_Page_Index = ofClamp(lib_Page_Index.get(), 0, lib_Page_Index.getMax());
+		}
+
+		if (ImGui::Button("LIBRARY", ImVec2(_w33, SLIDER_HEIGHT))) {
 			colorBrowser.setNextLibrary();
 		}
-		if (ImGui::Button("SORT TYPE", ImVec2(_w100, _h))) {
+		ImGui::SameLine();
+		if (ImGui::Button("SORTING", ImVec2(_w33, SLIDER_HEIGHT))) {
 			colorBrowser.setNextSortType();
 		}
-
-		if (ImGui::Button("< COLOR", ImVec2(_w50, _hh))) {
-			colorBrowser.setPreviousColor();
-		}
+		//if (ImGui::Button("COLOR", ImVec2(_w33, SLIDER_HEIGHT))) {
+		//	colorBrowser.setNextCard();
+		//}
 		ImGui::SameLine();
-		if (ImGui::Button("COLOR >", ImVec2(_w50, _hh))) {
-			colorBrowser.setNextColor();
-		}
-
-		if (ImGui::Button("< CARD", ImVec2(_w50, _hh))) {
-			colorBrowser.setPreviousCard();
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("CARD >", ImVec2(_w50, _hh))) {
+		if (ImGui::Button("CARD", ImVec2(_w33, SLIDER_HEIGHT))) {
 			colorBrowser.setNextCard();
 		}
-		
-		if (ImGui::Button("RANDOM COLOR", ImVec2(_w50, _hh))) {
-			colorBrowser.setRandomColor();
+
+		//--
+
+		ImGui::Dummy(ImVec2(0, 5));
+
+		//--
+
+		bool bOpen = false;
+		ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+		_flagt |= ImGuiTreeNodeFlags_Framed;
+
+		if (ImGui::TreeNodeEx("SETTINGS", _flagt))
+		{
+			{
+				bool bOpen = false;
+				ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+				_flagt |= ImGuiTreeNodeFlags_Framed;
+
+				// library
+				if (ImGui::TreeNodeEx("LIBRARY", _flagt))
+				{
+					string t = "##LIBRARY";
+					ImGui::PushID(t.c_str());
+					if (ImGui::Button("<", ImVec2(_w50, _hh))) {
+						colorBrowser.setPreviousLibrary();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button(">", ImVec2(_w50, _hh))) {
+						colorBrowser.setNextLibrary();
+					}
+					ImGui::PopID();
+
+					ImGui::TreePop();
+				}
+
+				// sorting
+				if (ImGui::TreeNodeEx("SORTING", _flagt))
+				{
+					string t = "##SORTING";
+					ImGui::PushID(t.c_str());
+					ImGui::PushButtonRepeat(true);
+					if (ImGui::Button("<", ImVec2(_w50, _hh))) {
+						colorBrowser.setPreviousSortType();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button(">", ImVec2(_w50, _hh))) {
+						colorBrowser.setNextSortType();
+					}
+					ImGui::PopButtonRepeat();
+					ImGui::PopID();
+
+					ImGui::TreePop();
+				}
+
+				// colors
+				if (ImGui::TreeNodeEx("COLORS", _flagt))
+				{
+					string t = "##COLORS";
+					ImGui::PushID(t.c_str());
+					if (ImGui::Button("<", ImVec2(_w50, _hh))) {
+						colorBrowser.setPreviousColor();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button(">", ImVec2(_w50, _hh))) {
+						colorBrowser.setNextColor();
+					}
+					ImGui::PopID();
+
+					if (ImGui::Button("RANDOM COLOR", ImVec2(_w100, _hh))) {
+						colorBrowser.setRandomColor();
+					}
+
+					ImGui::TreePop();
+				}
+
+				// card
+				if (ImGui::TreeNodeEx("CARD", _flagt))
+				{
+					ImGui::PushItemWidth(130);
+					ofxImGuiSurfing::AddIntStepped(colorBrowser.amtColorsInCard);
+					ImGui::PopItemWidth();
+
+					string t = "##CARD";
+					ImGui::PushID(t.c_str());
+					ImGui::PushButtonRepeat(true);
+					if (ImGui::Button("<", ImVec2(_w50, _hh))) {
+						colorBrowser.setPreviousCard();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button(">", ImVec2(_w50, _hh))) {
+						colorBrowser.setNextCard();
+					}
+					if (ImGui::Button("RANDOM", ImVec2(_w100, _hh))) {
+						colorBrowser.setRandomCard();
+					}
+					ImGui::PopButtonRepeat();
+					ImGui::PopID();
+
+					ImGui::TreePop();
+				}
+
+				//ImGui::Dummy(ImVec2(0, 5));
+
+				//-
+
+				// panels
+				if (ImGui::TreeNodeEx("PANELS", _flagt))
+				{
+					ofxImGuiSurfing::AddToggleRoundedButton(bShowResponsive);
+					ofxImGuiSurfing::AddToggleRoundedButton(bShowDebug);
+
+					ImGui::TreePop();
+				}
+
+				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bKeys);
+			}
+
+			//-
+
+			ImGui::TreePop();
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("RANDOM CARD", ImVec2(_w50, _hh))) {
-			colorBrowser.setRandomCard();
-		}
 
-		//// Draw RAW ImGui or SurfingWidgets with ofParameters
-
-		//// One widget full with and half height
-		//if (AddBigToggle(b1, _w100, _h / 2)) {}
-
-		//// Two widgets same line/row with the 50% of window panel width 
-		//if (AddBigButton(b2, _w50, _h)) {}
-		//ImGui::SameLine();
-		//if (AddBigButton(b3, _w50, _h)) {}
-
-		ImGui::Dummy(ImVec2(0, 20));
-
-		//-----
-
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
-		flags |= ImGuiTreeNodeFlags_Framed; // uncomment to draw dark tittle bar
-		//flags |= ImGuiTreeNodeFlags_DefaultOpen; // comment to start closed
-
-		ofxImGuiSurfing::AddGroup(colorBrowser.paramsLayout, flags);
-		
-		ImGui::Dummy(ImVec2(0, 20));
+		//ImGui::Dummy(ImVec2(0, 20));
 
 		//-----
 
@@ -345,151 +711,56 @@ void ofxSurfingColors::drawImGuiLibrary()
 
 		//--
 
-		std::string s;
+		//std::string s;
 
-		// 1. lib name (ie: pantone)
-		s = colorBrowser.getLibraryName();
-		ImGui::Text(s.c_str());
+		//// 1. lib name (ie: pantone)
+		//s = colorBrowser.getLibraryName();
+		//ImGui::Text(s.c_str());
 
-		ImGui::SameLine();
+		//ImGui::SameLine();
 
-		// 3. index/total
-		s = "    " + ofToString(last_Lib_Index) + " / " + ofToString(lib_TotalColors - 1);
-		ImGui::Text(s.c_str());
+		//----
 
-		// 2. color name
-		ImGui::Text(last_Lib_NameColor.c_str());
+		//ImGui::Dummy(ImVec2(0, 5));
+		//ImGui::Separator();
+		//ImGui::Dummy(ImVec2(0, 5));
 
-		//--
+		//-
 
-		// advanced
+		//// 1. index/total
+		//ImGui::Text(strIndexColor.c_str());
 
-#ifdef USE_EXTRA_LIBRARIES
-		if (ImGui::CollapsingHeader("Advanced"))
-#endif
-		{
-			if (SHOW_Advanced)
-			{
-				if (ImGui::CollapsingHeader("LAYOUT"))
-				{
-					ImGui::Dummy(ImVec2(0, 20));
+		////-
 
-					ImGui::PushItemWidth(_w33);
-
-					ofxImGuiSurfing::AddParameter(lib_Responsive_ModeFit);
-					if (!lib_Responsive_ModeFit)
-					{
-						ofxImGuiSurfing::AddParameter(lib_Responsive_ModeGrid);
-						ImGui::InputInt(sizeLibColBox.getName().c_str(), (int*)&sizeLibColBox.get(), 1, 5);
-						ofxImGuiSurfing::AddParameter(bPagerized);
-					}
-
-					//-
-
-					// responsive
-
-					if (lib_Responsive_ModeFit)
-					{
-						ImGui::InputInt(lib_NumRows.getName().c_str(), (int*)&lib_NumRows.get(), 1, 5);
-						ImGui::InputInt(lib_MaxColumns.getName().c_str(), (int*)&lib_MaxColumns.get(), 1, 5);
-					}
-					else if (!lib_Responsive_ModeGrid)
-					{
-						ofxImGuiSurfing::AddParameter(lib_CardsMode);
-						ImGui::InputFloat(scale_LibCol.getName().c_str(), (float *)&scale_LibCol.get(), 0.02f, 0.1f);
-
-						if (!lib_CardsMode)
-						{
-							ImGui::InputInt(lib_NumRows.getName().c_str(), (int*)&lib_NumRows.get(), 1, 5);
-							ImGui::InputInt(lib_MaxColumns.getName().c_str(), (int*)&lib_MaxColumns.get(), 1, 5);
-
-						}
-					}
-					else if (lib_Responsive_ModeGrid)
-					{
-						ofxImGuiSurfing::AddParameter(lib_CardsMode);
-						ImGui::InputFloat(scale_LibCol.getName().c_str(), (float *)&scale_LibCol.get(), 0.02f, 0.1f);
-					}
-
-					lib_MaxColumns = ofClamp(lib_MaxColumns, 1, 100);
-					lib_NumRows = ofClamp(lib_NumRows, 1, 100);
-
-					ImGui::PopItemWidth();
-
-					if (ImGui::Button("Reset", ImVec2(_w100, WIDGETS_HEIGHT))) {
-						resetLibraryLayout();
-					}
-				}
-			}
-
-			//--
-
-			// 2.2 draw all palette colors grid
-
-			//--
-
-			// libraries
-
-#ifdef USE_EXTRA_LIBRARIES
-
-			if (ImGui::CollapsingHeader("Library"))
-			{
-				ofxImGuiSurfing::AddParameter(colorBrowser.LibraryColors_Index);
-				ofxImGuiSurfing::AddParameter(colorBrowser.LibraryColors_Index_name);
-
-				ImGui::Dummy(ImVec2(0.0f, 5.0f));
-
-				ofxImGuiSurfing::AddParameter(colorBrowser.MODE_SORTING);
-				ofxImGuiSurfing::AddParameter(colorBrowser.MODE_SORTING_name);
-
-				ImGui::Dummy(ImVec2(0.0f, 5.0f));
-
-				ofxImGuiSurfing::AddParameter(colorBrowser.ENABLE_keys);
-			}
-#endif
-		}
+		//// 2. color name
+		//ImGui::Text(last_Lib_NameColor.c_str());
 
 		//--
 
-		// 1. arrow buttons
+		// 2.2 draw all palette colors grid
 
-		if (bPagerized)
-		{
-			ImGui::PushButtonRepeat(true);
+		//--
 
-			// 1.1 prev
-			if (ImGui::ArrowButton("##left", ImGuiDir_Left))
-			{
-				if (lib_Page_Index > 0)
-				{
-					lib_Page_Index--;
-				}
-			}
+		// libraries
 
-			ImGui::SameLine(0, _spcy);
-
-			// 1.2 next
-			if (ImGui::ArrowButton("##right", ImGuiDir_Right))
-			{
-				if (lib_Page_Index < lib_Page_Max)
-				{
-					lib_Page_Index++;
-				}
-			}
-
-			ImGui::PopButtonRepeat();
-
-			//-
-
-			// 2. page slider
-
-			ImGui::SameLine();
-			ImGui::PushItemWidth(-50);
-			ofxImGuiSurfing::AddParameter(lib_Page_Index);//page slider selector
-			ImGui::PopItemWidth();
-
-			lib_Page_Index = ofClamp(lib_Page_Index.get(), 0, lib_Page_Index.getMax());
-		}
+//#ifdef USE_EXTRA_LIBRARIES
+//
+//			if (ImGui::CollapsingHeader("Library"))
+//			{
+//				ofxImGuiSurfing::AddParameter(colorBrowser.LibraryColors_Index);
+//				ofxImGuiSurfing::AddParameter(colorBrowser.LibraryColors_Index_name);
+//
+//				ImGui::Dummy(ImVec2(0.0f, 5.0f));
+//
+//				ofxImGuiSurfing::AddParameter(colorBrowser.MODE_SORTING);
+//				ofxImGuiSurfing::AddParameter(colorBrowser.MODE_SORTING_name);
+//
+//				ImGui::Dummy(ImVec2(0.0f, 5.0f));
+//
+//				ofxImGuiSurfing::AddParameter(colorBrowser.ENABLE_keys);
+//			}
+//#endif
+		//}
 
 		//-
 
