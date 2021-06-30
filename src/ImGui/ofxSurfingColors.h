@@ -7,10 +7,10 @@
 
 	TODO:
 
-	+ library names combo
-	+ fix index clicker. link index params
-	+ add labels on gui
 	+ add color + card colors preview?
+	+ fix sorting inside on ImGui
+	+ fix index clicker. link index params should be better? link page to selected...etc
+	+ library names combo selector
 	+ hide basic gui with defines
 
 */
@@ -33,13 +33,17 @@ public:
 	ofxColorsBrowser colorBrowser;
 	ofFloatColor *color_BACK_OFAPP;
 	void setupColorPtr(ofFloatColor &c);
-	ofFloatColor colorBg;
+	//ofFloatColor colorBg;
 
 	ofxSurfing_ImGui_Manager guiManager;
 	void drawImGui();
 	void drawImGuiDebug();
 	void drawImGuiLibrary();
 	void drawImGuiResponsive();
+
+	ofFloatColor getColor() {
+		return	*color_BACK_OFAPP;
+	}
 
 	//-
 
@@ -117,6 +121,7 @@ private:
 
 	ofParameter<bool> bFitLayout;
 
+	ofParameter<bool>bMnimize{ "Minimize", false };
 
 
 

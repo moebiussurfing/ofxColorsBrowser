@@ -2190,6 +2190,11 @@ void ofxColorsBrowser::setRowsSize(int rows)
 	amtColorsPerRow = rows;
 }
 
+//--
+
+// browse
+
+// library
 //--------------------------------------------------------------
 void ofxColorsBrowser::setPreviousLibrary()
 {
@@ -2208,9 +2213,21 @@ void ofxColorsBrowser::setNextLibrary()
 	ofLogNotice(__FUNCTION__) << index_Library;
 }
 
-// browse
-
 //colors
+//--------------------------------------------------------------
+void ofxColorsBrowser::setColorIndex(int index)
+{
+	int sizeCols = colors_STRUCT.size();
+	index = ofClamp(index, 0, sizeCols - 1);
+	index_Color = index;
+	index_Card = index_Color / amtColorsInCard;
+	refreshRectanglesClicks();
+}
+//--------------------------------------------------------------
+int ofxColorsBrowser::getColorIndex()
+{
+	return index_Color;
+}
 //--------------------------------------------------------------
 void ofxColorsBrowser::setNextColor() {
 	index_Color++;
@@ -2252,6 +2269,20 @@ void ofxColorsBrowser::setRandomColor() {
 }
 
 // cards
+//--------------------------------------------------------------
+int ofxColorsBrowser::getCardIndex() {
+	return index_Card;
+}
+//--------------------------------------------------------------
+void ofxColorsBrowser::setCardIndex(int index) {
+	index_Card = index;
+
+	if (amtColorsInCard * index_Card + amtColorsInCard > colors_STRUCT.size())
+		index_Card = 0;
+
+	index_Color = amtColorsInCard * index_Card;
+	refreshRectanglesClicks();
+}
 //--------------------------------------------------------------
 void ofxColorsBrowser::setNextCard() {
 	index_Card++;

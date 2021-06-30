@@ -6,17 +6,8 @@ An **openFrameworks** add-on to browse many named color libraries imported from 
 
 ## Screenshots
 
-#### Sanzo Wada
+#### ofxSurfingColors
 ![image](/readme_images/Capture.PNG?raw=true "image")
-
-#### Cheprasov  
-![image](/readme_images/Capture2.PNG?raw=true "image")  
-
-#### Crayola  
-![image](/readme_images/Capture3.PNG?raw=true "image")  
-
-#### Sort by Hue  
-![image](/readme_images/Capture4.PNG?raw=true "image")  
 
 ## Color Libraries
   * **Pantone** (+2000 colors).

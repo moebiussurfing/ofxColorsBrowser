@@ -146,12 +146,16 @@ public:
 
 public:
 	// colors
+	int getColorIndex();
+	void setColorIndex(int index);
 	void setNextColor();
 	void setPreviousColor();
 	void setNextColorRow();
 	void setPreviousColorRow();
 	void setRandomColor();
 	// cards
+	int getCardIndex();
+	void setCardIndex(int index);
 	void setNextCard();
 	void setPreviousCard();
 	void setNextCardRow();
@@ -165,6 +169,12 @@ public:
 	void setNextSortType();
 	void setPreviousSortType();
 	void setSortingType(int p);
+
+
+
+	ofFloatColor getColor() {
+		return	*color_BACK_OFAPP;
+	}
 
 	//--
 
