@@ -170,7 +170,7 @@ public:
 	void setPreviousSortType();
 	void setSortingType(int p);
 
-
+	void resetLayout();
 
 	ofFloatColor getColor() {
 		return	*color_BACK_OFAPP;

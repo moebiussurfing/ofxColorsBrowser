@@ -621,17 +621,20 @@ void ofxSurfingColors::drawImGuiLibrary()
 						if (ImGui::Button("<", ImVec2(_w50, _hh))) {
 							colorBrowser.setPreviousColor();
 							last_ColorPicked_Lib = colorBrowser.getColorIndex();
+							last_Lib_Index = colorBrowser.getColorIndex();
 						}
 						ImGui::SameLine();
 						if (ImGui::Button(">", ImVec2(_w50, _hh))) {
 							colorBrowser.setNextColor();
 							last_ColorPicked_Lib = colorBrowser.getColorIndex();
+							last_Lib_Index = colorBrowser.getColorIndex();
 						}
 						ImGui::PopID();
 
 						if (ImGui::Button("RANDOM COLOR", ImVec2(_w100, _hh))) {
 							colorBrowser.setRandomColor();
 							last_ColorPicked_Lib = colorBrowser.getColorIndex();
+							last_Lib_Index = colorBrowser.getColorIndex();
 						}
 
 						ImGui::TreePop();
@@ -1004,12 +1007,10 @@ void ofxSurfingColors::refresh_Libs()
 	resetLibraryLayout();
 }
 
-
-
 //--------------------------------------------------------------
 void ofxSurfingColors::resetLibraryLayout()
 {
-	ofLogNotice(__FUNCTION__) << "----------------- RESET LIBRARY -----------------" << endl;
+	ofLogNotice(__FUNCTION__);
 
 	lib_Responsive_ModeGrid = false;
 	lib_CardsMode = false;

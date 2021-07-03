@@ -1138,10 +1138,16 @@ void ofxColorsBrowser::buildRectangles()
 #endif
 }
 
-
 //--------------------------------------------------------------
 void ofxColorsBrowser::update(ofEventArgs & args)
 {
+	if (ofGetFrameNum() == 1) {
+		// reset layout
+		resetLayout();
+	}
+
+	//-
+
 	if (color_BACK != color_BACK_PRE)
 	{
 		color_BACK_OFAPP->set(color_BACK);
@@ -1877,13 +1883,7 @@ void ofxColorsBrowser::Changed_Params(ofAbstractParameter &e)
 		{
 			bResetLayout = false;
 
-			positionNames = glm::vec2(40, 50);
-			positionCards = glm::vec2(300, 50);
-			positionRectangles = glm::vec2(300, 300);
-
-			float w = ofxSurfingHelpers::getWidthBBtextBoxed(fontHelp, ofToUpper(helpInfoFull)) + 30;
-			positionHelper = glm::vec2(ofGetWidth() - w, 40);
-			//positionHelper = glm::vec2(ofGetWidth() - 280, 40);
+			resetLayout();
 		}
 
 		// reset box
@@ -1899,6 +1899,20 @@ void ofxColorsBrowser::Changed_Params(ofAbstractParameter &e)
 			amtCardsInRow = 4;
 		}
 	}
+}
+
+//--------------------------------------------------------------
+void ofxColorsBrowser::resetLayout()
+{
+	ofLogNotice(__FUNCTION__);
+
+	positionNames = glm::vec2(40, 50);
+	positionCards = glm::vec2(300, 50);
+	positionRectangles = glm::vec2(300, 300);
+
+	float w = ofxSurfingHelpers::getWidthBBtextBoxed(fontHelp, ofToUpper(helpInfoFull)) + 30;
+	positionHelper = glm::vec2(ofGetWidth() - w, 40);
+	//positionHelper = glm::vec2(ofGetWidth() - 280, 40);
 }
 
 //--------------------------------------------------------------

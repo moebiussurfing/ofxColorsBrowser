@@ -7,11 +7,14 @@
 
 NOTE
 
-To run this example out-of-the-box,
-you must uncomment the line:
+To run this example out-of-the-box you must do:
+
+1. Uncomment the line:
 #define USE_OFX_COLOR_BROWSER_INTERFACE
 into ofxColorsBrowser.h
-This is to enable the user GUI.
+This is to enable the user NATIVE GUI.
+
+2. Remove ofxColorBrowser/src/ImGui folder to not use ImGui at all.
 
 */
 

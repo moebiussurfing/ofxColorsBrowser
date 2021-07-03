@@ -1,6 +1,6 @@
-ofxGui
 ofxColorsBrowser
 ofxFontStash
+ofxGui
 ofxImGui
 ofxRectangleUtils
 ofxSurfingHelpers
