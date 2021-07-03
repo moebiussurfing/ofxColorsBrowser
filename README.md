@@ -59,11 +59,11 @@ ofApp::draw()
 - [ofxImGui](https://github.com/Daandelange/ofxImGui/) **  
 - [ofxWindowApp](https://github.com/moebiussurfing/ofxWindowApp) ***  
 
-optional | when
+Mark | Not required when
 ------------ | -------------
-\* | Not required when interface is disabled.
-** | Not required when ImGui is disabled.
-*** | Not required. For some example only.
+\* | interface is disabled.
+** | ImGui is disabled.
+*** | some example only.
 
 Already bundled into ```OF_ADDON/libs```. No need to add to the **PROJECT GENERATOR**!    
 - [ofxOpenColor](https://github.com/pd-andy/ofxOpenColor)  
