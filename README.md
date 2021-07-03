@@ -53,11 +53,11 @@ ofApp::draw()
 ## Dependencies
 - [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 - ofxGui
-- [ofxRectangleUtils](https://github.com/bakercp/ofxRectangleUtils) [*]  
-- [ofxFontStash](https://github.com/armadillu/ofxFontStash) [*]
-- [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)[**]  
-- [ofxImGui](https://github.com/Daandelange/ofxImGui/) [FORK] [**]
-- [ofxWindowApp](https://github.com/moebiussurfing/ofxWindowApp)[***]  
+- [ofxRectangleUtils](https://github.com/bakercp/ofxRectangleUtils) *  
+- [ofxFontStash](https://github.com/armadillu/ofxFontStash) *  
+- [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui) **  
+- [ofxImGui](https://github.com/Daandelange/ofxImGui/) FORK **  
+- [ofxWindowApp](https://github.com/moebiussurfing/ofxWindowApp) ***  
 [*] Not required when interface is disabled.  
 [**] Not required when ImGui is disabled.  
 [***] Not required. For some example only.   
