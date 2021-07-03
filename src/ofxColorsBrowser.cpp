@@ -880,7 +880,7 @@ void ofxColorsBrowser::setup()
 	// exclude
 	MODE_SORTING_name.setSerializable(false);
 	name_Library.setSerializable(false);
-	bShowCards.setSerializable(false);
+	bShowCard.setSerializable(false);
 	bResetLayout.setSerializable(false);
 
 	//-
@@ -906,7 +906,7 @@ void ofxColorsBrowser::setup()
 
 	params_GuiPanels.setName("Panels");
 	params_GuiPanels.add(bShowNamesList);
-	params_GuiPanels.add(bShowCards);
+	params_GuiPanels.add(bShowCard);
 	params_GuiPanels.add(bShowRectangles);
 	params_GuiPanels.add(bShowHelp);
 	//params_GuiPanels.add(bShowDebugRectangles);
@@ -1487,7 +1487,7 @@ void ofxColorsBrowser::draw(ofEventArgs & args)
 
 			// 4. draw all clickable color boxes
 
-			drawRectangles();
+			drawRectanglesAndCard();
 
 			//TODO:
 			// extra interface is
@@ -2462,7 +2462,7 @@ void ofxColorsBrowser::updateRectangles()
 }
 
 //--------------------------------------------------------------
-void ofxColorsBrowser::drawRectangles()
+void ofxColorsBrowser::drawRectanglesAndCard()
 {
 	// NOTE:
 	// All the rectangles engine is a bit dirty here,
@@ -2490,9 +2490,9 @@ void ofxColorsBrowser::drawRectangles()
 
 	// 1 card of colors
 
-	// draw each card.
+	// draw selected card.
 
-	if (bShowCards)
+	if (bShowCard)
 	{
 		int padding = 15;
 		int labelSize = 25;
@@ -2548,13 +2548,23 @@ void ofxColorsBrowser::drawRectangles()
 			int colorBegin = amtColorsInCard * index_Card;
 			int colorEnd = colorBegin + amtColorsInCard;
 
+			// card palette
+			paletteCard.clear();
+
 			for (int i = 0; i < amtColorsInCard; i++)
 			{
-				int iPad = i + colorBegin;
+				const int iPad = i + colorBegin;
 				if (iPad < colors_STRUCT.size())
 				{
-					ofSetColor(colors_STRUCT[iPad].color);
+					//TODO: can be improved refreshing the vector only when card changes..
+					// card palette
+					ofColor cc = colors_STRUCT[iPad].color;
+					paletteCard.push_back(cc);
+
+					ofSetColor(cc);
 					ofFill();
+
+					//-
 
 					// 2.1 color box
 
@@ -2620,7 +2630,7 @@ void ofxColorsBrowser::drawRectangles()
 
 					// B.
 					//ofColor c = colors_STRUCT[iPad].color;
-					ofColor c = 0;//black
+					ofColor c = 0; // black
 					ofSetColor(c);
 
 					std::string str;
@@ -2649,13 +2659,15 @@ void ofxColorsBrowser::drawRectangles()
 
 	//----
 
+	// 2 all the color rectangles
+
 	if (bShowRectangles)
 	{
 		ofPushStyle();
 
 		//-
 
-		// label name library
+		// 2.0 label name library
 		{
 			float __size = 40;
 			float __pad = 8; // make box bigger 
@@ -2664,7 +2676,7 @@ void ofxColorsBrowser::drawRectangles()
 			float __y = positionRectangles.get().y - 20;
 			//float __y = positionRectangles.get().y - 14;
 
-			auto __bb = fontNames.getBBox(name_Library,__size,__x,__y);
+			auto __bb = fontNames.getBBox(name_Library, __size, __x, __y);
 			__bb.x -= __pad;
 			__bb.y -= __pad;
 			__bb.width += 2 * __pad;
@@ -2682,27 +2694,49 @@ void ofxColorsBrowser::drawRectangles()
 
 		//-
 
-		// COLOR RECTANGLES
+		// color rectangles
 
-		// 1.2 draw all of our rectangles system
+		// 2.1 draw all of our rectangles system
 
 		for (size_t i = 0; i < rectangles.size(); ++i)
 		{
 			ofRectangle *rect = (ofRectangle *)&rectangles[i];
-			unsigned int selectionIndex = ofFind(rectanglesSelected, rect);
-			//rectangles[i].draw(i, selectionIndex == rectanglesSelected.size() ? -1 : selectionIndex);
+			unsigned int isel = ofFind(rectanglesSelected, rect);
+			//rectangles[i].draw(i, isel == rectanglesSelected.size() ? -1 : isel);
 
-			if (selectionIndex == rectanglesSelected.size())
+			if (isel == rectanglesSelected.size())
 			{
 				rectangles[i].draw(i, -1);
 			}
 			else
 			{
-				rectangles[i].draw(i, selectionIndex);
+				rectangles[i].draw(i, isel);
+			}
+
+			//--
+
+			// underline card colors
+			const int ifirst = index_Card * amtColorsInCard;
+			if (i >= ifirst && i < ifirst + amtColorsInCard)
+			{
+				ofSetColor(ofColor(0, 255));
+				//ofSetLineWidth(3);
+				ofNoFill();
+				auto p1 = rectangles[i].getBottomLeft();
+				auto p2 = rectangles[i].getBottomRight();
+				ofDrawLine(p1, p2);
+
+				//TODO:
+				//offset not working..
+				//glm::vec3 o(0.f, 2.f, 0.f);
+				//ofDrawLine(p1 + o, p2 + o);
+				//auto p1 = rectangles[i].getBottomLeft() + glm::vec3(0, 2, 0);
+				//auto p2 = rectangles[i].getBottomRight() + glm::vec3(0, 2, 0);
 			}
 		}
 
-		// draw border for all colors
+		// 2.2 draw border for all colors
+
 		ofSetColor(ofColor(0, 16));
 		ofNoFill();
 		for (size_t i = 0; i < rectangles.size(); ++i)
@@ -2717,7 +2751,8 @@ void ofxColorsBrowser::drawRectangles()
 		// some lines are not required (?) and came from ofxInterface toucheable GUI that now is hidden 
 		// rectangles management ?
 
-		// 2. draw border on selected color
+		// 2.3 draw border on selected color
+
 		// draw our bounding box rectangle
 		if (!isSelecting && !rectanglesSelected.empty())
 		{
@@ -2727,7 +2762,8 @@ void ofxColorsBrowser::drawRectangles()
 			ofDrawRectangle(selectedRectsBoundingBox);
 		}
 
-		//// 3. draw border on selected color box
+		//// 2.4 draw border on selected color box
+
 		//if (isSelecting && bShowDebugRectangles)
 		//{
 		//	ofNoFill();
@@ -2737,7 +2773,8 @@ void ofxColorsBrowser::drawRectangles()
 
 		//--
 
-		// 4. rectangles management debug
+		// 2.5 rectangles management debug
+
 		if (bShowDebugRectangles)
 		{
 			stringstream ss;
@@ -2798,6 +2835,8 @@ void ofxColorsBrowser::drawRectangles()
 			ofDrawBitmapString("Press (a) to toggle selection hAlign : " + hAlignString, 10, ofGetHeight() - 24);
 			ofDrawBitmapString("Press (A) to toggle selection vAlign : " + vAlignString, 10, ofGetHeight() - 10);
 		}
+
+		//-
 
 		//ofNoFill();
 		//ofSetColor(255, 255, 0);

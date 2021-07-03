@@ -84,7 +84,7 @@ private:
 	ofEventListener listener_Library;
 	//ofEventListener listener_ModeSorting;
 
-	void refresh_Libs();
+	void refreshLibraryColors();
 	void refresh_Kits();
 	void refresh_Paths();
 

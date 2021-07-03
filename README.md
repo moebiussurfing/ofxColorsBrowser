@@ -61,9 +61,9 @@ ofApp::draw()
 
 Mark | Not required when
 ------------ | -------------
-\* | interface is disabled.
-** | ImGui is disabled.
-*** | some example only.
+\* | interface is disabled
+** | ImGui is disabled
+*** | some example only
 
 Already bundled into ```OF_ADDON/libs```. No need to add to the **PROJECT GENERATOR**!    
 - [ofxOpenColor](https://github.com/pd-andy/ofxOpenColor)  

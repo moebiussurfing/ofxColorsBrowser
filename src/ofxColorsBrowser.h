@@ -8,11 +8,9 @@
 	TODO:
 
 	+ add pointer back
-	+ move layout settings on a float window to not deform grid while editing
 	+ make a base class to improve adding more libraries?
 	+ add more browseable pages on basic gui
 	+ more responsive, variable sizes..
-	+ split build from resize responsive layout. to allow live rescaling
 
 */
 
@@ -275,7 +273,7 @@ public:
 	}
 	std::string getLibraryName() {
 		return name_Library.get();
-	}	
+	}
 	std::string getSortingTypeName() {
 		return MODE_SORTING_name.get();
 	}
@@ -308,7 +306,7 @@ public:
 	ofParameter<bool> bResetColorsBox{ "Reset Box", false };
 
 	ofParameter<bool> bLockLayout{ "Lock Layout", true };
-	ofParameter<bool> bShowCards{ "Show Cards", true };
+	ofParameter<bool> bShowCard{ "Show Cards", true };
 	ofParameter<bool> bShowRectangles{ "Show Rectangles", true };
 	ofParameter<bool> bShowDebugRectangles{ "Show Debug Rectangles", false };
 	ofParameter<bool> bShowHelp{ "Show Help", true };
@@ -401,7 +399,7 @@ private:
 
 private:
 	void updateRectangles();
-	void drawRectangles();
+	void drawRectanglesAndCard();
 
 	void drawHelp();
 
@@ -468,9 +466,11 @@ private:
 
 	void buildLibraryColors();
 	void refreshRectanglesClicks(); // to browsing by keys
+//public:
 	void buildRectangles();
 	void clearRectangles();
 
+private:
 	int pageNum;
 
 	//-
@@ -493,6 +493,13 @@ private:
 	ofParameter<bool> bResetLayout{ "Reset Layout", false };
 
 	//--
+
+private:
+	vector<ofColor> paletteCard;
+public:
+	vector<ofColor> getPaletteCard() {
+		return paletteCard;
+	}
 
 public:
 	//private:
