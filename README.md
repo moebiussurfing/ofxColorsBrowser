@@ -59,14 +59,10 @@ ofApp::draw()
 - [ofxImGui](https://github.com/Daandelange/ofxImGui/) **  
 - [ofxWindowApp](https://github.com/moebiussurfing/ofxWindowApp) ***  
 
-irst Header | Second Header
+\* | Not required when interface is disabled.
 ------------ | -------------
-Content cell 1 | Content cell 2
-Content column 1 | Content colum
-
-\* Not required when interface is disabled.  
-** Not required when ImGui is disabled.  
-*** Not required. For some example only.   
+** | Not required when ImGui is disabled.
+*** | Not required. For some example only.
 
 Already bundled into ```OF_ADDON/libs```. No need to add to the **PROJECT GENERATOR**!    
 - [ofxOpenColor](https://github.com/pd-andy/ofxOpenColor)  
