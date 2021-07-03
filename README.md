@@ -59,8 +59,9 @@ ofApp::draw()
 - [ofxImGui](https://github.com/Daandelange/ofxImGui/) **  
 - [ofxWindowApp](https://github.com/moebiussurfing/ofxWindowApp) ***  
 
-\* | Not required when interface is disabled.
+optional | when
 ------------ | -------------
+\* | Not required when interface is disabled.
 ** | Not required when ImGui is disabled.
 *** | Not required. For some example only.
 
