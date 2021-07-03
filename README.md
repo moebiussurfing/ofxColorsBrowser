@@ -58,9 +58,9 @@ ofApp::draw()
 - [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui) **  
 - [ofxImGui](https://github.com/Daandelange/ofxImGui/) FORK **  
 - [ofxWindowApp](https://github.com/moebiussurfing/ofxWindowApp) ***  
-[*] Not required when interface is disabled.  
-[**] Not required when ImGui is disabled.  
-[***] Not required. For some example only.   
+* Not required when interface is disabled.  
+** Not required when ImGui is disabled.  
+*** Not required. For some example only.   
 Already bundled into ```OF_ADDON/libs```. No need to add to the **PROJECT GENERATOR**!    
 - [ofxOpenColor](https://github.com/pd-andy/ofxOpenColor)  
  
