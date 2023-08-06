@@ -35,7 +35,7 @@ public:
 	void setupColorPtr(ofFloatColor &c);
 	//ofFloatColor colorBg;
 
-	ofxSurfing_ImGui_Manager guiManager;
+	SurfingGuiManager ui;
 	void drawImGui();
 	void drawImGuiDebug();
 	void drawImGuiLibrary();

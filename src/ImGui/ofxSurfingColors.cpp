@@ -23,8 +23,8 @@ ofxSurfingColors::~ofxSurfingColors() {
 
 //--------------------------------------------------------------
 void ofxSurfingColors::setup() {
-	guiManager.setImGuiAutodraw(true);
-	guiManager.setup();
+	//ui.setImGuiAutodraw(true);
+	ui.setup();
 
 	//colorBrowser.setupColorPtr(colorBg); // set local target color receiver
 	colorBrowser.setup();
@@ -153,7 +153,7 @@ bool ofxSurfingColors::getBool() {
 //--------------------------------------------------------------
 void ofxSurfingColors::drawImGui()
 {
-	guiManager.begin();
+	ui.Begin();
 	{
 		// window panels
 
@@ -166,7 +166,7 @@ void ofxSurfingColors::drawImGui()
 		// 3. responsive
 		if (bShowResponsive) drawImGuiResponsive();
 	}
-	guiManager.end();
+	ui.End();
 }
 
 //--------------------------------------------------------------
@@ -201,7 +201,7 @@ void ofxSurfingColors::drawImGuiResponsive()
 	flagsw = auto_resize ? ImGuiWindowFlags_AlwaysAutoResize : ImGuiWindowFlags_None;
 	//flagsw |= flagsWindowsLocked;
 
-	guiManager.beginWindow("RESPONSIVE", NULL, flagsw);
+	ui.BeginWindow("RESPONSIVE", NULL, flagsw);
 	{
 		//--
 
@@ -216,7 +216,7 @@ void ofxSurfingColors::drawImGuiResponsive()
 				//if (ImGui::CollapsingHeader("LAYOUT"))
 				{
 					// layout
-					float _h = WIDGETS_HEIGHT;
+					float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
 					float _hh = _h / 2;
 					float _spcx = ImGui::GetStyle().ItemSpacing.x;
 					float _spcy = ImGui::GetStyle().ItemSpacing.y;
@@ -224,7 +224,7 @@ void ofxSurfingColors::drawImGuiResponsive()
 					float _w50 = ofxImGuiSurfing::getWidgetsWidth(2);  // 2 widgets half width
 					float _w33 = ofxImGuiSurfing::getWidgetsWidth(3);  // 3 widgets third width
 					float _w25 = ofxImGuiSurfing::getWidgetsWidth(4);  // 4 widgets quarter width
-					float _hitem = SLIDER_HEIGHT;
+					float _hitem = ofxImGuiSurfing::getWidgetsHeightUnit();
 
 					//-
 
@@ -288,7 +288,7 @@ void ofxSurfingColors::drawImGuiResponsive()
 			}
 		}
 	}
-	guiManager.endWindow();
+	ui.EndWindow();
 }
 
 //--------------------------------------------------------------
@@ -297,9 +297,9 @@ void ofxSurfingColors::drawImGuiDebug()
 	static bool bOpen0 = true;
 	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-		if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+		if (ui.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
-		guiManager.beginWindow("ADVANCED SURFING COLORS", NULL, window_flags);
+		ui.BeginWindow("ADVANCED SURFING COLORS", NULL, window_flags);
 		{
 			ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bGui);
 			//ImGui::Dummy(ImVec2(0, 5));
@@ -324,8 +324,8 @@ void ofxSurfingColors::drawImGuiDebug()
 				ImGui::Dummy(ImVec2(0, 5)); // spacing
 				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bKeys);
 				ofxImGuiSurfing::AddToggleRoundedButton(colorBrowser.bGuiDebug);
-				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
-				if (guiManager.bExtra)
+				ofxImGuiSurfing::AddToggleRoundedButton(ui.bExtra);
+				if (ui.bExtra)
 				{
 					ImGui::Indent();
 					{
@@ -334,14 +334,14 @@ void ofxSurfingColors::drawImGuiDebug()
 
 						//--
 
-						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
-						if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
+						ofxImGuiSurfing::AddToggleRoundedButton(ui.bAdvanced);
+						if (ui.bExtra) ui.DrawAdvancedBundle();
 					}
 					ImGui::Unindent();
 				}
 			}
 		}
-		guiManager.endWindow();
+		ui.EndWindow();
 	}
 }
 
@@ -388,7 +388,7 @@ void ofxSurfingColors::drawImGuiLibrary()
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
 
-	guiManager.beginWindow("SURFING COLORS", NULL, flagsw);
+	ui.BeginWindow("SURFING COLORS", NULL, flagsw);
 	{
 		bool bUpdate = false;
 		string s;
@@ -396,7 +396,7 @@ void ofxSurfingColors::drawImGuiLibrary()
 		//--
 
 		// layout
-		float _h = WIDGETS_HEIGHT;
+		float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
 		float _hh = _h / 2;
 		float _spcx = ImGui::GetStyle().ItemSpacing.x;
 		float _spcy = ImGui::GetStyle().ItemSpacing.y;
@@ -470,7 +470,7 @@ void ofxSurfingColors::drawImGuiLibrary()
 			{
 				float wb, hb;
 				wb = _w50;
-				hb = SLIDER_HEIGHT;
+				hb = ofxImGuiSurfing::getWidgetsHeightUnit();
 
 				// 1.1 prev
 				if (ImGui::ArrowButtonEx("##leftColor", ImGuiDir_Left, ImVec2(wb, hb)))
@@ -512,7 +512,7 @@ void ofxSurfingColors::drawImGuiLibrary()
 			{
 				float wb, hb;
 				wb = 40;
-				hb = SLIDER_HEIGHT;
+				hb = ofxImGuiSurfing::getWidgetsHeightUnit();
 
 				// 1.1 prev
 				if (ImGui::ArrowButtonEx("##leftPage", ImGuiDir_Left, ImVec2(wb, hb)))
@@ -551,12 +551,12 @@ void ofxSurfingColors::drawImGuiLibrary()
 
 		//if (!bMnimize)
 		{
-			if (ImGui::Button("LIBRARY", ImVec2(_w33, SLIDER_HEIGHT)))
+			if (ImGui::Button("LIBRARY", ImVec2(_w33, ofxImGuiSurfing::getWidgetsHeightUnit())))
 			{
 				colorBrowser.setNextLibrary();
 			}ImGui::SameLine();
 
-			if (ImGui::Button("SORTING", ImVec2(_w33, SLIDER_HEIGHT)))
+			if (ImGui::Button("SORTING", ImVec2(_w33, ofxImGuiSurfing::getWidgetsHeightUnit())))
 			{
 				colorBrowser.setNextSortType();
 				refreshLibraryColors();
@@ -565,7 +565,7 @@ void ofxSurfingColors::drawImGuiLibrary()
 				//colorBrowser.buildRectangles();
 			}ImGui::SameLine();
 
-			if (ImGui::Button("CARD", ImVec2(_w33, SLIDER_HEIGHT)))
+			if (ImGui::Button("CARD", ImVec2(_w33, ofxImGuiSurfing::getWidgetsHeightUnit())))
 			{
 				colorBrowser.setNextCard();
 			}
@@ -715,7 +715,7 @@ void ofxSurfingColors::drawImGuiLibrary()
 						}
 
 						ImGui::PushItemWidth(130);
-						ofxImGuiSurfing::AddIntStepped(colorBrowser.amtColorsInCard);
+						ofxImGuiSurfing::AddStepper(colorBrowser.amtColorsInCard);
 						ImGui::PopItemWidth();
 
 						string t = "##CARD";
@@ -1053,7 +1053,7 @@ void ofxSurfingColors::drawImGuiLibrary()
 			//refresh_FromPicked();
 		}
 	}
-	guiManager.endWindow();
+	ui.EndWindow();
 
 	ImGui::PopStyleVar();
 }

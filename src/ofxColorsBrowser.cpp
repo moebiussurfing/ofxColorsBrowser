@@ -253,7 +253,7 @@ void ofxColorsBrowser::buildLibraryColors()
 		colors_NamesMAP["darkKhaki"] = ofColor::darkKhaki;
 		colors_NamesMAP["darkMagenta"] = ofColor::darkMagenta;
 		colors_NamesMAP["darkOliveGreen"] = ofColor::darkOliveGreen;
-		colors_NamesMAP["darkorange"] = ofColor::darkorange;
+		colors_NamesMAP["darkorange"] = ofColor::darkOrange;
 		colors_NamesMAP["darkOrchid"] = ofColor::darkOrchid;
 		colors_NamesMAP["darkRed"] = ofColor::darkRed;
 		colors_NamesMAP["darkSalmon"] = ofColor::darkSalmon;
