@@ -53,7 +53,7 @@ ofApp::draw()
 ## Dependencies
 - [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 - ofxGui
-- [ofxRectangleUtils](https://github.com/bakercp/ofxRectangleUtils) *  
+- [ofxRectangleUtils](https://github.com/bakercp/ofxRectangleUtils/tree/develop) * / DEVELOP BRANCH  
 - [ofxFontStash](https://github.com/armadillu/ofxFontStash) *  
 - [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui) **  
 - [ofxImGui](https://github.com/Daandelange/ofxImGui/) **  
